@@ -131,11 +131,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="header\MD.h" />
     <ClInclude Include="header\Voltex.h" />
-    <ClInclude Include="MD.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MD.cpp" />
+    <ClCompile Include="source\MD.cpp" />
     <ClCompile Include="source\Voltex.cpp" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
