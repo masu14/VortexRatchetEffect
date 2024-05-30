@@ -6,7 +6,7 @@ Voltex::Voltex() {
 }
 
 Voltex::~Voltex() {
-
+	/* DO NOTHING */
 }
 
 Vector2f Voltex::GetPos() {

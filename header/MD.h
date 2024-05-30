@@ -1,4 +1,10 @@
 #pragma once
+#include "Voltex.h"
+#include "PiningSite.h"
+
+//クラスの前方宣言
+class Voltex;		
+class PiningSite;
 
 /// <summary>
 /// ExperimentalParam
@@ -39,14 +45,13 @@ private:
 	//=======================================================================================
 	// private variables.
 	//=======================================================================================
-	//Voltex voltexs[5];		//ボルテックスのインスタンス、voltexNum個の配列として扱う
-	int voltexNum;		//ボルテックスの数
-	int piningSiteNum;	//ピニングサイトの数
+	Voltex* voltexs;			//ボルテックスのインスタンス、voltexNum個の配列として扱う
+	PiningSite* piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
 
 	//=======================================================================================
 	// private methods.
 	//=======================================================================================
-	Voltex* InitVolPos(ExperimentalParam param);			//ボルテックスの初期配置を行う
-	void InitPiningSitePos(ExperimentalParam param);	//ピニングサイトの初期配置を行う
+	Voltex* InitVolPos(const ExperimentalParam& param);			//ボルテックスの初期配置を行う
+	PiningSite* InitPinPos(const ExperimentalParam& param);		//ピニングサイトの初期配置を行う
 };
 

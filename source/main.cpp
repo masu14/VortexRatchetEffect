@@ -1,6 +1,4 @@
-﻿
-
-#include <iostream>
+﻿#include <iostream>
 #include "Voltex.h"
 #include "MD.h"
 

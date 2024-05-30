@@ -132,10 +132,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="header\MD.h" />
+    <ClInclude Include="header\PiningSite.h" />
     <ClInclude Include="header\Voltex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\MD.cpp" />
+    <ClCompile Include="source\PiningSite.cpp" />
     <ClCompile Include="source\Voltex.cpp" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
