@@ -15,15 +15,36 @@ MD::~MD() {
 
 void MD::Run() {
 	ExperimentalParam paramater = {
-		5,	//ボルテックスの数
-		5,	//ピニングサイトの数
+		1,	//ボルテックスの数
+		0,	//ピニングサイトの数
 	};
-	voltexs= InitVolPos(paramater);
+
+	//ボルテックスを初期配置に並べる
+	if (paramater.voltexNum > 0) {
+		voltexs = InitVolPos(paramater);
+	}
+	else {
+		std::cout << "ボルテックスの数に不正な値が入力されました" << std::endl;
+		return;
+	}
+	//テスト用、ボルテックスの座標を列挙
 	for (int i = 0; i < paramater.voltexNum; i++) {
 		std::cout << voltexs[i].GetPos().transpose() << std::endl;
 	}
 	
-	piningSites = InitPinPos(paramater);
+	//ピニングサイトを初期配置に並べる
+	if (paramater.piningSiteNum > 0) {
+		piningSites = InitPinPos(paramater);
+	}
+	else if(paramater.piningSiteNum==0){
+		piningSites = nullptr;
+		noPiningSite = true;
+	}
+	else {
+		std::cout << "ピニングサイトの数に不正な値が入力されました" << std::endl;
+		return;
+	}
+	//テスト用、ピニングサイトの座標を列挙
 	for (int i = 0; i < paramater.piningSiteNum; i++) {
 		std::cout << piningSites[i].GetPinPos().transpose() << std::endl;
 	}
