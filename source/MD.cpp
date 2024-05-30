@@ -1,31 +1,34 @@
 #include "MD.h"
 #include "Voltex.h"
 
-//コンストラクタでボルテックスのインスタンスを生成、構造体の初期化はここでやるべきでないかも
-MD::MD() {
+//コンストラクタ、ボルテックス、ピニングサイトの数を初期化
+MD::MD()
+{
 	
-
 }
 
 //デストラクタでインスタンスを削除する
 MD::~MD() {
-	delete voltexs;
+	//delete voltexs;
 }
 
 void MD::Run() {
-	InitVolPos();
+	ExperimentalParam paramater = {
+		5,	
+		5,
+	};
+	InitVolPos(paramater);
+	
 }
 
 //ボルテックスを初期位置に配置する
-void MD::InitVolPos() {
-	ExperimentalParam params = {
-		5,
-		5
-	};
-	voltexs = new Voltex[params.voltexNum];
-	for (int i = 0; i < params.voltexNum; i++) {
-		voltexs[i].SetPos(i,i);
-		std::cout << "voltex[" << i << "]: " << voltexs[i].GetPos() << std::endl;
+Voltex* MD::InitVolPos(ExperimentalParam param) {
+	//仮の配置処理、ボルテックスの配置方法は正方格子か三角格子なのでそれぞれ用意する予定
+	Voltex *voltex = new Voltex[param.voltexNum];
+	for (int i = 0; i < param.voltexNum; i++) {
+		voltex[i].SetPos(i, i);
+		std::cout << voltex[i].GetPos() << std::endl;
 	}
+	return voltex;
 	
 }

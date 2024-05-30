@@ -5,6 +5,10 @@ Voltex::Voltex() {
 	volVelocity = { 0.0f,0.0f };	//t=0で速度は0
 }
 
+Voltex::~Voltex() {
+
+}
+
 Vector2f Voltex::GetPos() {
 	return volPos;
 }
