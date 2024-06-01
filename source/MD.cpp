@@ -1,6 +1,7 @@
 #include "MD.h"
 
 
+
 //コンストラクタ、ボルテックス、ピニングサイトの数を初期化
 MD::MD()
 {
@@ -9,13 +10,12 @@ MD::MD()
 
 //デストラクタでインスタンスを削除する
 MD::~MD() {
-	delete[] voltexs;
-	delete[] piningSites;
+	
 }
 
 void MD::Run() {
 	ExperimentalParam paramater = {
-		1,	//ボルテックスの数
+		5,	//ボルテックスの数
 		0,	//ピニングサイトの数
 	};
 
@@ -37,7 +37,6 @@ void MD::Run() {
 		piningSites = InitPinPos(paramater);
 	}
 	else if(paramater.piningSiteNum==0){
-		piningSites = nullptr;
 		noPiningSite = true;
 	}
 	else {
@@ -53,18 +52,18 @@ void MD::Run() {
 }
 
 //ボルテックスを初期位置に配置する
-Voltex* MD::InitVolPos(const ExperimentalParam& param) {
+std::unique_ptr<Voltex[]> MD::InitVolPos(const ExperimentalParam& param) {
 	//仮の配置処理、ボルテックスの配置方法は正方格子か三角格子なのでそれぞれ用意する予定
-	Voltex *voltex = new Voltex[param.voltexNum];
+	std::unique_ptr<Voltex[]> voltex = std::make_unique<Voltex[]>(param.voltexNum);
 	for (int i = 0; i < param.voltexNum; i++) {
 		voltex[i].SetPos(i, i);
-		
 	}
 	return voltex;
 }
 
-PiningSite* MD::InitPinPos(const ExperimentalParam& param) {
-	PiningSite* piningSite = new PiningSite[param.piningSiteNum];
+//ピニングサイトを初期位置に配置する
+std::unique_ptr<PiningSite[]> MD::InitPinPos(const ExperimentalParam& param) {
+	std::unique_ptr<PiningSite[]> piningSite = std::make_unique<PiningSite[]>(param.piningSiteNum);
 	for (int i = 0; i < param.piningSiteNum; i++) {
 		piningSite[i].SetPinPos(i, i);
 	}

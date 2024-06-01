@@ -15,7 +15,6 @@ Vector2f Voltex::GetPos() {
 
 void Voltex::SetPos(float x, float y) {
 	volPos = { x,y };
-
 }
 
 float Voltex::CalcVVI() {
@@ -37,5 +36,6 @@ float Voltex::CalcThermalForce() {
 
 float Voltex::CalcEOM() {
 	float force = CalcVVI() + CalcPiningForce() + CalcLorentzForce() + CalcThermalForce();
+	return force;
 
 }

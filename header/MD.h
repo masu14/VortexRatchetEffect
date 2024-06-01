@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "Voltex.h"
 #include "PiningSite.h"
 
@@ -45,14 +46,14 @@ private:
 	//=======================================================================================
 	// private variables.
 	//=======================================================================================
-	Voltex* voltexs;			//ボルテックスのインスタンス、voltexNum個の配列として扱う
-	PiningSite* piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
+	std::unique_ptr<Voltex[]> voltexs;			//ボルテックスのインスタンス、voltexNum個の配列として扱う
+	std::unique_ptr<PiningSite[]> piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
 	bool noPiningSite = false;	//ピニングサイト無しの場合のフラグ
 
 	//=======================================================================================
 	// private methods.
 	//=======================================================================================
-	Voltex* InitVolPos(const ExperimentalParam& param);			//ボルテックスの初期配置を行う
-	PiningSite* InitPinPos(const ExperimentalParam& param);		//ピニングサイトの初期配置を行う
+	std::unique_ptr<Voltex[]> InitVolPos(const ExperimentalParam& param);			//ボルテックスの初期配置を行う
+	std::unique_ptr<PiningSite[]> InitPinPos(const ExperimentalParam& param);		//ピニングサイトの初期配置を行う
 };
 

@@ -3,8 +3,10 @@
 #include "MD.h"
 
 int main() {
-	MD *md = new MD();
-	md->Run();
-	delete md;
+	{
+		std::unique_ptr<MD> md = std::make_unique<MD>();
+		md->Run();
+	}
+	
 	return 0;
 }
