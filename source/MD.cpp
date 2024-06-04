@@ -41,6 +41,8 @@ void MD::Run(Paramater paramater) {
 	for (int i = 0; i < paramater.piningSiteNum; i++) {
 		std::cout << piningSites[i].GetPinPos().transpose() << std::endl;
 	}
+
+	std::cout << CalcVVI(paramater) << std::endl;
 }
 
 //ボルテックスを初期位置に配置する
@@ -63,7 +65,14 @@ unique_ptr<PiningSite[]> MD::InitPinPos(const Paramater& param) {
 }
 
 //ボルテックス・ボルテックス相互作用(VVI)を計算する
-float MD::CalcVVI() {
+float MD::CalcVVI(Paramater param) {
+	for (int i = 0; i < param.voltexNum - 1; i++) {
+		for (int j = i + 1; j < param.voltexNum; j++) {
+			Vector2f dPos = voltexs[j].GetPos() - voltexs[i].GetPos();	//ベクトルの差
+			AjustPeriod(dPos, param);		//周期的境界条件による座標の補正
+			float r2 = dPos.dot(dPos);
+		}
+	}
 	return 0;
 }
 
@@ -85,7 +94,15 @@ float MD::CalcThermalForce() {
 
 //運動方程式を解いて位置、速度を更新する
 float MD::CalcEOM() {
-	float force = CalcVVI() + CalcPiningForce() + CalcLorentzForce() + CalcThermalForce();
+	
 	return 0;
+
+}
+
+Vector2f AjustPeriod(Vector2f dPos, Paramater param) {
+	if (dPos.x() < -param.weight / 2) dPos.x() += param.weight;
+	if (dPos.x() > param.weight / 2)  dPos.x() -= param.weight;
+	if (dPos.y() < -param.height / 2)dPos.y()  += param.height;
+	if (dPos.y() > param.height / 2)dPos.y()   -= param.height;
 
 }
