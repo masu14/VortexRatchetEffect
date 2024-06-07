@@ -11,6 +11,7 @@
 
 using namespace Eigen;
 
+
 /// <summary>
 /// Voltex class
 /// ボルテックスの位置、粘性(運動方程式における質量に相当するもの)、外部から加わる力から

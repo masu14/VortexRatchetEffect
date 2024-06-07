@@ -47,6 +47,7 @@ private:
 	// private variables.
 	//=======================================================================================
 	unique_ptr<Voltex[]> voltexs;			//ボルテックスのインスタンス、voltexNum個の配列として扱う
+	unique_ptr<float[]> forceToVoltexs;		//各ボルテックスに加わる外力の配列
 	unique_ptr<PiningSite[]> piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
 	bool noPiningSite = false;					//ピニングサイト無しの場合のフラグ
 
@@ -56,12 +57,12 @@ private:
 	unique_ptr<Voltex[]> InitVolPos(const Paramater& param);			//ボルテックスの初期配置を行う
 	unique_ptr<PiningSite[]> InitPinPos(const Paramater& param);		//ピニングサイトの初期配置を行う
 
-	float CalcVVI(Paramater param);				//ボルテックス・ボルテックス相互作用(VVI)を計算する
+	float CalcVVI(const Paramater& param);				//ボルテックス・ボルテックス相互作用(VVI)を計算する
 	float CalcPiningForce();		//ピニング力を計算する
 	float CalcLorentzForce();		//ローレンツ力を計算する	
 	float CalcThermalForce();		//サーマル力を計算する
-	float CalcEOM();				//運動方程式を解いて位置、速度を更新する
+	float CalcEOM(Paramater param);				//運動方程式を解いて位置、速度を更新する
 
-	Vector2f AjustPeriod(Vector2f dPos, Paramater param);
+	void AjustPeriod(Vector2f difPos, Paramater param);
 };
 
