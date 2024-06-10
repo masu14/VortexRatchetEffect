@@ -34,7 +34,13 @@ public:
 	~Voltex();
 	
 	Vector2f GetPos();
+	Vector2f GetVelocity();
+	Vector2f GetForce();
+
 	void SetPos(float x, float y);
+	void SetVelocity(float x, float y);
+	void SetForce(float x, float y);
+	void AddForce(float x, float y);
 	
 
 private:
@@ -42,9 +48,9 @@ private:
 	// private variables.
 	//=======================================================================================
 	float visResi = 10;							//ボルテックスの粘性抵抗
-	Vector2f volPos;							//ボルテックスの位置
-	Vector2f volVelocity = { 0.0f, 0.0f };		//ボルテックスの速度
-	
+	Vector2f position;							//ボルテックスの位置
+	Vector2f velocity = { 0.0f, 0.0f };		//ボルテックスの速度
+	Vector2f force = { 0.0f, 0.0f };			//ボルテックスへの外力
 
 	//=======================================================================================
 	// private methods.

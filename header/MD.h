@@ -3,14 +3,14 @@
 #include "Voltex.h"
 #include "PiningSite.h"
 
-template<typename T> using unique_ptr = std::unique_ptr<T>;	//長くて冗長なので省略してるだけ
+template<typename T> using unique_ptr = std::unique_ptr<T>;	//長くて冗長なので「std::」を省略してるだけ
 
 //クラスの前方宣言
 class Voltex;		
 class PiningSite;
 
 /// <summary>
-/// ExperimentalParam
+/// Paramater構造体
 /// 実験条件をまとめた構造体、本シミュレーションのパラメータはすべてここで管理する。
 /// </summary>
 struct Paramater {
@@ -47,7 +47,7 @@ private:
 	// private variables.
 	//=======================================================================================
 	unique_ptr<Voltex[]> voltexs;			//ボルテックスのインスタンス、voltexNum個の配列として扱う
-	unique_ptr<float[]> forceToVoltexs;		//各ボルテックスに加わる外力の配列
+	
 	unique_ptr<PiningSite[]> piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
 	bool noPiningSite = false;					//ピニングサイト無しの場合のフラグ
 
@@ -57,12 +57,12 @@ private:
 	unique_ptr<Voltex[]> InitVolPos(const Paramater& param);			//ボルテックスの初期配置を行う
 	unique_ptr<PiningSite[]> InitPinPos(const Paramater& param);		//ピニングサイトの初期配置を行う
 
-	float CalcVVI(const Paramater& param);				//ボルテックス・ボルテックス相互作用(VVI)を計算する
-	float CalcPiningForce();		//ピニング力を計算する
-	float CalcLorentzForce();		//ローレンツ力を計算する	
-	float CalcThermalForce();		//サーマル力を計算する
-	float CalcEOM(Paramater param);				//運動方程式を解いて位置、速度を更新する
+	void InitForce(const Paramater& param);							//外力を0に初期化する
+	void CalcVVI(const Paramater& param);		//ボルテックス・ボルテックス相互作用(VVI)を計算する
+	void CalcPiningForce();						//ピニング力を計算する
+	void CalcLorentzForce();					//ローレンツ力を計算する	
+	void CalcThermalForce();					//サーマル力を計算する
+	void CalcEOM(const Paramater& param);				//運動方程式を解いて位置、速度を更新する
 
-	void AjustPeriod(Vector2f difPos, Paramater param);
 };
 
