@@ -51,6 +51,7 @@ void MD::Run(Paramater param) {
 	//
 	CalcVVI(param);
 	std::cout << "VVIを計算" << std::endl;
+	//テスト用、ボルテックスへの外力を列挙
 	for (int i = 0; i < param.voltexNum; i++) {
 		std::cout << "voltex["<<i<<"]への外力 " << voltexs[i].GetForce().transpose() << std::endl;
 	}
