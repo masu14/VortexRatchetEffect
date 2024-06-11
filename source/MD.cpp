@@ -99,6 +99,7 @@ void MD::InitForce(const Paramater& param) {
 void MD::CalcVVI(const Paramater& param) {
 	for (int i = 0; i < param.voltexNum -1 ; i++) {
 		for (int j = i+1; j < param.voltexNum; j++) {
+			float f0 = 1.0f;	//VVIの係数f0
 			
 			Vector2f difPos = voltexs[i].GetPos() - voltexs[j].GetPos();	//ベクトルの差
 
@@ -112,8 +113,8 @@ void MD::CalcVVI(const Paramater& param) {
 			float difPos2 = difPos.dot(difPos);						//difPos2はボルテックス同士の距離の2乗
 			if (difPos2 > param.CUTOFF * param.CUTOFF) continue;	//ボルテックス同士の距離がカットオフ長さより長ければ計算しない
 			
-			float xForce = 1 / difPos2 * difPos.x();	//仮の計算式、うまく計算できることを確認したらVVIの公式に置き換える
-			float yForce = 1 / difPos2 * difPos.y();	//仮の計算式、うまく計算できることを確認したらVVIの公式に置き換える
+			float xForce = f0 * expf(- difPos.x()/ lambda) / difPos.norm() * difPos.x();	//VVIのx成分
+			float yForce = f0 * expf(- difPos.y()/ lambda) / difPos.norm() * difPos.y();	//VVIのy成分
 			voltexs[i].AddForce(xForce, yForce);	//作用
 			voltexs[j].AddForce(-xForce, -yForce);	//反作用
 		}

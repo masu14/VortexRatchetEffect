@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <math.h>			//基本的な関数を扱うための標準ライブラリ
 #include "Voltex.h"
 #include "PiningSite.h"
 
@@ -50,6 +51,7 @@ private:
 	
 	unique_ptr<PiningSite[]> piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
 	bool noPiningSite = false;					//ピニングサイト無しの場合のフラグ
+	float lambda = 1.0f;
 
 	//=======================================================================================
 	// private methods.

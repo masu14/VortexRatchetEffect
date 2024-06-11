@@ -6,7 +6,6 @@
 
 #pragma once
 #include <iostream>
-#include <math.h>			//基本的な関数を扱うための標準ライブラリ
 #include <Eigen/Core>		//ベクトル、行列演算を行うためのライブラリ
 
 using namespace Eigen;
