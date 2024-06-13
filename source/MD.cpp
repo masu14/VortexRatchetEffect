@@ -110,11 +110,12 @@ void MD::CalcVVI(const Paramater& param) {
 			if (difPos.y() < -param.height / 2) difPos.y() += param.height;
 			if (difPos.y() <  param.height / 2) difPos.y() -= param.height;
 
-			float difPos2 = difPos.dot(difPos);						//difPos2はボルテックス同士の距離の2乗
-			if (difPos2 > param.CUTOFF * param.CUTOFF) continue;	//ボルテックス同士の距離がカットオフ長さより長ければ計算しない
+			//以下、ボルテックス同士の距離がカットオフ長さより長ければ計算しない
+			if (difPos.norm() > param.CUTOFF) continue;						
 			
-			float xForce = f0 * expf(- difPos.x()/ lambda) / difPos.norm() * difPos.x();	//VVIのx成分
-			float yForce = f0 * expf(- difPos.y()/ lambda) / difPos.norm() * difPos.y();	//VVIのy成分
+			Vector2f force = f0 * expf(- difPos.norm() / lambda) * difPos;	//VVI
+			float xForce = force.x();				//VVIのx成分
+			float yForce = force.y();				//VVIのy成分
 			voltexs[i].AddForce(xForce, yForce);	//作用
 			voltexs[j].AddForce(-xForce, -yForce);	//反作用
 		}
