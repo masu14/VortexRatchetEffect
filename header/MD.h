@@ -4,7 +4,8 @@
 #include "Voltex.h"
 #include "PiningSite.h"
 
-template<typename T> using unique_ptr = std::unique_ptr<T>;	//長くて冗長なので「std::」を省略してるだけ
+template<typename T> using unique_ptr = std::unique_ptr<T>;		//長くて冗長なので「std::」を省略してるだけ
+
 
 //クラスの前方宣言
 class Voltex;		
@@ -18,8 +19,8 @@ struct Paramater {
 	int voltexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
 	float dt = 0.01f;			//時間変化量
-	int height = 1;				//シミュレーションボックスの高さ
-	int weight = 1;				//シミュレーションボックスの幅
+	int height = 5;				//シミュレーションボックスの高さ
+	int weight = 5;				//シミュレーションボックスの幅
 	const int CUTOFF = 4;		//ボルテックスへ相互作用を及ぼす対象の有効範囲
 };
 
@@ -65,6 +66,7 @@ private:
 	void CalcLorentzForce();					//ローレンツ力を計算する	
 	void CalcThermalForce();					//サーマル力を計算する
 	void CalcEOM(const Paramater& param);				//運動方程式を解いて位置、速度を更新する
+	
 
 };
 
