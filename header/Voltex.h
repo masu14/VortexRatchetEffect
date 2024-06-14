@@ -32,14 +32,14 @@ public:
 	Voltex();		//コンストラクタでボルテックスの速度を初期化する
 	~Voltex();
 	
-	Vector2f GetPos();
-	Vector2f GetVelocity();
-	Vector2f GetForce();
+	Vector2d GetPos();
+	Vector2d GetVelocity();
+	Vector2d GetForce();
 
-	void SetPos(float x, float y);
-	void SetVelocity(float x, float y);
-	void SetForce(float x, float y);
-	void AddForce(float x, float y);
+	void SetPos(double x, double y);
+	void SetVelocity(double x, double y);
+	void SetForce(double x, double y);
+	void AddForce(double x, double y);
 	
 
 private:
@@ -47,9 +47,9 @@ private:
 	// private variables.
 	//=======================================================================================
 	float eta = 10;							//ボルテックスの粘性抵抗
-	Vector2f position;							//ボルテックスの位置
-	Vector2f velocity = { 0.0f, 0.0f };		//ボルテックスの速度
-	Vector2f force = { 0.0f, 0.0f };			//ボルテックスへの外力
+	Vector2d position;						//ボルテックスの位置
+	Vector2d velocity = { 0.0, 0.0 };		//ボルテックスの速度
+	Vector2d force = { 0.0, 0.0 };			//ボルテックスへの外力
 
 	//=======================================================================================
 	// private methods.

@@ -18,7 +18,7 @@ class PiningSite;
 struct Paramater {
 	int voltexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
-	float dt = 0.01f;			//時間変化量
+	double dt = 0.001;			//時間変化量
 	int height = 5;				//シミュレーションボックスの高さ
 	int weight = 5;				//シミュレーションボックスの幅
 	const int CUTOFF = 4;		//ボルテックスへ相互作用を及ぼす対象の有効範囲
@@ -52,7 +52,7 @@ private:
 	
 	unique_ptr<PiningSite[]> piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
 	bool noPiningSite = false;					//ピニングサイト無しの場合のフラグ
-	float lambda = 1.0f;
+	double lambda = 1.0;
 
 	//=======================================================================================
 	// private methods.

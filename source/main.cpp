@@ -6,9 +6,9 @@
 int main() {
 	{
 		Paramater paramater = {};
-		paramater.voltexNum = 25;		//ボルテックスの数
+		paramater.voltexNum = 12;		//ボルテックスの数
 		paramater.piningSiteNum = 5;	//ピニングサイトの数
-		paramater.dt = 0.01f;			//時間変化量
+		paramater.dt = 0.001;			//時間変化量
 		paramater.height = 5;			//周期的境界条件の高さ
 		paramater.weight = 5;			//周期的境界条件の幅
 

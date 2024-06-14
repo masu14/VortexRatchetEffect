@@ -1,40 +1,40 @@
 ﻿#include "Voltex.h"
 
 Voltex::Voltex() {
-	position = { -1.0f, -1.0f };		//不正値による初期化
-	velocity = { 0.0f,0.0f };			//t=0で速度は0
-	force = { 0.0f, 0.0f };				//t=0で外力は0
+	position = { -1.0, -1.0 };		//不正値による初期化
+	velocity = { 0.0,0.0 };			//t=0で速度は0
+	force = { 0.0, 0.0 };				//t=0で外力は0
 }
 
 Voltex::~Voltex() {
 	/* DO NOTHING */
 }
 
-Vector2f Voltex::GetPos() {
+Vector2d Voltex::GetPos() {
 	return position;
 }
 
-Vector2f Voltex::GetVelocity() {
+Vector2d Voltex::GetVelocity() {
 	return velocity;
 }
 
-Vector2f Voltex::GetForce() {
+Vector2d Voltex::GetForce() {
 	return force;
 }
 
-void Voltex::SetPos(float x, float y) {
+void Voltex::SetPos(double x, double y) {
 	position = { x,y };
 }
 
-void Voltex::SetVelocity(float x, float y) {
+void Voltex::SetVelocity(double x, double y) {
 	velocity = { x,y };
 }
 
-void Voltex::SetForce(float x, float y) {
+void Voltex::SetForce(double x, double y) {
 	force = { x,y };
 }
 
-void Voltex::AddForce(float x, float y) {
-	Vector2f addForce = { x,y };
+void Voltex::AddForce(double x, double y) {
+	Vector2d addForce = { x,y };
 	force = force + addForce;
 }
