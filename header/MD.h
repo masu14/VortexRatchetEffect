@@ -64,6 +64,7 @@ private:
 	void CalcVVI(const Paramater& param);		//ボルテックス・ボルテックス相互作用(VVI)を計算する
 	void CalcPiningForce();						//ピニング力を計算する
 	void CalcLorentzForce();					//ローレンツ力を計算する	
+	void CalcResistForce(const Paramater& param);						//粘性抵抗による力を計算する
 	void CalcThermalForce();					//サーマル力を計算する
 	void CalcEOM(const Paramater& param);				//運動方程式を解いて位置、速度を更新する
 	
