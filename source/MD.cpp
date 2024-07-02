@@ -52,6 +52,7 @@ void MD::Run(Paramater param) {
 	//CalcPiningForce();
 	//CalcLorentzForce();
 	//CalcThermalForce();
+	CalcResistForce(param);
 	double time = 0.0;
 	while (time < 10000) {
 		CalcEOM(param);
@@ -83,7 +84,7 @@ unique_ptr<Voltex[]> MD::InitVolPos(const Paramater& param) {
 unique_ptr<PiningSite[]> MD::InitPinPos(const Paramater& param) {
 	std::unique_ptr<PiningSite[]> piningSite = std::make_unique<PiningSite[]>(param.piningSiteNum);
 	for (int i = 0; i < param.piningSiteNum; i++) {
-		piningSite[i].SetPinPos(i, i);
+		piningSite[i].SetPinPos(i, 0.0);
 	}
 	return piningSite;
 }
@@ -196,7 +197,10 @@ void MD::CalcEOM(const Paramater& param)
 
 		//外力の再計算を行い、F(t+dt)を計算する
 		InitForce(param);	//ボルテックスへの外力を初期化
-		CalcVVI(param);		//F(t+dt)の計算
+
+		//F(t+dt)の計算
+		CalcVVI(param);		
+		CalcResistForce(param);
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
 		for (int i = 0; i < param.voltexNum; i++) {
