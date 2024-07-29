@@ -67,6 +67,7 @@ private:
 	void CalcResistForce(const Paramater& param);						//粘性抵抗による力を計算する
 	void CalcThermalForce();					//サーマル力を計算する
 	void CalcEOM(const Paramater& param);				//運動方程式を解いて位置、速度を更新する
+	void SaveFile(const std::string& outputFile);
 	
 
 };

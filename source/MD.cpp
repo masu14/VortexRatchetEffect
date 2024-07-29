@@ -1,14 +1,17 @@
 #include "MD.h"
 
+//コンストラクタ
 MD::MD()
 {
 	/* DO NOTHING */
 }
 
+//デストラクタ
 MD::~MD() {
 	/* DO NOTHING */
 }
 
+//main.cppでparamaterを設定し、Runメソッドでmd計算を実行する
 void MD::Run(Paramater param) {
 	
 	//ボルテックスを初期配置に並べる
@@ -16,12 +19,12 @@ void MD::Run(Paramater param) {
 		voltexs = InitVolPos(param);
 	}
 	else {
-		std::cout << "ボルテックスの数に不正な値が入力されました" << std::endl;
+		std::cout << "vortexNumに不正な値が入力されました" << std::endl;
 		return;
 	}
 	//テスト用、ボルテックスの座標を列挙
 	for (int i = 0; i < param.voltexNum; i++) {
-		std::cout << "voltex["<<i<<"]の座標 " << voltexs[i].GetPos().transpose() << std::endl;
+		std::cout << "vortex["<<i<<"]の座標 " << voltexs[i].GetPos().transpose() << std::endl;
 	}
 	
 	//ピニングサイトを初期配置に並べる
@@ -32,7 +35,7 @@ void MD::Run(Paramater param) {
 		noPiningSite = true;
 	}
 	else {
-		std::cout << "ピニングサイトの数に不正な値が入力されました" << std::endl;
+		std::cout << "piningSiteNumに不正な値が入力されました" << std::endl;
 		return;
 	}
 	
@@ -73,7 +76,7 @@ unique_ptr<Voltex[]> MD::InitVolPos(const Paramater& param) {
 	//仮の配置処理、ボルテックスの配置方法は正方格子か三角格子なのでそれぞれ用意する予定
 	std::unique_ptr<Voltex[]> voltex = std::make_unique<Voltex[]>(param.voltexNum);
 	for (int i = 0; i < param.voltexNum; i++) {
-		voltex[i].SetPos((double)i/5.0, (double)i/5.0);
+		voltex[i].SetPos((double)i/5.0, 0.0);
 	}
 	return voltex;
 }
