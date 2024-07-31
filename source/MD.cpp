@@ -22,22 +22,10 @@ void MD::Run(Paramater param) {
 		std::cout << "vortexNumに不正な値が入力されました" << std::endl;
 		return;
 	}
-	//テスト用、ボルテックスの座標を列挙
-	for (int i = 0; i < param.voltexNum; i++) {
-		std::cout << "vortex["<<i<<"]の座標 " << voltexs[i].GetPos().transpose() << std::endl;
-	}
 	
-	//ピニングサイトを初期配置に並べる
-	if (param.piningSiteNum > 0) {
-		piningSites = InitPinPos(param);
-	}
-	else if(param.piningSiteNum==0){
-		noPiningSite = true;
-	}
-	else {
-		std::cout << "piningSiteNumに不正な値が入力されました" << std::endl;
-		return;
-	}
+	
+	
+	
 	
 	//ボルテックスへの外力を初期化する
 	InitForce(param);
@@ -84,12 +72,20 @@ unique_ptr<Voltex[]> MD::InitVolPos(const Paramater& param) {
 //-------------------------------------------------------------------------------------------------
 //		ピニングサイトを初期位置に配置する
 //-------------------------------------------------------------------------------------------------
-unique_ptr<PiningSite[]> MD::InitPinPos(const Paramater& param) {
-	std::unique_ptr<PiningSite[]> piningSite = std::make_unique<PiningSite[]>(param.piningSiteNum);
-	for (int i = 0; i < param.piningSiteNum; i++) {
-		piningSite[i].SetPinPos(i, 0.0);
+void MD::InitPinPos(const Paramater& param) {
+	if (param.piningSiteNum > 0) {
+		voltexs = std::make_unique<Voltex[]>(param.piningSiteNum);
+		for (int i = 0; i < param.piningSiteNum; i++) {
+			voltexs[i].SetPos(i, i);
+		}
 	}
-	return piningSite;
+	else if(param.piningSiteNum == 0){
+
+	}
+	else {
+		std::cout << "piningSiteNumに不正な値が入力されました" << std::endl;
+		return;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------

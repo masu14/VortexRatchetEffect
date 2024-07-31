@@ -58,7 +58,7 @@ private:
 	// private methods.
 	//=======================================================================================
 	unique_ptr<Voltex[]> InitVolPos(const Paramater& param);			//ボルテックスの初期配置を行う
-	unique_ptr<PiningSite[]> InitPinPos(const Paramater& param);		//ピニングサイトの初期配置を行う
+	bool InitPinPos(const Paramater& param);		//ピニングサイトの初期配置を行う
 
 	void InitForce(const Paramater& param);							//外力を0に初期化する
 	void CalcVVI(const Paramater& param);		//ボルテックス・ボルテックス相互作用(VVI)を計算する
