@@ -31,7 +31,7 @@ public:
 
 	Vector2d GetPinPos();				//ピニングサイトの代表的な座標(円の場合は中心)を得る
 	double GetPinR();					//ピニングサイトの半径を得る
-	void SetPinPos(double x, double y);	//ピニングサイトの座標を書き込む、初期化以降は変更しない
+	void SetPos(double x, double y);	//ピニングサイトの座標を書き込む、初期化以降は変更しない
 	void SetPinR(double r);				//ピニングサイトの半径を書き込む、初期化以降は変更しない
 
 private:

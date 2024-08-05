@@ -14,6 +14,6 @@ Vector2d PiningSite::GetPinPos() {
 	return position;
 }
 
-void PiningSite::SetPinPos(double x, double y) {
+void PiningSite::SetPos(double x, double y) {
 	position = { x,y };
 }

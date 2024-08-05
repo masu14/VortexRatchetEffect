@@ -21,7 +21,7 @@ struct Paramater {
 	double dt = 0.001;			//時間変化量
 	int height = 5;				//シミュレーションボックスの高さ
 	int weight = 5;				//シミュレーションボックスの幅
-	const int CUTOFF = 4;		//ボルテックスへ相互作用を及ぼす対象の有効範囲
+	int cutoff = 4;		//ボルテックスへ相互作用を及ぼす対象の有効範囲
 };
 
 
@@ -48,6 +48,13 @@ private:
 	//=======================================================================================
 	// private variables.
 	//=======================================================================================
+	int voltexNum;				//ボルテックスの数
+	int piningSiteNum;			//ピニングサイトの数
+	double dt = 0.001;			//時間変化量
+	int height = 5;				//シミュレーションボックスの高さ
+	int weight = 5;				//シミュレーションボックスの幅
+	int cutoff = 4;		//ボルテックスへ相互作用を及ぼす対象の有効範囲
+
 	unique_ptr<Voltex[]> voltexs;			//ボルテックスのインスタンス、voltexNum個の配列として扱う
 	
 	unique_ptr<PiningSite[]> piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
@@ -57,18 +64,20 @@ private:
 	//=======================================================================================
 	// private methods.
 	//=======================================================================================
-	unique_ptr<Voltex[]> InitVolPos(const Paramater& param);			//ボルテックスの初期配置を行う
-	bool InitPinPos(const Paramater& param);		//ピニングサイトの初期配置を行う
+	bool InitApp();
+	bool InitVolPos();			//ボルテックスの初期配置を行う
+	bool InitPinPos();		//ピニングサイトの初期配置を行う
 
-	void InitForce(const Paramater& param);							//外力を0に初期化する
-	void CalcVVI(const Paramater& param);		//ボルテックス・ボルテックス相互作用(VVI)を計算する
+	void MainLoop();
+	void InitForce();							//外力を0に初期化する
+	void CalcVVI();		//ボルテックス・ボルテックス相互作用(VVI)を計算する
 	void CalcPiningForce();						//ピニング力を計算する
 	void CalcLorentzForce();					//ローレンツ力を計算する	
-	void CalcResistForce(const Paramater& param);						//粘性抵抗による力を計算する
+	void CalcResistForce();						//粘性抵抗による力を計算する
 	void CalcThermalForce();					//サーマル力を計算する
-	void CalcEOM(const Paramater& param);				//運動方程式を解いて位置、速度を更新する
+	void CalcEOM();				//運動方程式を解いて位置、速度を更新する
 	void SaveFile(const std::string& outputFile);
 	
-
+	void TermApp();
 };
 
