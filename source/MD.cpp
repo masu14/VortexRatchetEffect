@@ -1,4 +1,8 @@
 #include "MD.h"
+#include <fstream>
+#include <chrono>
+#include <sstream>
+#include <iomanip>
 
 //コンストラクタ
 MD::MD()
@@ -26,7 +30,7 @@ void MD::Run(Paramater param) {
 		MainLoop();
 	}
 
-	TermApp();
+	//TermApp();
 }
 
 bool MD::InitApp() {
@@ -84,17 +88,23 @@ bool MD::InitPinPos() {
 }
 
 void MD::MainLoop() {
-
-	//VVIを計算
-	CalcVVI();
-	CalcResistForce();
+	std::string currentTime = GetCurrentTimeStr();
+	std::string output_file = "output/test_" + currentTime + ".csv";
+	std::ofstream file(output_file);
+	file << "time,x,y,v_x,v_y\n";
+	for (int i = 0; i < voltexNum; i++) {
+		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() << ","
+			<< voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y();
+	}
 	
-	double time = 0.0;
+	
+	
+	double time = 1000.0;
 	while (time < 100) {
 		CalcEOM();
 		time += 0.01;
 	}
-	
+	file.close();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -221,3 +231,18 @@ void MD::CalcEOM()
 	}
 }
 
+void MD::SaveFile() {
+
+}
+
+std::string MD::GetCurrentTimeStr() {
+	auto now = std::chrono::system_clock::now();
+	auto inTimeT = std::chrono::system_clock::to_time_t(now);
+
+	std::tm buf;
+	localtime_s(&buf, &inTimeT);
+	std::stringstream ss;
+	ss << std::put_time(&buf, "%Y%m%d%H%M%S");
+
+	return ss.str();
+}
