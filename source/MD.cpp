@@ -87,22 +87,31 @@ bool MD::InitPinPos() {
 	return true;
 }
 
+//-------------------------------------------------------------------------------------------------
+//     時間発展させるメインループ
+//-------------------------------------------------------------------------------------------------
 void MD::MainLoop() {
 	std::string currentTime = GetCurrentTimeStr();
 	std::string output_file = "output/test_" + currentTime + ".csv";
 	std::ofstream file(output_file);
-	file << "time,x,y,v_x,v_y\n";
+	file << "time,";
 	for (int i = 0; i < voltexNum; i++) {
-		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() << ","
-			<< voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y();
+		file << "x,y,v_x,v_y,f_x,f_y,";
 	}
+	file << "\n";
 	
-	
-	
-	double time = 1000.0;
-	while (time < 100) {
-		CalcEOM();
-		time += 0.01;
+	double time = 0;
+	while (time < 1) {
+		CalcEOM(time);
+		file << time;
+		for (int i = 0; i < voltexNum; i++) {
+			file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() 
+				 << ","	<< voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y() 
+				 << ","	<< voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
+		}
+		file << "\n";
+		
+		time += dt;
 	}
 	file.close();
 }
@@ -125,20 +134,23 @@ void MD::CalcVVI() {
 			double f0 = 1.0;	//VVIの係数f0
 			
 			Vector2d difPos = voltexs[i].GetPos() - voltexs[j].GetPos();		//ベクトルの差
-
+			std::cout << i << difPos.transpose() << std::endl;
+			
 			//周期的に繰り返すボルテックスのうち、近いボルテックスを計算する
 			//周期的境界条件に対してカットオフ長さが短ければこの計算でもうまくいくが要検討
-			if (difPos.x() < -weight / 2) difPos.x() += weight;
-			if (difPos.x() >  weight / 2) difPos.x() -= weight;
-			if (difPos.y() < -height / 2) difPos.y() += height;
-			if (difPos.y() <  height / 2) difPos.y() -= height;
-
+			if (difPos.x() < -weight / 2) difPos(0) += weight;
+			if (difPos.x() >  weight / 2) difPos(0) -= weight;
+			if (difPos.y() < -height / 2) difPos(1) += height;
+			if (difPos.y() >  height / 2) difPos(1) -= height;
+			
 			//以下、ボルテックス同士の距離がカットオフ長さより長ければ計算しない
 			if (difPos.norm() > cutoff) continue;						
 			
 			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos;	//VVI
+			std::cout << force.transpose() << std::endl;
 			double xForce = force.x();				//VVIのx成分
 			double yForce = force.y();				//VVIのy成分
+			std::cout << xForce << ", " << yForce << std::endl;
 			voltexs[i].AddForce(xForce, yForce);	//作用
 			voltexs[j].AddForce(-xForce, -yForce);	//反作用
 		}
@@ -183,13 +195,15 @@ void MD::CalcThermalForce() {
 //-------------------------------------------------------------------------------------------------
 //		運動方程式を解いてボルテックスの位置、速度を更新する
 //-------------------------------------------------------------------------------------------------
-void MD::CalcEOM() 
+void MD::CalcEOM(double time) 
 {
 	//速度ベルレ法を用いた時間発展でボルテックスの位置、速度を更新する
 	//r(t+dt) = r(t) + v(t)*dt + (1/2)*(F(t)/m)*dt^2
 	//v(t+dt) = v(t) + (1/2)*((F(t)+F(t+dt))/m)*dt
 	{
-		
+		if (time == 0) {
+			return;
+		}
 		double eta = 10.0;							//粘性抵抗η
 
 		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(voltexNum);	//速度v(t)の動的配列、v(t+dt)の計算に使う
@@ -202,13 +216,13 @@ void MD::CalcEOM()
 
 			//位置r(t+dt)を計算し、更新する
 			Vector2d r2 = r1 + v1[i] * dt + (f1[i] / eta) / 2 * dt * dt;	//位置r(t+dt)の計算
-
+			/*
 			//周期的境界条件
-			if (r2.x() < 0)      r2.x() += weight;
-			if (r2.x() > weight) r2.x() -= weight;
-			if (r2.y() < 0)      r2.y() += height;
-			if (r2.y() > height) r2.y() -= height;
-
+			if (r2.x() < 0)      r2(0) += weight;
+			if (r2.x() > weight) r2(0) -= weight;
+			if (r2.y() < 0)      r2(1) += height;
+			if (r2.y() > height) r2(1) -= height;
+			*/
 			voltexs[i].SetPos(r2.x(), r2.y());								//位置r(t+dt)の更新
 		}
 
@@ -217,7 +231,7 @@ void MD::CalcEOM()
 
 		//F(t+dt)の計算
 		CalcVVI();		
-		CalcResistForce();
+		//CalcResistForce();
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
 		for (int i = 0; i < voltexNum; i++) {
@@ -225,7 +239,7 @@ void MD::CalcEOM()
 			Vector2d f2 = voltexs[i].GetForce();
 			Vector2d v2 = v1[i] + (f1[i] + f2) / (2 * eta) * dt;	//速度v(t+dt)の計算
 			
-			voltexs[i].SetForce(f2.x(), f2.y());					//外力F(t+dt)の更新、次の時間発展の位置r(t)計算で使う
+			//voltexs[i].SetForce(f2.x(), f2.y());					//外力F(t+dt)の更新、次の時間発展の位置r(t)計算で使う
 			voltexs[i].SetVelocity(v2.x(), v2.y());					//速度v(t+dt)の更新
 		}
 	}
