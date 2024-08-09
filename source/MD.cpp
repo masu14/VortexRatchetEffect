@@ -60,7 +60,11 @@ bool MD::InitVolPos() {
 		return false;
 	}
 	voltexs = std::make_unique<Voltex[]>(voltexNum);
-	for (int i = 0; i < voltexNum; i++) {
+	double a = 0.25;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 3; j++) {
+			if(i%2==0) voltexs[]
+		}
 		voltexs[i].SetPos((double)i/5.0, 0.0);
 	}
 	return true;
