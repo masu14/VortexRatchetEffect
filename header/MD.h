@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <math.h>			//基本的な関数を扱うための標準ライブラリ
+#include <random>
 #include "Voltex.h"
 #include "PiningSite.h"
 
@@ -19,8 +20,7 @@ struct Paramater {
 	int voltexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
 	double dt = 0.001;			//時間変化量
-	double height = 5;				//シミュレーションボックスの高さ
-	double weight = 5;				//シミュレーションボックスの幅
+	double a = 0.25;
 	int cutoff = 4;		//ボルテックスへ相互作用を及ぼす対象の有効範囲
 };
 
@@ -51,6 +51,7 @@ private:
 	int voltexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
 	double dt = 0.001;			//時間変化量
+	double a = 0.25;
 	double height = 5;				//シミュレーションボックスの高さ
 	double weight = 5;				//シミュレーションボックスの幅
 	int cutoff = 4;		//ボルテックスへ相互作用を及ぼす対象の有効範囲
@@ -78,6 +79,9 @@ private:
 	void CalcEOM(double time);				//運動方程式を解いて位置、速度を更新する
 	std::string GetCurrentTimeStr();		//ファイル出力用、現在時刻を取得し文字列で返す
 	void SaveFile();
+
+	void PlaceTriangle();
+	void PlaceRandom();
 	
 	//void TermApp();
 };

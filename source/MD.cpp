@@ -21,8 +21,9 @@ void MD::Run(Paramater param) {
 	voltexNum		= param.voltexNum;
 	piningSiteNum	= param.piningSiteNum;
 	dt				= param.dt;
-	weight			= param.weight;
-	height			= param.height;
+	a				= param.a;
+	weight			= param.a * 3.0;
+	height			= param.a * 2.0 * sqrt(3.0);
 	cutoff			= param.cutoff;
 
 	if (InitApp())
@@ -38,16 +39,18 @@ bool MD::InitApp() {
 	// ボルテックスの初期化
 	if(!InitVolPos())
 	{
+		std::cout << "!initvoltexpos" << std::endl;
 		return false;
 	}
 	// ピニングサイトの初期化
 	if(!InitPinPos())
 	{
+		std::cout << "!initpinpos" << std::endl;
 		return false;
 	}
 	//ボルテックスへの外力を初期化
 	InitForce();
-
+	//std::cout << "mainroopに入ります" << std::endl;
 	return true;
 }
 
@@ -60,12 +63,12 @@ bool MD::InitVolPos() {
 		return false;
 	}
 	voltexs = std::make_unique<Voltex[]>(voltexNum);
-	double a = 0.25;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 3; j++) {
-			if(i%2==0) voltexs[]
-		}
-		voltexs[i].SetPos((double)i/5.0, 0.0);
+	
+	PlaceRandom();
+	
+	
+	for (int i = 0; i < voltexNum; i++) {
+		std::cout << i << "," << voltexs[i].GetPos().transpose() << std::endl;
 	}
 	return true;
 }
@@ -105,7 +108,7 @@ void MD::MainLoop() {
 	file << "\n";
 	
 	double time = 0;
-	while (time < 1) {
+	while (time < 10) {
 		CalcEOM(time);
 		file << time;
 		for (int i = 0; i < voltexNum; i++) {
@@ -220,13 +223,13 @@ void MD::CalcEOM(double time)
 
 			//位置r(t+dt)を計算し、更新する
 			Vector2d r2 = r1 + v1[i] * dt + (f1[i] / eta) / 2 * dt * dt;	//位置r(t+dt)の計算
-			/*
+			
 			//周期的境界条件
 			if (r2.x() < 0)      r2(0) += weight;
 			if (r2.x() > weight) r2(0) -= weight;
 			if (r2.y() < 0)      r2(1) += height;
 			if (r2.y() > height) r2(1) -= height;
-			*/
+			
 			voltexs[i].SetPos(r2.x(), r2.y());								//位置r(t+dt)の更新
 		}
 
@@ -243,7 +246,7 @@ void MD::CalcEOM(double time)
 			Vector2d f2 = voltexs[i].GetForce();
 			Vector2d v2 = v1[i] + (f1[i] + f2) / (2 * eta) * dt;	//速度v(t+dt)の計算
 			
-			//voltexs[i].SetForce(f2.x(), f2.y());					//外力F(t+dt)の更新、次の時間発展の位置r(t)計算で使う
+			voltexs[i].SetForce(f2.x(), f2.y());					//外力F(t+dt)の更新、次の時間発展の位置r(t)計算で使う
 			voltexs[i].SetVelocity(v2.x(), v2.y());					//速度v(t+dt)の更新
 		}
 	}
@@ -263,4 +266,36 @@ std::string MD::GetCurrentTimeStr() {
 	ss << std::put_time(&buf, "%Y%m%d%H%M%S");
 
 	return ss.str();
+}
+
+void MD::PlaceTriangle() {
+	double y = a * sqrt(3.0) / 4.0;
+	for (int i = 0; i < 4; i++) {
+		double x = a / 4.0;
+		if (i % 2 == 1) x += a / 2.0;
+		for (int j = 0; j < 3; j++) {
+			voltexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
+		}
+	}
+}
+
+void MD::PlaceRandom() {
+
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	double xmin = 0.0;
+	double xmax = weight;
+	double ymin = 0.0;
+	double ymax = height;
+	std::uniform_real_distribution<> xdis(xmin, xmax);
+	std::uniform_real_distribution<> ydis(ymin, ymax);
+	
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 3; j++) {
+			double x = xdis(gen);
+			double y = ydis(gen);
+			voltexs[3 * i + j].SetPos(x, y);
+		}
+		
+	}
 }
