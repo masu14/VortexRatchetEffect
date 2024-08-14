@@ -82,7 +82,6 @@ private:
 
 	void PlaceTriangle();
 	void PlaceRandom();
-	
-	//void TermApp();
+
 };
 

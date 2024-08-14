@@ -18,6 +18,7 @@ MD::~MD() {
 //main.cppでparamaterを設定し、Runメソッドでmd計算を実行する
 void MD::Run(Paramater param) {
 
+	//パラメーターをもとに変数を設定する
 	voltexNum		= param.voltexNum;
 	piningSiteNum	= param.piningSiteNum;
 	dt				= param.dt;
@@ -31,7 +32,6 @@ void MD::Run(Paramater param) {
 		MainLoop();
 	}
 
-	//TermApp();
 }
 
 bool MD::InitApp() {
@@ -64,7 +64,7 @@ bool MD::InitVolPos() {
 	}
 	voltexs = std::make_unique<Voltex[]>(voltexNum);
 	
-	PlaceRandom();
+	PlaceTriangle();
 	
 	
 	for (int i = 0; i < voltexNum; i++) {
@@ -101,24 +101,29 @@ void MD::MainLoop() {
 	std::string currentTime = GetCurrentTimeStr();
 	std::string output_file = "output/test_" + currentTime + ".csv";
 	std::ofstream file(output_file);
-	file << "time,";
+	file << "\n,time,";
 	for (int i = 0; i < voltexNum; i++) {
 		file << "x,y,v_x,v_y,f_x,f_y,";
 	}
 	file << "\n";
 	
 	double time = 0;
-	while (time < 10) {
+	double maxtime = 10.0;
+	while (time <= maxtime) {
 		CalcEOM(time);
-		file << time;
+		file << "," << time;
 		for (int i = 0; i < voltexNum; i++) {
-			file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() 
-				 << ","	<< voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y() 
-				 << ","	<< voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
+			file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y()
+				<< "," << voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y()
+				<< "," << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
 		}
 		file << "\n";
-		
+
 		time += dt;
+	}
+	file << "\n,x,y\n";
+	for (int i = 0; i < voltexNum; i++) {
+		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() << "\n";
 	}
 	file.close();
 }
@@ -273,6 +278,7 @@ void MD::PlaceTriangle() {
 	for (int i = 0; i < 4; i++) {
 		double x = a / 4.0;
 		if (i % 2 == 1) x += a / 2.0;
+		if (i == 1) x += 0.1;
 		for (int j = 0; j < 3; j++) {
 			voltexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
 		}
