@@ -101,30 +101,18 @@ void MD::MainLoop() {
 	std::string currentTime = GetCurrentTimeStr();
 	std::string output_file = "output/test_" + currentTime + ".csv";
 	std::ofstream file(output_file);
-	file << "\n,time,";
-	for (int i = 0; i < voltexNum; i++) {
-		file << "x,y,v_x,v_y,f_x,f_y,";
-	}
-	file << "\n";
+
+	WriteLabel(file);
 	
 	double time = 0;
-	double maxtime = 10.0;
+	double maxtime = 1.0;
 	while (time <= maxtime) {
 		CalcEOM(time);
-		file << "," << time;
-		for (int i = 0; i < voltexNum; i++) {
-			file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y()
-				<< "," << voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y()
-				<< "," << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
-		}
-		file << "\n";
-
+		WriteAll(file, time);
 		time += dt;
 	}
-	file << "\n,x,y\n";
-	for (int i = 0; i < voltexNum; i++) {
-		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() << "\n";
-	}
+	
+	WritePos(file);
 	file.close();
 }
 
@@ -181,8 +169,10 @@ void MD::CalcPiningForce() {
 //		ローレンツ力を計算する	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce() {
-	double force = 5;
-	
+	double force = 1.0;
+	for (int i = 0; i < voltexNum; i++) {
+		voltexs[i].AddForce(force, 0.0);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -243,7 +233,8 @@ void MD::CalcEOM(double time)
 
 		//F(t+dt)の計算
 		CalcVVI();		
-		//CalcResistForce();
+		CalcLorentzForce();
+		CalcResistForce();
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
 		for (int i = 0; i < voltexNum; i++) {
@@ -257,10 +248,43 @@ void MD::CalcEOM(double time)
 	}
 }
 
-void MD::SaveFile() {
-
+//-------------------------------------------------------------------------------------------------
+//    csvファイル書き込み用、ラベルを記載する
+//-------------------------------------------------------------------------------------------------
+void MD::WriteLabel(std::ofstream& file) {
+	file << "\n,time,";
+	for (int i = 0; i < voltexNum; i++) {
+		file << "x,y,v_x,v_y,f_x,f_y,";
+	}
+	file << "\n";
 }
 
+//-------------------------------------------------------------------------------------------------
+//     csvファイル書き込み用、各時刻の位置、速度、外力をファイルに書き込む
+//-------------------------------------------------------------------------------------------------
+void MD::WriteAll(std::ofstream& file, double time) {
+	file << "," << time;
+	for (int i = 0; i < voltexNum; i++) {
+		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y()
+			<< "," << voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y()
+			<< "," << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
+	}
+	file << "\n";
+}
+
+//------------------------------------------------------------------------------------------------
+//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む
+//------------------------------------------------------------------------------------------------
+void MD::WritePos(std::ofstream& file) {
+	file << "\n,x,y\n";
+	for (int i = 0; i < voltexNum; i++) {
+		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() << "\n";
+	}
+}
+
+//------------------------------------------------------------------------------------------------
+//    csvファイル生成用、現在時刻を取得する
+//------------------------------------------------------------------------------------------------
 std::string MD::GetCurrentTimeStr() {
 	auto now = std::chrono::system_clock::now();
 	auto inTimeT = std::chrono::system_clock::to_time_t(now);
@@ -268,23 +292,30 @@ std::string MD::GetCurrentTimeStr() {
 	std::tm buf;
 	localtime_s(&buf, &inTimeT);
 	std::stringstream ss;
-	ss << std::put_time(&buf, "%Y%m%d%H%M%S");
+	ss << std::put_time(&buf, "%Y%m%d%H%M%S");	//年月日時分秒まで取得する
 
-	return ss.str();
+	return ss.str();	//取得した時間を文字列に変換して返す
 }
 
+//------------------------------------------------------------------------------------------------
+//    ボルテックスの初期配置を三角格子にする
+//	  ボルテックスの数が6の倍数のときに使うようにする
+//------------------------------------------------------------------------------------------------
 void MD::PlaceTriangle() {
 	double y = a * sqrt(3.0) / 4.0;
 	for (int i = 0; i < 4; i++) {
 		double x = a / 4.0;
 		if (i % 2 == 1) x += a / 2.0;
-		if (i == 1) x += 0.1;
+		//if (i == 1) x += 0.01;	//ちょっとずらしてみる
 		for (int j = 0; j < 3; j++) {
 			voltexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
 		}
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
+//    ボルテックスの初期配置をランダムにする
+//-----------------------------------------------------------------------------------------------
 void MD::PlaceRandom() {
 
 	std::random_device rd;
