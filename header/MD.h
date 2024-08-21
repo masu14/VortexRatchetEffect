@@ -57,7 +57,7 @@ private:
 	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
 
 	unique_ptr<Voltex[]> voltexs;			//ボルテックスのインスタンス、　voltexNum個の配列として扱う
-	unique_ptr<PiningSite[]> piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
+	unique_ptr<PiningSiteCircle[]> piningSites;	//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
 	bool noPiningSite = false;				//ピニングサイト無しの場合のフラグ
 	double lambda = 1.0;
 

@@ -86,9 +86,15 @@ bool MD::InitPinPos() {
 		noPiningSite = true;
 	}
 	
-	piningSites = std::make_unique<PiningSite[]>(piningSiteNum);
+	piningSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
 	for (int i = 0; i < piningSiteNum; i++) {
-		piningSites[i].SetPos(i, i);
+		double x = voltexs[i].GetPos().x();
+		double y = voltexs[i].GetPos().y();
+		piningSites[i].SetPos(x, y);
+		piningSites[i].SetR(a * (double)(i+1.0) / 16.0);
+		std::cout << "piningSite[" << i << "] pos" << piningSites[i].GetPos().transpose() << std::endl;
+		std::cout << "piningSite[" << i << "] r  " << piningSites[i].GetR() << std::endl;
+
 	}
 
 	return true;
@@ -146,7 +152,7 @@ void MD::CalcVVI() {
 			//以下、ボルテックス同士の距離がカットオフ長さより長ければ計算しない
 			if (difPos.norm() > cutoff) continue;						
 			
-			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos;	//VVI
+			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos;	//VVIの式を用いた
 			std::cout << force.transpose() << std::endl;
 			double xForce = force.x();				//VVIのx成分
 			double yForce = force.y();				//VVIのy成分
@@ -162,7 +168,27 @@ void MD::CalcVVI() {
 //		ピニング力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcPiningForce() {
+	double kp = 1.0;	//kpはピニング力の大きさを決める係数
+	double lp = 1.0;	//lpはピニングサイトにおける常伝導から超伝導への回復長
 	
+	for (int i = 0; i < voltexNum; i++) {
+		for (int j = 0; j < piningSiteNum; j++) {
+			Vector2d difPos = voltexs[i].GetPos() - piningSites[j].GetPos();
+
+			if (difPos.x() < -weight / 2) difPos(0) += weight;
+			if (difPos.x() > weight / 2) difPos(0) -= weight;
+			if (difPos.y() < -height / 2) difPos(1) += height;
+			if (difPos.y() > height / 2) difPos(1) -= height;
+
+			if (difPos.norm() < piningSites[j].GetR()) continue;
+			if (difPos.norm() > cutoff) continue;
+
+			Vector2d force = -kp / pow(cosh((difPos.norm() - piningSites[j].GetR()) / lp), 2.0) * difPos;
+			double xForce = force.x();
+			double yForce = force.y();
+			voltexs[i].AddForce(xForce, yForce);
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -232,8 +258,9 @@ void MD::CalcEOM(double time)
 		InitForce();	//ボルテックスへの外力を初期化
 
 		//F(t+dt)の計算
-		CalcVVI();		
-		CalcLorentzForce();
+		CalcVVI();
+		//CalcPiningForce();
+		//CalcLorentzForce();
 		CalcResistForce();
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
@@ -303,7 +330,7 @@ std::string MD::GetCurrentTimeStr() {
 //------------------------------------------------------------------------------------------------
 void MD::PlaceTriangle() {
 	double y = a * sqrt(3.0) / 4.0;
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 2; i++) { //マジックナンバー、ボルテックスの数変えたらやばい
 		double x = a / 4.0;
 		if (i % 2 == 1) x += a / 2.0;
 		//if (i == 1) x += 0.01;	//ちょっとずらしてみる
