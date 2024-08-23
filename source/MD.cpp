@@ -3,6 +3,7 @@
 #include <chrono>
 #include <sstream>
 #include <iomanip>
+#include <filesystem>
 
 //コンストラクタ
 MD::MD()
@@ -104,10 +105,10 @@ bool MD::InitPinPos() {
 //     時間発展させるメインループ
 //-------------------------------------------------------------------------------------------------
 void MD::MainLoop() {
-	std::string currentTime = GetCurrentTimeStr();
-	std::string output_file = "output/test_" + currentTime + ".csv";
+	std::string dirName = "output/" + GetCurrentTimeStr();
+	CreateDir(dirName);
+	std::string output_file = dirName + "/test.csv";
 	std::ofstream file(output_file);
-
 	WriteLabel(file);
 	
 	double time = 0;
@@ -319,9 +320,18 @@ std::string MD::GetCurrentTimeStr() {
 	std::tm buf;
 	localtime_s(&buf, &inTimeT);
 	std::stringstream ss;
-	ss << std::put_time(&buf, "%Y%m%d%H%M%S");	//年月日時分秒まで取得する
+	ss << std::put_time(&buf, "%Y%m%d");	//年月日まで取得する
 
 	return ss.str();	//取得した時間を文字列に変換して返す
+}
+
+//------------------------------------------------------------------------------------------------
+//    
+//------------------------------------------------------------------------------------------------
+void MD::CreateDir(std::string dirName) {
+	if (!std::filesystem::exists(dirName)) {
+		std::filesystem::create_directories(dirName);
+	}
 }
 
 //------------------------------------------------------------------------------------------------
@@ -330,7 +340,7 @@ std::string MD::GetCurrentTimeStr() {
 //------------------------------------------------------------------------------------------------
 void MD::PlaceTriangle() {
 	double y = a * sqrt(3.0) / 4.0;
-	for (int i = 0; i < 2; i++) { //マジックナンバー、ボルテックスの数変えたらやばい
+	for (int i = 0; i < 4; i++) { //マジックナンバー、ボルテックスの数変えたらやばい
 		double x = a / 4.0;
 		if (i % 2 == 1) x += a / 2.0;
 		//if (i == 1) x += 0.01;	//ちょっとずらしてみる

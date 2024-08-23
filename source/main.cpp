@@ -7,7 +7,7 @@ int main() {
 		
 		//パラメーターの設定
 		Paramater paramater = {};
-		paramater.voltexNum = 6;		//ボルテックスの数
+		paramater.voltexNum = 12;		//ボルテックスの数
 		paramater.piningSiteNum = 3;	//ピニングサイトの数
 		paramater.dt = 0.001;			//時間変化量
 		paramater.a = 0.25;				//初期のボルテックスの格子間隔

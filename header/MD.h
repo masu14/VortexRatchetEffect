@@ -11,6 +11,7 @@ template<typename T> using unique_ptr = std::unique_ptr<T>;		//’·‚­‚Äç’·‚È‚Ì‚Å
 //ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾
 class Voltex;		
 class PiningSite;
+class PiningSiteCircle;
 
 /// <summary>
 /// Paramater\‘¢‘Ì
@@ -56,9 +57,9 @@ private:
 	double weight = 5;			//ƒVƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“ƒ{ƒbƒNƒX‚Ì•
 	int cutoff = 4;				//ƒ{ƒ‹ƒeƒbƒNƒX‚Ö‘ŠŒİì—p‚ğ‹y‚Ú‚·‘ÎÛ‚Ì—LŒø”ÍˆÍ
 
-	unique_ptr<Voltex[]> voltexs;			//ƒ{ƒ‹ƒeƒbƒNƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒXA@voltexNumŒÂ‚Ì”z—ñ‚Æ‚µ‚Äˆµ‚¤
-	unique_ptr<PiningSiteCircle[]> piningSites;	//ƒsƒjƒ“ƒOƒTƒCƒg‚ÌƒCƒ“ƒXƒ^ƒ“ƒXApiningSiteNumŒÂ‚Ì”z—ñ‚Æ‚µ‚Äˆµ‚¤
-	bool noPiningSite = false;				//ƒsƒjƒ“ƒOƒTƒCƒg–³‚µ‚Ìê‡‚Ìƒtƒ‰ƒO
+	unique_ptr<Voltex[]> voltexs;					//ƒ{ƒ‹ƒeƒbƒNƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒXA@voltexNumŒÂ‚Ì”z—ñ‚Æ‚µ‚Äˆµ‚¤
+	unique_ptr<PiningSiteCircle[]> piningSites;		//ƒsƒjƒ“ƒOƒTƒCƒg‚ÌƒCƒ“ƒXƒ^ƒ“ƒXApiningSiteNumŒÂ‚Ì”z—ñ‚Æ‚µ‚Äˆµ‚¤
+	bool noPiningSite = false;						//ƒsƒjƒ“ƒOƒTƒCƒg–³‚µ‚Ìê‡‚Ìƒtƒ‰ƒO
 	double lambda = 1.0;
 
 	//=======================================================================================
@@ -79,7 +80,9 @@ private:
 	void CalcThermalForce();				//ƒT[ƒ}ƒ‹—Í‚ğŒvZ‚·‚é
 	void CalcEOM(double time);				//‰^“®•û’ö®‚ğ‰ğ‚¢‚ÄˆÊ’uA‘¬“x‚ğXV‚·‚é
 
-	std::string GetCurrentTimeStr();					//csvƒtƒ@ƒCƒ‹ì¬—pAŒ»İ‚ğæ“¾‚µ•¶š—ñ‚Å•Ô‚·
+	
+	std::string GetCurrentTimeStr();					//csvƒtƒ@ƒCƒ‹ì¬—pA¡“ú‚Ì“ú•t‚ğæ“¾‚µ•¶š—ñ‚Å•Ô‚·
+	void CreateDir(std::string dirName);						//csvƒtƒ@ƒCƒ‹ì¬—pA¡“ú‚Ì“ú•t‚ÌƒfƒBƒŒƒNƒgƒŠ‚ğì¬
 	void WriteLabel(std::ofstream& file);				//csvƒtƒ@ƒCƒ‹‘‚«‚İ—pAƒ‰ƒxƒ‹‚ğ‹LÚ‚·‚é
 	void WriteAll(std::ofstream& file, double time);	//csvƒtƒ@ƒCƒ‹‘‚«‚İ—pAƒ{ƒ‹ƒeƒbƒNƒX‚ÌˆÊ’uA‘¬“xAŠO—Í‚ğ‘‚«‚Ş
 	void WritePos(std::ofstream& file);					//csvƒtƒ@ƒCƒ‹‘‚«‚İ—pAƒ{ƒ‹ƒeƒbƒNƒX‚ÌˆÊ’u‚ğ‘‚«‚Ş
