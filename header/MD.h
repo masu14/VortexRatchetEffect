@@ -4,6 +4,7 @@
 #include <random>
 #include "Voltex.h"
 #include "PiningSite.h"
+#include "FileHandler.h"
 
 template<typename T> using unique_ptr = std::unique_ptr<T>;		//長くて冗長なので「std::」を省略してるだけ
 
@@ -82,7 +83,8 @@ private:
 
 	
 	std::string GetCurrentTimeStr();					//csvファイル作成用、今日の日付を取得し文字列で返す
-	void CreateDir(std::string dirName);						//csvファイル作成用、今日の日付のディレクトリを作成
+	void CreateDir(std::string dirName);					//csvファイル作成用、今日の日付のディレクトリを作成
+	std::string CreateFilePos(std::string dir);			//csvファイル作成用、位置を書き込むファイル
 	void WriteLabel(std::ofstream& file);				//csvファイル書き込み用、ラベルを記載する
 	void WriteAll(std::ofstream& file, double time);	//csvファイル書き込み用、ボルテックスの位置、速度、外力を書き込む
 	void WritePos(std::ofstream& file);					//csvファイル書き込み用、ボルテックスの位置を書き込む

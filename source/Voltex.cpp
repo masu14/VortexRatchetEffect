@@ -10,7 +10,7 @@ Voltex::~Voltex() {
 	/* DO NOTHING */
 }
 
-Vector2d Voltex::GetPos() {
+Vector2d Voltex::GetPos() const{
 	return position;
 }
 

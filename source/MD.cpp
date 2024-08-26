@@ -2,8 +2,9 @@
 #include <fstream>
 #include <chrono>
 #include <sstream>
-#include <iomanip>
-#include <filesystem>
+#include <iomanip>		//std::setw, std::setfill
+#include <filesystem>	//
+#include <regex>		//正規表現
 
 //コンストラクタ
 MD::MD()
@@ -105,21 +106,28 @@ bool MD::InitPinPos() {
 //     時間発展させるメインループ
 //-------------------------------------------------------------------------------------------------
 void MD::MainLoop() {
+	FileHandler::index = 0;
+	//今日の日付のディレクトリを作成
+	
 	std::string dirName = "output/" + GetCurrentTimeStr();
 	CreateDir(dirName);
-	std::string output_file = dirName + "/test.csv";
-	std::ofstream file(output_file);
-	WriteLabel(file);
+
+	//出力ファイルの作成
+	FileHandler filePos;
+	std::string outputPos = CreateFilePos(dirName);	//エラーでます、ofstreamの処理が悪いと思われる
+	filePos.SetName(outputPos);
+
+	std::ofstream file(filePos.GetName());
+	filePos.WriteLabel(file, voltexNum);
 	
-	double time = 0;
+	double time = 10;
 	double maxtime = 1.0;
 	while (time <= maxtime) {
 		CalcEOM(time);
-		WriteAll(file, time);
+		filePos.WritePos(file, time, voltexs, voltexNum);
 		time += dt;
 	}
 	
-	WritePos(file);
 	file.close();
 }
 
@@ -326,7 +334,7 @@ std::string MD::GetCurrentTimeStr() {
 }
 
 //------------------------------------------------------------------------------------------------
-//    
+//    outputディレクトリに今日の日付のディレクトリがなかった場合、ディレクトリを作成する
 //------------------------------------------------------------------------------------------------
 void MD::CreateDir(std::string dirName) {
 	if (!std::filesystem::exists(dirName)) {
@@ -334,6 +342,32 @@ void MD::CreateDir(std::string dirName) {
 	}
 }
 
+//------------------------------------------------------------------------------------------------
+//    ボルテックスの位置を出力するファイルを作成する
+//------------------------------------------------------------------------------------------------
+std::string MD::CreateFilePos(std::string dirName) {
+	int maxNum = 0;
+	std::regex re(R"((\d{3})position.csv)");	// "(数字3桁)position"にマッチする正規表現
+
+	for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
+		std::string filename = entry.path().filename().string();
+		std::smatch match;
+
+		//正規表現で"(数字3桁)position"にマッチするファイルを探す
+		if (std::regex_match(filename, match, re)) {
+			int num = std::stoi(match[1].str());
+			if (num > maxNum) {
+				maxNum = num;
+			}
+		}
+	}
+	int newNum = maxNum + 1;
+	std::ostringstream oss;
+	oss << std::setw(3) << std::setfill('0') << newNum << "position.csv";
+
+	std::string fileName = dirName + "/" + oss.str();
+	return fileName;
+}
 //------------------------------------------------------------------------------------------------
 //    ボルテックスの初期配置を三角格子にする
 //	  ボルテックスの数が6の倍数のときに使うようにする

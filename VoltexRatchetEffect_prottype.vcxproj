@@ -132,11 +132,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="header\FileHandler.h" />
     <ClInclude Include="header\MD.h" />
     <ClInclude Include="header\PiningSite.h" />
     <ClInclude Include="header\Voltex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\FileHandler.cpp" />
     <ClCompile Include="source\MD.cpp" />
     <ClCompile Include="source\PiningSite.cpp" />
     <ClCompile Include="source\Voltex.cpp" />

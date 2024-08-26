@@ -24,6 +24,9 @@
     <ClInclude Include="header\PiningSite.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="header\FileHandler.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Voltex.cpp">
@@ -36,6 +39,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\PiningSite.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\FileHandler.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

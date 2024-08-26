@@ -32,7 +32,7 @@ public:
 	Voltex();		//コンストラクタでボルテックスの速度を初期化する
 	~Voltex();
 	
-	Vector2d GetPos();
+	Vector2d GetPos() const;
 	Vector2d GetVelocity();
 	Vector2d GetForce();
 
