@@ -7,6 +7,13 @@
 #include <regex>		//正規表現
 #include "Voltex.h"
 
+enum class OutputType
+{
+	position,
+	velocity,
+	force
+};
+
 template<typename T> using unique_ptr = std::unique_ptr<T>;
 
 class Voltex;
@@ -24,26 +31,33 @@ public:
 	//=======================================================================================
 	FileHandler();
 	~FileHandler();
+	static void SetIndex(const std::string& dirName);
+	static std::string GetCurrentTimeStr();
+	static void CreateDir(std::string dirName);
 
-	void SetIndex(std::string dirName);
-	void SetName(std::string fileName);
+	void CreateFile(std::string dirName, OutputType type);
 
 	int  GetIndex() const;
 	std::string GetName() const;
 
-	std::string CreateFilePos(std::string dir);			//csvファイル作成用、位置を書き込むファイル
-	void WriteLabel(std::ofstream& file, int voltexNum);//csvファイル書き込み用、ラベルを記載する
-	void WriteAll(std::ofstream& file, double time);	//csvファイル書き込み用、ボルテックスの位置、速度、外力を書き込む
-	void WritePos(std::ofstream& file, double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
+	
+	void WriteLabel(int voltexNum);//csvファイル書き込み用、ラベルを記載する
+	
+	void WritePos(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
+	void WriteVelocity(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
+	void WriteForce(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
 
 private:
 	//=======================================================================================
 	// private variables.
 	//=======================================================================================
 	std::string fileName;
+	std::ofstream file;
 
 	//=======================================================================================
 	// private methods.
 	//=======================================================================================
-						//csvファイル書き込み用、ボルテックスの位置を書き込む
+	std::string CreatePosFile(std::string dir);			//csvファイル作成用、位置を書き込むファイル
+	std::string CreateVelFile(std::string dir);			//csvファイル作成用、速度を書き込むファイル
+	std::string CreateForceFile(std::string dir);		//csvファイル作成用、外力を書き込むファイル
 };

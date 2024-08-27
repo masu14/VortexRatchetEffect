@@ -1,10 +1,4 @@
 #include "MD.h"
-#include <fstream>
-#include <chrono>
-#include <sstream>
-#include <iomanip>		//std::setw, std::setfill
-#include <filesystem>	//
-#include <regex>		//正規表現
 
 //コンストラクタ
 MD::MD()
@@ -106,29 +100,40 @@ bool MD::InitPinPos() {
 //     時間発展させるメインループ
 //-------------------------------------------------------------------------------------------------
 void MD::MainLoop() {
-	FileHandler::index = 0;
+
 	//今日の日付のディレクトリを作成
-	
-	std::string dirName = "output/" + GetCurrentTimeStr();
-	CreateDir(dirName);
+	std::string dirName = "output/" + FileHandler::GetCurrentTimeStr();
+	FileHandler::CreateDir(dirName);
 
 	//出力ファイルの作成
+	FileHandler::SetIndex(dirName);
 	FileHandler filePos;
-	std::string outputPos = CreateFilePos(dirName);	//エラーでます、ofstreamの処理が悪いと思われる
-	filePos.SetName(outputPos);
-
-	std::ofstream file(filePos.GetName());
-	filePos.WriteLabel(file, voltexNum);
+	FileHandler fileVelocity;
+	FileHandler fileForce;
 	
+	filePos.     CreateFile(dirName, OutputType::position);
+	fileVelocity.CreateFile(dirName, OutputType::velocity);
+	fileForce.   CreateFile(dirName, OutputType::force);
+	
+	//ラベルの書き込み、簡易的なもの
+	filePos.     WriteLabel(voltexNum);
+	fileVelocity.WriteLabel(voltexNum);
+	fileForce.   WriteLabel(voltexNum);
+	
+	//メインループ
 	double time = 10;
 	double maxtime = 1.0;
 	while (time <= maxtime) {
+		//運動方程式を解く
 		CalcEOM(time);
-		filePos.WritePos(file, time, voltexs, voltexNum);
+
+		//計算結果をファイルに書き込む
+		filePos.     WritePos(time, voltexs, voltexNum);
+		fileVelocity.WriteVelocity(time, voltexs, voltexNum);
+		fileForce.   WriteForce(time, voltexs, voltexNum);
+
 		time += dt;
 	}
-	
-	file.close();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -284,90 +289,7 @@ void MD::CalcEOM(double time)
 	}
 }
 
-//-------------------------------------------------------------------------------------------------
-//    csvファイル書き込み用、ラベルを記載する
-//-------------------------------------------------------------------------------------------------
-void MD::WriteLabel(std::ofstream& file) {
-	file << "\n,time,";
-	for (int i = 0; i < voltexNum; i++) {
-		file << "x,y,v_x,v_y,f_x,f_y,";
-	}
-	file << "\n";
-}
 
-//-------------------------------------------------------------------------------------------------
-//     csvファイル書き込み用、各時刻の位置、速度、外力をファイルに書き込む
-//-------------------------------------------------------------------------------------------------
-void MD::WriteAll(std::ofstream& file, double time) {
-	file << "," << time;
-	for (int i = 0; i < voltexNum; i++) {
-		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y()
-			<< "," << voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y()
-			<< "," << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
-	}
-	file << "\n";
-}
-
-//------------------------------------------------------------------------------------------------
-//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む
-//------------------------------------------------------------------------------------------------
-void MD::WritePos(std::ofstream& file) {
-	file << "\n,x,y\n";
-	for (int i = 0; i < voltexNum; i++) {
-		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() << "\n";
-	}
-}
-
-//------------------------------------------------------------------------------------------------
-//    csvファイル生成用、現在時刻を取得する
-//------------------------------------------------------------------------------------------------
-std::string MD::GetCurrentTimeStr() {
-	auto now = std::chrono::system_clock::now();
-	auto inTimeT = std::chrono::system_clock::to_time_t(now);
-
-	std::tm buf;
-	localtime_s(&buf, &inTimeT);
-	std::stringstream ss;
-	ss << std::put_time(&buf, "%Y%m%d");	//年月日まで取得する
-
-	return ss.str();	//取得した時間を文字列に変換して返す
-}
-
-//------------------------------------------------------------------------------------------------
-//    outputディレクトリに今日の日付のディレクトリがなかった場合、ディレクトリを作成する
-//------------------------------------------------------------------------------------------------
-void MD::CreateDir(std::string dirName) {
-	if (!std::filesystem::exists(dirName)) {
-		std::filesystem::create_directories(dirName);
-	}
-}
-
-//------------------------------------------------------------------------------------------------
-//    ボルテックスの位置を出力するファイルを作成する
-//------------------------------------------------------------------------------------------------
-std::string MD::CreateFilePos(std::string dirName) {
-	int maxNum = 0;
-	std::regex re(R"((\d{3})position.csv)");	// "(数字3桁)position"にマッチする正規表現
-
-	for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
-		std::string filename = entry.path().filename().string();
-		std::smatch match;
-
-		//正規表現で"(数字3桁)position"にマッチするファイルを探す
-		if (std::regex_match(filename, match, re)) {
-			int num = std::stoi(match[1].str());
-			if (num > maxNum) {
-				maxNum = num;
-			}
-		}
-	}
-	int newNum = maxNum + 1;
-	std::ostringstream oss;
-	oss << std::setw(3) << std::setfill('0') << newNum << "position.csv";
-
-	std::string fileName = dirName + "/" + oss.str();
-	return fileName;
-}
 //------------------------------------------------------------------------------------------------
 //    ボルテックスの初期配置を三角格子にする
 //	  ボルテックスの数が6の倍数のときに使うようにする

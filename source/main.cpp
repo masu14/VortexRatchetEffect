@@ -2,6 +2,8 @@
 #include "Voltex.h"
 #include "MD.h"
 
+int FileHandler::index = 0;
+
 int main() {
 	{
 		
@@ -15,6 +17,8 @@ int main() {
 		//分子動力学法の実行
 		unique_ptr<MD> md = std::make_unique<MD>();
 		md->Run(paramater);
+
+		
 	}
 	
 	return 0;

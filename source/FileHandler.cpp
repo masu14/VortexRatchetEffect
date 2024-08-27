@@ -3,48 +3,89 @@
 
 //コンストラクタ
 FileHandler::FileHandler()
-{
-	fileName = "";
-}
+	:fileName("")
+{ /* DO_NOTHING */ }
 
 //デストラクタ
 FileHandler::~FileHandler()
 {
-	/* DO_NOTHING */
+	if (file.is_open()) {
+		file.close();
+	}
+}
+
+//----------------------------------------------------------------------------------------------
+//    ディレクトリの名前を受け取り、ファイルを作成する
+//    OutputType列挙体で出力するデータを指定し、それに応じた名前を点ける
+//----------------------------------------------------------------------------------------------
+void FileHandler::CreateFile(std::string dirName, OutputType type)
+{
+	if (type == OutputType::position) fileName = CreatePosFile(dirName);
+	if (type == OutputType::velocity) fileName = CreateVelFile(dirName);
+	if (type == OutputType::force)    fileName = CreateForceFile(dirName);
+	file.open(fileName);
 }
 
 //----------------------------------------------------------------------------------------------
 //    ファイル名のナンバリングを設定する
 //    他のファイルのナンバリングを確認し、それより1だけ大きくした値を設定する
+//    std::stoiで文字列をint型の値に変換できなかった時、例外を投げる
 //----------------------------------------------------------------------------------------------
-void FileHandler::SetIndex(std::string dirName)
+void FileHandler::SetIndex(const std::string& dirName)
 {
 	int maxNum = 0;
-	std::regex re(R"(\d{3}[a-zA-Z]+\.[a-zA-Z]+)");	//"(数字3桁)英字列.csvにマッチする正規表現
+	std::regex re(R"(\d{3})");	//"(数字3桁)の正規表現
 
-	for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
-		std::string fileName = entry.path().filename().string();
-		std::smatch match;
+	try {
+		//dirName内のファイルで3桁の数字で始まるものを探し、最も大きい数字を記録する
+		for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
+			std::string fileName = entry.path().filename().string();
+			std::smatch match;
 
-		//正規表現で"(数字3桁)英字列.csvにマッチするファイルを探す
-		if (std::regex_match(fileName, match, re)) {
-			int num = std::stoi(match[1].str());
+			//正規表現で"(数字3桁)英字列.csvにマッチするファイルを探す
+			if (std::regex_search(fileName, match, re)) {
+				int num = std::stoi(match[0].str());
 
-			//一番大きいナンバリングの数字を保持しておく
-			if (num > maxNum) {
-				maxNum = num;
+				//一番大きいナンバリングの数字を保持しておく
+				if (num > maxNum) {
+					maxNum = num;
+				}
 			}
 		}
 	}
+	catch (const std::exception& e) {
+		std::cerr << "An error occurred: " << e.what() << std::endl;
+		std::abort();
+	}
+	
 	index = maxNum + 1;	//一番大きいナンバリングに1を足してindexに入れておく
+	
 }
 
-//----------------------------------------------------------------------------------------------
-//    ファイル名を設定する
-//----------------------------------------------------------------------------------------------
-void FileHandler::SetName(std::string name)
+//------------------------------------------------------------------------------------------------
+//    csvファイル生成用、現在時刻を取得する
+//------------------------------------------------------------------------------------------------
+std::string FileHandler::GetCurrentTimeStr()
 {
-	fileName = name;
+	auto now = std::chrono::system_clock::now();
+	auto inTimeT = std::chrono::system_clock::to_time_t(now);
+
+	std::tm buf;
+	localtime_s(&buf, &inTimeT);
+	std::stringstream ss;
+	ss << std::put_time(&buf, "%Y%m%d");	//年月日まで取得する
+
+	return ss.str();	//取得した時間を文字列に変換して返す
+}
+
+//------------------------------------------------------------------------------------------------
+//    outputディレクトリに今日の日付のディレクトリがなかった場合、ディレクトリを作成する
+//------------------------------------------------------------------------------------------------
+void FileHandler::CreateDir(std::string dirName)
+{
+	if (!std::filesystem::exists(dirName)) {
+		std::filesystem::create_directories(dirName);
+	}
 }
 
 //----------------------------------------------------------------------------------------------
@@ -66,7 +107,7 @@ std::string FileHandler::GetName() const
 //----------------------------------------------------------------------------------------------
 //    ボルテックスの位置を出力するファイルを作成する
 //----------------------------------------------------------------------------------------------
-std::string FileHandler::CreateFilePos(std::string dirName)
+std::string FileHandler::CreatePosFile(std::string dirName)
 {
 	std::ostringstream oss;
 	oss << std::setw(3) << std::setfill('0') << index << "position.csv";
@@ -76,9 +117,33 @@ std::string FileHandler::CreateFilePos(std::string dirName)
 }
 
 //----------------------------------------------------------------------------------------------
+//    ボルテックスの速度を出力するファイルを作成する
+//----------------------------------------------------------------------------------------------
+std::string FileHandler::CreateVelFile(std::string dirName)
+{
+	std::ostringstream oss;
+	oss << std::setw(3) << std::setfill('0') << index << "velocity.csv";
+
+	std::string fileName = dirName + "/" + oss.str();
+	return fileName;
+}
+
+//----------------------------------------------------------------------------------------------
+//    ボルテックスの外力を出力するファイルを作成する
+//----------------------------------------------------------------------------------------------
+std::string FileHandler::CreateForceFile(std::string dirName)
+{
+	std::ostringstream oss;
+	oss << std::setw(3) << std::setfill('0') << index << "force.csv";
+
+	std::string fileName = dirName + "/" + oss.str();
+	return fileName;
+}
+
+//----------------------------------------------------------------------------------------------
 //     csvファイル書き込み用、ラベルを記載する
 //----------------------------------------------------------------------------------------------
-void FileHandler::WriteLabel(std::ofstream& file, int voltexNum)
+void FileHandler::WriteLabel(int voltexNum)
 {
 	file << "time";
 	for (int i = 0; i < voltexNum; i++) {
@@ -88,21 +153,36 @@ void FileHandler::WriteLabel(std::ofstream& file, int voltexNum)
 }
 
 //----------------------------------------------------------------------------------------------
-//    
+//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む
 //----------------------------------------------------------------------------------------------
-void FileHandler::WriteAll(std::ofstream& file, double time)
+void FileHandler::WritePos(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
 {
-
+	file << time;
+	for (int i = 0; i < voltexNum; i++) {
+		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y();
+	}
+	file << "\n";
+}
+//----------------------------------------------------------------------------------------------
+//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む
+//----------------------------------------------------------------------------------------------
+void FileHandler::WriteVelocity(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+{
+	file << time;
+	for (int i = 0; i < voltexNum; i++) {
+		file << "," << voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y();
+	}
+	file << "\n";
 }
 
 //----------------------------------------------------------------------------------------------
 //    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む
 //----------------------------------------------------------------------------------------------
-void FileHandler::WritePos(std::ofstream& file, double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+void FileHandler::WriteForce(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
 {
 	file << time;
 	for (int i = 0; i < voltexNum; i++) {
-		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y();
+		file << "," << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
 	}
 	file << "\n";
 }
