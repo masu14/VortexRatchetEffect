@@ -20,9 +20,9 @@ FileHandler::~FileHandler()
 //----------------------------------------------------------------------------------------------
 void FileHandler::CreateFile(std::string dirName, OutputType type)
 {
-	if (type == OutputType::position) fileName = CreatePosFile(dirName);
-	if (type == OutputType::velocity) fileName = CreateVelFile(dirName);
-	if (type == OutputType::force)    fileName = CreateForceFile(dirName);
+	if (type == OutputType::position) fileName = CreatePosFile(dirName);	//位置データファイル作成
+	if (type == OutputType::velocity) fileName = CreateVelFile(dirName);	//速度データファイル作成
+	if (type == OutputType::force)    fileName = CreateForceFile(dirName);	//外力データファイル作成
 	file.open(fileName);
 }
 
@@ -153,7 +153,7 @@ void FileHandler::WriteLabel(int voltexNum)
 }
 
 //----------------------------------------------------------------------------------------------
-//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む
+//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む(時間発展用)
 //----------------------------------------------------------------------------------------------
 void FileHandler::WritePos(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
 {
@@ -163,8 +163,9 @@ void FileHandler::WritePos(double time, const unique_ptr<Voltex[]>& voltexs, int
 	}
 	file << "\n";
 }
+
 //----------------------------------------------------------------------------------------------
-//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む
+//    csvファイル書き込み用、各ボルテックスの速度をファイルに書き込む(時間発展用)
 //----------------------------------------------------------------------------------------------
 void FileHandler::WriteVelocity(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
 {
@@ -176,7 +177,7 @@ void FileHandler::WriteVelocity(double time, const unique_ptr<Voltex[]>& voltexs
 }
 
 //----------------------------------------------------------------------------------------------
-//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む
+//    csvファイル書き込み用、各ボルテックスの外力をファイルに書き込む(時間発展用)
 //----------------------------------------------------------------------------------------------
 void FileHandler::WriteForce(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
 {
@@ -185,4 +186,37 @@ void FileHandler::WriteForce(double time, const unique_ptr<Voltex[]>& voltexs, i
 		file << "," << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
 	}
 	file << "\n";
+}
+
+//----------------------------------------------------------------------------------------------
+//    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む(分布用)
+//----------------------------------------------------------------------------------------------
+void FileHandler::WritePos(const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+{
+	file << "x,y\n";
+	for (int i = 0; i < voltexNum; i++) {
+		file << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() << "\n";
+	}
+}
+
+//----------------------------------------------------------------------------------------------
+//    csvファイル書き込み用、各ボルテックスの速度をファイルに書き込む(分布用)
+//----------------------------------------------------------------------------------------------
+void FileHandler::WriteVelocity(const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+{
+	file << "x,y\n";
+	for (int i = 0; i < voltexNum; i++) {
+		file << voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y() << "\n";
+	}
+}
+
+//----------------------------------------------------------------------------------------------
+//    csvファイル書き込み用、各ボルテックスの外力をファイルに書き込む(分布用)
+//----------------------------------------------------------------------------------------------
+void FileHandler::WriteForce(const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+{
+	file << "x,y\n";
+	for (int i = 0; i < voltexNum; i++) {
+		file << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y() << "\n";
+	}
 }

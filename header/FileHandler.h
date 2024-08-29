@@ -47,6 +47,10 @@ public:
 	void WriteVelocity(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
 	void WriteForce(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
 
+	void WritePos(const unique_ptr<Voltex[]>& voltexs, int voltexNum);
+	void WriteVelocity(const unique_ptr<Voltex[]>& voltexs, int voltexNum);
+	void WriteForce(const unique_ptr<Voltex[]>& voltexs, int voltexNum);
+
 private:
 	//=======================================================================================
 	// private variables.

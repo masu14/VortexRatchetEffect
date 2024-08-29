@@ -23,6 +23,7 @@ void MD::Run(Paramater param) {
 	height			= param.a * 2.0 * sqrt(3.0);
 	cutoff			= param.cutoff;
 
+	//初期化が成功したときMD法を実行する
 	if (InitApp())
 	{
 		MainLoop();
@@ -38,12 +39,14 @@ bool MD::InitApp() {
 		std::cout << "!initvoltexpos" << std::endl;
 		return false;
 	}
+
 	// ピニングサイトの初期化
 	if(!InitPinPos())
 	{
 		std::cout << "!initpinpos" << std::endl;
 		return false;
 	}
+
 	//ボルテックスへの外力を初期化
 	InitForce();
 	//std::cout << "mainroopに入ります" << std::endl;
@@ -60,12 +63,8 @@ bool MD::InitVolPos() {
 	}
 	voltexs = std::make_unique<Voltex[]>(voltexNum);
 	
-	PlaceTriangle();
+	PlaceTriangle();		//ボルテックスが三角格子となるように配置
 	
-	
-	for (int i = 0; i < voltexNum; i++) {
-		std::cout << i << "," << voltexs[i].GetPos().transpose() << std::endl;
-	}
 	return true;
 }
 
@@ -121,7 +120,7 @@ void MD::MainLoop() {
 	fileForce.   WriteLabel(voltexNum);
 	
 	//メインループ
-	double time = 10;
+	double time = 0;
 	double maxtime = 1.0;
 	while (time <= maxtime) {
 		//運動方程式を解く
@@ -134,6 +133,10 @@ void MD::MainLoop() {
 
 		time += dt;
 	}
+
+	filePos.WritePos(voltexs, voltexNum);
+	fileVelocity.WriteVelocity(voltexs, voltexNum);
+	fileForce.WriteForce(voltexs, voltexNum);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -296,7 +299,7 @@ void MD::CalcEOM(double time)
 //------------------------------------------------------------------------------------------------
 void MD::PlaceTriangle() {
 	double y = a * sqrt(3.0) / 4.0;
-	for (int i = 0; i < 4; i++) { //マジックナンバー、ボルテックスの数変えたらやばい
+	for (int i = 0; i < voltexNum / 3.0; i++) { //マジックナンバー、ボルテックスの数変えたらやばい
 		double x = a / 4.0;
 		if (i % 2 == 1) x += a / 2.0;
 		//if (i == 1) x += 0.01;	//ちょっとずらしてみる
