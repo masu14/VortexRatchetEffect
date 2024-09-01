@@ -63,7 +63,7 @@ bool MD::InitVolPos() {
 	}
 	voltexs = std::make_unique<Voltex[]>(voltexNum);
 	
-	PlaceTriangle();		//ボルテックスが三角格子となるように配置
+	PlaceManual();		//ボルテックスが三角格子となるように配置
 	
 	return true;
 }
@@ -82,6 +82,14 @@ bool MD::InitPinPos() {
 	}
 	
 	piningSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
+
+	//piningSite1個配置したときの実験用コード、終わったら消す
+	piningSites[0].SetPos(0.5, 0.4);
+	piningSites[0].SetR(0.2);
+	std::cout << "piningSite[" << 0 << "] pos" << piningSites[0].GetPos().transpose() << std::endl;
+	std::cout << "piningSite[" << 0 << "] r  " << piningSites[0].GetR() << std::endl;
+	return true;
+
 	for (int i = 0; i < piningSiteNum; i++) {
 		double x = voltexs[i].GetPos().x();
 		double y = voltexs[i].GetPos().y();
@@ -113,6 +121,11 @@ void MD::MainLoop() {
 	filePos.     CreateFile(dirName, OutputType::position);
 	fileVelocity.CreateFile(dirName, OutputType::velocity);
 	fileForce.   CreateFile(dirName, OutputType::force);
+
+	//ボルテックスの初期分布(位置、速度、外力)の書き込み
+	//filePos.WritePos(voltexs, voltexNum);
+	fileVelocity.WriteVelocity(voltexs, voltexNum);
+	fileForce.WriteForce(voltexs, voltexNum);
 	
 	//ラベルの書き込み、簡易的なもの
 	filePos.     WriteLabel(voltexNum);
@@ -121,7 +134,7 @@ void MD::MainLoop() {
 	
 	//メインループ
 	double time = 0;
-	double maxtime = 1.0;
+	double maxtime = 10.0;
 	while (time <= maxtime) {
 		//運動方程式を解く
 		CalcEOM(time);
@@ -134,6 +147,7 @@ void MD::MainLoop() {
 		time += dt;
 	}
 
+	//最終的なボルテックスの分布(位置、速度、外力)の書き込み
 	filePos.WritePos(voltexs, voltexNum);
 	fileVelocity.WriteVelocity(voltexs, voltexNum);
 	fileForce.WriteForce(voltexs, voltexNum);
@@ -154,7 +168,7 @@ void MD::InitForce() {
 void MD::CalcVVI() {
 	for (int i = 0; i < voltexNum -1 ; i++) {
 		for (int j = i+1; j < voltexNum; j++) {
-			double f0 = 1.0;	//VVIの係数f0
+			double f0 = 10.0;	//VVIの係数f0
 			
 			Vector2d difPos = voltexs[i].GetPos() - voltexs[j].GetPos();		//ベクトルの差
 			std::cout << i << difPos.transpose() << std::endl;
@@ -169,11 +183,11 @@ void MD::CalcVVI() {
 			//以下、ボルテックス同士の距離がカットオフ長さより長ければ計算しない
 			if (difPos.norm() > cutoff) continue;						
 			
-			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos;	//VVIの式を用いた
-			std::cout << force.transpose() << std::endl;
+			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/difPos.norm();	//VVIの式を用いた
+			
 			double xForce = force.x();				//VVIのx成分
 			double yForce = force.y();				//VVIのy成分
-			std::cout << xForce << ", " << yForce << std::endl;
+			
 			voltexs[i].AddForce(xForce, yForce);	//作用
 			voltexs[j].AddForce(-xForce, -yForce);	//反作用
 		}
@@ -192,15 +206,15 @@ void MD::CalcPiningForce() {
 		for (int j = 0; j < piningSiteNum; j++) {
 			Vector2d difPos = voltexs[i].GetPos() - piningSites[j].GetPos();
 
-			if (difPos.x() < -weight / 2) difPos(0) += weight;
-			if (difPos.x() > weight / 2) difPos(0) -= weight;
-			if (difPos.y() < -height / 2) difPos(1) += height;
-			if (difPos.y() > height / 2) difPos(1) -= height;
+			//if (difPos.x() < -weight / 2) difPos(0) += weight;
+			//if (difPos.x() > weight / 2) difPos(0) -= weight;
+			//if (difPos.y() < -height / 2) difPos(1) += height;
+			//if (difPos.y() > height / 2) difPos(1) -= height;
 
 			if (difPos.norm() < piningSites[j].GetR()) continue;
-			if (difPos.norm() > cutoff) continue;
+			//if (difPos.norm() > cutoff) continue;
 
-			Vector2d force = -kp / pow(cosh((difPos.norm() - piningSites[j].GetR()) / lp), 2.0) * difPos;
+			Vector2d force = -kp / pow(cosh((difPos.norm() - piningSites[j].GetR()) / lp), 2.0) * difPos/difPos.norm();
 			double xForce = force.x();
 			double yForce = force.y();
 			voltexs[i].AddForce(xForce, yForce);
@@ -263,10 +277,10 @@ void MD::CalcEOM(double time)
 			Vector2d r2 = r1 + v1[i] * dt + (f1[i] / eta) / 2 * dt * dt;	//位置r(t+dt)の計算
 			
 			//周期的境界条件
-			if (r2.x() < 0)      r2(0) += weight;
-			if (r2.x() > weight) r2(0) -= weight;
-			if (r2.y() < 0)      r2(1) += height;
-			if (r2.y() > height) r2(1) -= height;
+			//if (r2.x() < 0)      r2(0) += weight;
+			//if (r2.x() > weight) r2(0) -= weight;
+			//if (r2.y() < 0)      r2(1) += height;
+			//if (r2.y() > height) r2(1) -= height;
 			
 			voltexs[i].SetPos(r2.x(), r2.y());								//位置r(t+dt)の更新
 		}
@@ -275,10 +289,10 @@ void MD::CalcEOM(double time)
 		InitForce();	//ボルテックスへの外力を初期化
 
 		//F(t+dt)の計算
-		CalcVVI();
-		//CalcPiningForce();
+		//CalcVVI();
+		CalcPiningForce();
 		//CalcLorentzForce();
-		CalcResistForce();
+		//CalcResistForce();
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
 		for (int i = 0; i < voltexNum; i++) {
@@ -299,10 +313,10 @@ void MD::CalcEOM(double time)
 //------------------------------------------------------------------------------------------------
 void MD::PlaceTriangle() {
 	double y = a * sqrt(3.0) / 4.0;
-	for (int i = 0; i < voltexNum / 3.0; i++) { //マジックナンバー、ボルテックスの数変えたらやばい
+	for (int i = 0; i < voltexNum / 3.0; i++) { 
 		double x = a / 4.0;
 		if (i % 2 == 1) x += a / 2.0;
-		//if (i == 1) x += 0.01;	//ちょっとずらしてみる
+		
 		for (int j = 0; j < 3; j++) {
 			voltexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
 		}
@@ -331,4 +345,25 @@ void MD::PlaceRandom() {
 		}
 		
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+//    デバック用、配列の長さに注意
+//　　特定の配置で外力項を変えて実験したいときに使う
+//-----------------------------------------------------------------------------------------------
+void MD::PlaceManual()
+{
+	voltexs[0].SetPos(0.1,0.4);
+	/*voltexs[1].SetPos(0.4, 0.4);
+	voltexs[2].SetPos(0.744743, 0.180336);
+	voltexs[3].SetPos(0.172043,0.705768);
+	voltexs[4].SetPos(0.135809,0.483818);
+	voltexs[5].SetPos(0.550069,0.052258);
+	voltexs[6].SetPos(0.551065,0.176116);
+	voltexs[7].SetPos(0.292968,0.059621);
+	voltexs[8].SetPos(0.081272,0.490255);
+	voltexs[9].SetPos(0.351897,0.686276);
+	voltexs[10].SetPos(0.113886,0.285068);
+	voltexs[11].SetPos(0.610364,0.741576);*/
+	
 }

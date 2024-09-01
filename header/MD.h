@@ -83,6 +83,7 @@ private:
 
 	void PlaceTriangle();		//ボルテックスの初期配置を三角格子にする
 	void PlaceRandom();			//ボルテックスの初期配置をランダムにする
+	void PlaceManual();			//ボルテックスの初期配置を一つずつ指定する
 
 };
 
