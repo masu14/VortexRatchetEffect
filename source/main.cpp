@@ -9,10 +9,11 @@ int main() {
 		
 		//パラメーターの設定
 		Paramater paramater = {};
-		paramater.voltexNum = 1;		//ボルテックスの数
-		paramater.piningSiteNum = 1;	//ピニングサイトの数
+		paramater.voltexNum = 12;		//ボルテックスの数
+		paramater.piningSiteNum = 6;	//ピニングサイトの数
 		paramater.dt = 0.001;			//時間変化量
 		paramater.a = 0.25;				//初期のボルテックスの格子間隔
+		paramater.cutoff = 4;
 
 		//分子動力学法の実行
 		unique_ptr<MD> md = std::make_unique<MD>();

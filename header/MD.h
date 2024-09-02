@@ -81,9 +81,12 @@ private:
 	void CalcThermalForce();				//サーマル力を計算する
 	void CalcEOM(double time);				//運動方程式を解いて位置、速度を更新する
 
-	void PlaceTriangle();		//ボルテックスの初期配置を三角格子にする
-	void PlaceRandom();			//ボルテックスの初期配置をランダムにする
-	void PlaceManual();			//ボルテックスの初期配置を一つずつ指定する
+	void PlaceVorTriangle();		//ボルテックスの初期配置を三角格子にする
+	void PlaceVorRandom();			//ボルテックスの初期配置をランダムにする
+	void PlaceVorManual();			//ボルテックスの初期配置を一つずつ指定する
+
+	void PlacePin();
+	void PlacePinManual();
 
 };
 
