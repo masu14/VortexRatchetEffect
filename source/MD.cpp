@@ -63,7 +63,7 @@ bool MD::InitVolPos() {
 	}
 	voltexs = std::make_unique<Voltex[]>(voltexNum);
 	
-	PlaceVorTriangle();		//ボルテックスが三角格子となるように配置
+	PlaceVorManual();		//ボルテックスが三角格子となるように配置
 	
 	return true;
 }
@@ -121,7 +121,7 @@ void MD::MainLoop() {
 	
 	//メインループ
 	double time = 0;
-	double maxtime = 1.0;
+	double maxtime = 10.0;
 	while (time <= maxtime) {
 		//運動方程式を解く
 		CalcEOM(time);
@@ -276,10 +276,10 @@ void MD::CalcEOM(double time)
 		InitForce();	//ボルテックスへの外力を初期化
 
 		//F(t+dt)の計算
-		CalcVVI();
+		//CalcVVI();
 		CalcPiningForce();
-		CalcLorentzForce();
-		CalcResistForce();
+		//CalcLorentzForce();
+		//CalcResistForce();
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
 		for (int i = 0; i < voltexNum; i++) {
@@ -377,17 +377,17 @@ void MD::PlacePin()
 //-----------------------------------------------------------------------------------------------
 void MD::PlacePinManual()
 {
-	piningSites[0].SetPos(0.0625, 0.108253);
-	piningSites[1].SetPos(0.3125, 0.108253);
+	piningSites[0].SetPos(0.1, 0.108253);
+	/*piningSites[1].SetPos(0.3125, 0.108253);
 	piningSites[2].SetPos(0.5625, 0.108253);
 	piningSites[3].SetPos(0.0625, 0.541266);
 	piningSites[4].SetPos(0.3125, 0.541266);
-	piningSites[5].SetPos(0.5625, 0.541266);
+	piningSites[5].SetPos(0.5625, 0.541266);*/
 
 	piningSites[0].SetR(0.03);
-	piningSites[1].SetR(0.06);
+	/*piningSites[1].SetR(0.06);
 	piningSites[2].SetR(0.09);
 	piningSites[3].SetR(0.03);
 	piningSites[4].SetR(0.06);
-	piningSites[5].SetR(0.09);
+	piningSites[5].SetR(0.09);*/
 }
