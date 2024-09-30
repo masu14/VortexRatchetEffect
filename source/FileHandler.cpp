@@ -141,13 +141,24 @@ std::string FileHandler::CreateForceFile(std::string dirName)
 }
 
 //----------------------------------------------------------------------------------------------
+//     csvファイル書き込み用、ピニングサイトの位置と半径を記載する
+//----------------------------------------------------------------------------------------------
+void FileHandler::WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningsites, int pinNum)
+{
+	file << "x,y,r\n";
+	for (int i = 0; i < pinNum; i++) {
+		file << piningsites[i].GetPos().x() << "," << piningsites[i].GetPos().y() << "," << piningsites[i].GetR() << "\n";
+	}
+}
+
+//----------------------------------------------------------------------------------------------
 //     csvファイル書き込み用、ラベルを記載する
 //----------------------------------------------------------------------------------------------
 void FileHandler::WriteLabel(int voltexNum)
 {
 	file << "time";
 	for (int i = 0; i < voltexNum; i++) {
-		file << ",x,y";
+		file << ",x"<<i+1<<",y"<<i+1;
 	}
 	file << "\n";
 }

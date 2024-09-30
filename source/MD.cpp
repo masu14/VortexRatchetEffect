@@ -63,7 +63,7 @@ bool MD::InitVolPos() {
 	}
 	voltexs = std::make_unique<Voltex[]>(voltexNum);
 	
-	PlaceVorManual();		//ボルテックスが三角格子となるように配置
+	PlaceVorTriangle();		//ボルテックスが三角格子となるように配置
 	
 	return true;
 }
@@ -110,11 +110,12 @@ void MD::MainLoop() {
 	fileForce.   CreateFile(dirName, OutputType::force);
 
 	//ボルテックスの初期分布(位置、速度、外力)の書き込み
-	filePos.WritePos(voltexs, voltexNum);
-	fileVelocity.WriteVelocity(voltexs, voltexNum);
-	fileForce.WriteForce(voltexs, voltexNum);
+	//filePos.WritePos(voltexs, voltexNum);
+	//fileVelocity.WriteVelocity(voltexs, voltexNum);
+	//fileForce.WriteForce(voltexs, voltexNum);
 	
 	//ラベルの書き込み、簡易的なもの
+	filePos.WritePinPos(piningSites, piningSiteNum);
 	filePos.     WriteLabel(voltexNum);
 	fileVelocity.WriteLabel(voltexNum);
 	fileForce.   WriteLabel(voltexNum);
@@ -135,9 +136,9 @@ void MD::MainLoop() {
 	}
 
 	//最終的なボルテックスの分布(位置、速度、外力)の書き込み
-	filePos.WritePos(voltexs, voltexNum);
-	fileVelocity.WriteVelocity(voltexs, voltexNum);
-	fileForce.WriteForce(voltexs, voltexNum);
+	//filePos.WritePos(voltexs, voltexNum);
+	//fileVelocity.WriteVelocity(voltexs, voltexNum);
+	//fileForce.WriteForce(voltexs, voltexNum);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -276,10 +277,10 @@ void MD::CalcEOM(double time)
 		InitForce();	//ボルテックスへの外力を初期化
 
 		//F(t+dt)の計算
-		//CalcVVI();
+		CalcVVI();
 		CalcPiningForce();
-		//CalcLorentzForce();
-		//CalcResistForce();
+		CalcLorentzForce();
+		CalcResistForce();
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
 		for (int i = 0; i < voltexNum; i++) {
@@ -378,16 +379,16 @@ void MD::PlacePin()
 void MD::PlacePinManual()
 {
 	piningSites[0].SetPos(0.1, 0.108253);
-	/*piningSites[1].SetPos(0.3125, 0.108253);
+	piningSites[1].SetPos(0.3125, 0.108253);
 	piningSites[2].SetPos(0.5625, 0.108253);
 	piningSites[3].SetPos(0.0625, 0.541266);
 	piningSites[4].SetPos(0.3125, 0.541266);
-	piningSites[5].SetPos(0.5625, 0.541266);*/
+	piningSites[5].SetPos(0.5625, 0.541266);
 
 	piningSites[0].SetR(0.03);
-	/*piningSites[1].SetR(0.06);
+	piningSites[1].SetR(0.06);
 	piningSites[2].SetR(0.09);
 	piningSites[3].SetR(0.03);
 	piningSites[4].SetR(0.06);
-	piningSites[5].SetR(0.09);*/
+	piningSites[5].SetR(0.09);
 }

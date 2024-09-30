@@ -1,19 +1,46 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
+from matplotlib.animation import FuncAnimation
 
-df = pd.read_csv("C:/dev/VoltexRatchetEffect_prottype/output/20240901/007position.csv")
+#csvファイルの読み込み
+file_name = "output/20240930/008position.csv"
+circle_data = pd.read_csv(file_name, nrows=7)
+data = pd.read_csv(file_name, skiprows=7)
 
-initial_points = df[df['time']==0]
+#円の数を取得
+num_circles = len(data.columns)//3
 
-plt.figure(figsize=(10,8))
+#ボルテックスの数を抽出
+num_vortexs = (len(data.columns)-1)//2
 
-for i in range(1,13):
-    plt.plot(df[f'x{i}'],df[f'y{i}'], label= f'組 {i}')
-    plt.scatter(initial_points[f'x{i}'], initial_points[f'y{i}'], color='red', s=100, label=f'組 {i} 最初の位置' if i==1 else "")
-    
-plt.xlabel('X位置')
-plt.ylabel('Y位置')
-plt.title('各組の位置の時間変化')
-plt.legend()
-plt.grid(True)
+#図と軸を作成
+fig, ax = plt.subplots()
+ax.set_xlim(0, 0.75)
+ax.set_ylim(0, 0.5)
+
+#円を描画
+circles = []
+for i in range(num_circles):
+    circle_center = (circle_data['x'][i], circle_data['y'][i])
+    circle_radius = circle_data['r'][i]
+    circle = Circle(circle_center, circle_radius, fill=False, color='r')
+    circles.append(circle)
+    ax.add_patch(circle)
+
+#分子をプロットするための初期設定
+scatters = [ax.plot([], [], 'o')[0] for _ in range(num_vortexs)]
+
+#アニメーション更新用の関数
+def update(frame):
+    for i in range(num_vortexs):
+        scatters[i].set_data(data[f'x{i+1}'][frame], data[f'y{i+1}'][frame])
+    return scatters
+
+#アニメーションの作成
+skip_step=20
+ani = FuncAnimation(fig, update, frames=range(0,len(data),skip_step), interval=50, blit=True)
+
+#アニメーションを保存または表示
+ani.save('vortex_animation.mp4', writer='ffmpeg')
 plt.show()

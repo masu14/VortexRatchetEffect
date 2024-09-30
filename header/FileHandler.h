@@ -6,6 +6,7 @@
 #include <filesystem>	//
 #include <regex>		//正規表現
 #include "Voltex.h"
+#include "PiningSite.h"
 
 enum class OutputType
 {
@@ -17,6 +18,7 @@ enum class OutputType
 template<typename T> using unique_ptr = std::unique_ptr<T>;
 
 class Voltex;
+class PiningSiteCircle;
 
 class FileHandler {
 
@@ -40,7 +42,7 @@ public:
 	int  GetIndex() const;
 	std::string GetName() const;
 
-	
+	void WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningSites, int pinNum);
 	void WriteLabel(int voltexNum);//csvファイル書き込み用、ラベルを記載する
 	
 	void WritePos(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
