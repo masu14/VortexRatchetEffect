@@ -145,10 +145,15 @@ std::string FileHandler::CreateForceFile(std::string dirName)
 //----------------------------------------------------------------------------------------------
 void FileHandler::WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningsites, int pinNum)
 {
-	file << "x,y,r\n";
 	for (int i = 0; i < pinNum; i++) {
-		file << piningsites[i].GetPos().x() << "," << piningsites[i].GetPos().y() << "," << piningsites[i].GetR() << "\n";
+		file << "x" << i+1 << ",y" << i+1 << ",r" << i+1 << ",";
 	}
+	file << "\n";
+	
+	for (int i = 0; i < pinNum; i++) {
+		file << piningsites[i].GetPos().x() << "," << piningsites[i].GetPos().y() << "," << piningsites[i].GetR() << ",";
+	}
+	file << "\n";
 }
 
 //----------------------------------------------------------------------------------------------

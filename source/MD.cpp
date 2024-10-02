@@ -156,7 +156,7 @@ void MD::InitForce() {
 void MD::CalcVVI() {
 	for (int i = 0; i < voltexNum -1 ; i++) {
 		for (int j = i+1; j < voltexNum; j++) {
-			double f0 = 1.0;	//VVIの係数f0
+			double f0 = 5.0;	//VVIの係数f0
 			
 			Vector2d difPos = voltexs[i].GetPos() - voltexs[j].GetPos();		//ベクトルの差
 			std::cout << i << difPos.transpose() << std::endl;
@@ -196,8 +196,8 @@ void MD::CalcPiningForce() {
 
 			if (difPos.x() < -weight / 2) difPos(0) += weight;
 			if (difPos.x() > weight / 2) difPos(0) -= weight;
-			if (difPos.y() < -height / 2) difPos(1) += height;
-			if (difPos.y() > height / 2) difPos(1) -= height;
+			//if (difPos.y() < -height / 2) difPos(1) += height;
+			//if (difPos.y() > height / 2) difPos(1) -= height;
 
 			if (difPos.norm() < piningSites[j].GetR()) continue;
 			if (difPos.norm() > cutoff) continue;
@@ -224,7 +224,7 @@ void MD::CalcLorentzForce() {
 //		粘性抵抗による力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcResistForce() {
-	double eta = 10.0;
+	double eta = 1.0;
 	for (int i = 0; i < voltexNum; i++) {
 		Vector2d velocity = voltexs[i].GetVelocity();	//ボルテックスの速度を取得する
 		Vector2d force = -eta * velocity;				//粘性抵抗による力を計算する
@@ -378,12 +378,12 @@ void MD::PlacePin()
 //-----------------------------------------------------------------------------------------------
 void MD::PlacePinManual()
 {
-	piningSites[0].SetPos(0.1, 0.108253);
+	piningSites[0].SetPos(0.0625, 0.108253);
 	piningSites[1].SetPos(0.3125, 0.108253);
 	piningSites[2].SetPos(0.5625, 0.108253);
-	piningSites[3].SetPos(0.0625, 0.541266);
-	piningSites[4].SetPos(0.3125, 0.541266);
-	piningSites[5].SetPos(0.5625, 0.541266);
+	piningSites[3].SetPos(0.0625, 0.32476);
+	piningSites[4].SetPos(0.3125, 0.32476);
+	piningSites[5].SetPos(0.5625, 0.32476);
 
 	piningSites[0].SetR(0.03);
 	piningSites[1].SetR(0.06);
