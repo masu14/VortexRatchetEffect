@@ -214,7 +214,7 @@ void MD::CalcPiningForce() {
 //		ƒ[ƒŒƒ“ƒc—Í‚ğŒvZ‚·‚é	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce() {
-	double force = 0.4;
+	double force = -0.4;
 	for (int i = 0; i < voltexNum; i++) {
 		voltexs[i].AddForce(force, 0.0);
 	}
