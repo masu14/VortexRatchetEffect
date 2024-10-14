@@ -82,6 +82,7 @@ private:
 	void CalcEOM(double time);				//運動方程式を解いて位置、速度を更新する
 
 	void PlaceVorTriangle();		//ボルテックスの初期配置を三角格子にする
+	void PlaceVorSquare();
 	void PlaceVorRandom();			//ボルテックスの初期配置をランダムにする
 	void PlaceVorManual();			//ボルテックスの初期配置を一つずつ指定する
 

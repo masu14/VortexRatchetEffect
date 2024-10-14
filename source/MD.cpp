@@ -63,7 +63,7 @@ bool MD::InitVolPos() {
 	}
 	voltexs = std::make_unique<Voltex[]>(voltexNum);
 	
-	PlaceVorTriangle();		//ボルテックスが三角格子となるように配置
+	PlaceVorSquare();		//ボルテックスが三角格子となるように配置
 	
 	return true;
 }
@@ -122,7 +122,7 @@ void MD::MainLoop() {
 	
 	//メインループ
 	double time = 0;
-	double maxtime = 10.0;
+	double maxtime = 40.0;
 	while (time <= maxtime) {
 		//運動方程式を解く
 		CalcEOM(time);
@@ -156,7 +156,7 @@ void MD::InitForce() {
 void MD::CalcVVI() {
 	for (int i = 0; i < voltexNum -1 ; i++) {
 		for (int j = i+1; j < voltexNum; j++) {
-			double f0 = 5.0;	//VVIの係数f0
+			double f0 = 3.0;	//VVIの係数f0
 			
 			Vector2d difPos = voltexs[i].GetPos() - voltexs[j].GetPos();		//ベクトルの差
 			std::cout << i << difPos.transpose() << std::endl;
@@ -169,7 +169,7 @@ void MD::CalcVVI() {
 			if (difPos.y() >  height / 2) difPos(1) -= height;
 			
 			//以下、ボルテックス同士の距離がカットオフ長さより長ければ計算しない
-			if (difPos.norm() > cutoff) continue;						
+			//if (difPos.norm() > cutoff) continue;						
 			
 			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/difPos.norm();	//VVIの式を用いた
 			
@@ -187,8 +187,8 @@ void MD::CalcVVI() {
 //		ピニング力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcPiningForce() {
-	double kp = 1.0;	//kpはピニング力の大きさを決める係数
-	double lp = 1.0;	//lpはピニングサイトにおける常伝導から超伝導への回復長
+	double kp = 2.0;	//kpはピニング力の大きさを決める係数
+	double lp = 0.3*sqrt(2.0);	//lpはピニングサイトにおける常伝導から超伝導への回復長
 	
 	for (int i = 0; i < voltexNum; i++) {
 		for (int j = 0; j < piningSiteNum; j++) {
@@ -214,7 +214,7 @@ void MD::CalcPiningForce() {
 //		ローレンツ力を計算する	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce() {
-	double force = -0.4;
+	double force = -1.0;
 	for (int i = 0; i < voltexNum; i++) {
 		voltexs[i].AddForce(force, 0.0);
 	}
@@ -251,7 +251,7 @@ void MD::CalcEOM(double time)
 		if (time == 0) {
 			return;
 		}
-		double eta = 10.0;							//粘性抵抗η
+		double eta = 1.0;							//粘性抵抗η
 
 		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(voltexNum);	//速度v(t)の動的配列、v(t+dt)の計算に使う
 		unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(voltexNum);	//外力F(t)、v(t+dt)の計算に使う
@@ -305,6 +305,20 @@ void MD::PlaceVorTriangle() {
 		double x = a / 4.0;
 		if (i % 2 == 1) x += a / 2.0;
 		
+		for (int j = 0; j < 3; j++) {
+			voltexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
+		}
+	}
+}
+
+//------------------------------------------------------------------------------------------------
+//    ボルテックスの初期配置を長方形配置にする
+//	  ボルテックスの数が6の倍数のときに使うようにする
+//------------------------------------------------------------------------------------------------
+void MD::PlaceVorSquare() {
+	double y = a * sqrt(3.0) / 4.0;
+	for (int i = 0; i < voltexNum / 3.0; i++) {
+		double x = a / 4.0;
 		for (int j = 0; j < 3; j++) {
 			voltexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
 		}
@@ -378,17 +392,17 @@ void MD::PlacePin()
 //-----------------------------------------------------------------------------------------------
 void MD::PlacePinManual()
 {
-	piningSites[0].SetPos(0.0625, 0.108253);
-	piningSites[1].SetPos(0.3125, 0.108253);
-	piningSites[2].SetPos(0.5625, 0.108253);
-	piningSites[3].SetPos(0.0625, 0.32476);
-	piningSites[4].SetPos(0.3125, 0.32476);
-	piningSites[5].SetPos(0.5625, 0.32476);
+	piningSites[0].SetPos(1.5, 2.6);
+	piningSites[1].SetPos(7.5, 2.6);
+	piningSites[2].SetPos(13.5, 2.6);
+	piningSites[3].SetPos(1.5, 7.8);
+	piningSites[4].SetPos(7.5, 7.8);
+	piningSites[5].SetPos(13.5, 7.8);
 
-	piningSites[0].SetR(0.03);
-	piningSites[1].SetR(0.06);
-	piningSites[2].SetR(0.09);
-	piningSites[3].SetR(0.03);
-	piningSites[4].SetR(0.06);
-	piningSites[5].SetR(0.09);
+	piningSites[0].SetR(1.5);
+	piningSites[1].SetR(1.0);
+	piningSites[2].SetR(0.5);
+	piningSites[3].SetR(1.5);
+	piningSites[4].SetR(1.0);
+	piningSites[5].SetR(0.5);
 }

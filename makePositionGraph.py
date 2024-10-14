@@ -4,7 +4,7 @@ from matplotlib.patches import Circle
 from matplotlib.animation import FuncAnimation
 
 #csvファイルの読み込み
-file_name = "output/20241006/002position.csv"
+file_name = "output/20241014/022position.csv"
 circle_data = pd.read_csv(file_name, nrows=1)
 vortex_data = pd.read_csv(file_name, skiprows=2)
 
@@ -19,8 +19,8 @@ num_vortexs = (len(vortex_data.columns)-1)//2
 
 #図と軸を作成
 fig, ax = plt.subplots()
-ax.set_xlim(0, 0.75)
-ax.set_ylim(0, 0.5)
+ax.set_xlim(0, 18)
+ax.set_ylim(0, 10.4)
 
 #円を描画
 circles = [Circle((x, y), r, fill=False) for x, y, r in circle_positions]
@@ -37,9 +37,9 @@ def update(frame):
     return scatters
 
 #アニメーションの作成
-skip_step=20
+skip_step=40
 ani = FuncAnimation(fig, update, frames=range(0,len(vortex_data),skip_step), interval=50, blit=True)
 
 #アニメーションを保存または表示
-ani.save('vortex_animation2.mp4', writer='ffmpeg')
+ani.save('vortex_animation1.mp4', writer='ffmpeg')
 plt.show()
