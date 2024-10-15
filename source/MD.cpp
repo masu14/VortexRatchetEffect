@@ -1,5 +1,6 @@
 #include "MD.h"
 
+
 //コンストラクタ
 MD::MD()
 {
