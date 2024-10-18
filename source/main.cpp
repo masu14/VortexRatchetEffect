@@ -33,6 +33,7 @@ int FileHandler::index = 0;
 
 int main() {
 	{
+		/*
 		std::map<std::string, std::string> settings = readSettings("input.ini");
 
 		
@@ -50,7 +51,7 @@ int main() {
 		catch (const std::exception& e) {
 			std::cerr << e.what() << std::endl;
 		}
-
+		*/
 		
 		//パラメーターの設定
 		Paramater paramater = {};
@@ -62,7 +63,7 @@ int main() {
 
 		//分子動力学法の実行
 		unique_ptr<MD> md = std::make_unique<MD>();
-		//md->Run(paramater);
+		md->Run(paramater);
 
 		
 	}

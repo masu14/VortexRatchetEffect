@@ -123,10 +123,10 @@ void MD::MainLoop() {
 	
 	//メインループ
 	double time = 0;
-	double maxtime = 40.0;
+	double maxtime = 30.0;
 	while (time <= maxtime) {
 		//運動方程式を解く
-		CalcEOM(time);
+		CalcEOMOverDamp(time);
 
 		//計算結果をファイルに書き込む
 		filePos.     WritePos(time, voltexs, voltexNum);
@@ -157,7 +157,7 @@ void MD::InitForce() {
 void MD::CalcVVI() {
 	for (int i = 0; i < voltexNum -1 ; i++) {
 		for (int j = i+1; j < voltexNum; j++) {
-			double f0 = 3.0;	//VVIの係数f0
+			double f0 = 1.0;	//VVIの係数f0
 			
 			Vector2d difPos = voltexs[i].GetPos() - voltexs[j].GetPos();		//ベクトルの差
 			std::cout << i << difPos.transpose() << std::endl;
@@ -215,7 +215,7 @@ void MD::CalcPiningForce() {
 //		ローレンツ力を計算する	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce() {
-	double force = -1.0;
+	double force = 2.0;
 	for (int i = 0; i < voltexNum; i++) {
 		voltexs[i].AddForce(force, 0.0);
 	}
@@ -241,7 +241,7 @@ void MD::CalcThermalForce() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		運動方程式を解いてボルテックスの位置、速度を更新する
+//		運動方程式を解いてボルテックスの位置、速度、外力を更新する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcEOM(double time) 
 {
@@ -295,6 +295,50 @@ void MD::CalcEOM(double time)
 	}
 }
 
+//-------------------------------------------------------------------------------------------------
+//		終端速度に達した際の過減衰運動方程式を解いてボルテックスの位置、速度、外力を更新する
+//-------------------------------------------------------------------------------------------------
+void MD::CalcEOMOverDamp(double time) 
+{
+	//終端速度に達した際の速度からボルテックスの位置、速度を更新する
+	//v(t+dt) = F(t+dt) / m
+	//r(t+dt) = r(t) + v(t+dt)*dt + (1/2)*((F(t+dt)-F(t))/m)
+	if (time == 0) {
+		return;
+	}
+	double eta = 1.0;	//粘性抵抗η
+
+	unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(voltexNum);
+	for (int i = 0; i < voltexNum; i++) {
+
+		f1[i] = voltexs[i].GetForce();	//f(t)の取得
+	}
+
+	InitForce();	//ボルテックスへの外力を初期化
+
+	//F(t+dt)の計算
+	CalcVVI();
+	CalcPiningForce();
+	CalcLorentzForce();
+	
+
+	for (int i = 0; i < voltexNum; i++) {
+		Vector2d r1 = voltexs[i].GetPos();							//r(t)の取得
+		Vector2d f2 = voltexs[i].GetForce();						//f(t+dt)の取得
+		Vector2d v2 = f2 / eta;										//v(t+dt)の計算
+		Vector2d r2 = r1 + v2 * dt + (f2 - f1[i]) / (2 * eta) * dt;	//r(t+dt)の計算
+
+		//周期的境界条件
+		if (r2.x() < 0)      r2(0) += weight;
+		if (r2.x() > weight) r2(0) -= weight;
+		if (r2.y() < 0)      r2(1) += height;
+		if (r2.y() > height) r2(1) -= height;
+
+		voltexs[i].SetForce(f2.x(), f2.y());
+		voltexs[i].SetVelocity(v2.x(), v2.y());
+		voltexs[i].SetPos(r2.x(), r2.y());
+	}
+}
 
 //------------------------------------------------------------------------------------------------
 //    ボルテックスの初期配置を三角格子にする

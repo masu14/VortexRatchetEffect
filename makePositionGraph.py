@@ -4,7 +4,7 @@ from matplotlib.patches import Circle
 from matplotlib.animation import FuncAnimation
 
 #csvファイルの読み込み
-file_name = "output/20241014/022position.csv"
+file_name = "output/20241018/005position.csv"
 circle_data = pd.read_csv(file_name, nrows=1)
 vortex_data = pd.read_csv(file_name, skiprows=2)
 
