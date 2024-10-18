@@ -54,7 +54,7 @@ private:
 	int voltexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
 	double dt = 0.001;			//時間変化量
-	double maxtime = 10.0;		//計算時間
+	double maxTime = 10.0;		//計算時間
 	double a = 0.25;			//初期配置時のボルテックス間距離(三角格子)
 	double height = 5;			//シミュレーションボックスの高さ
 	double weight = 5;			//シミュレーションボックスの幅

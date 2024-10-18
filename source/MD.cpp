@@ -19,10 +19,12 @@ void MD::Run(Paramater param) {
 	voltexNum		= param.voltexNum;
 	piningSiteNum	= param.piningSiteNum;
 	dt				= param.dt;
+	maxTime			= param.maxTime;
 	a				= param.a;
 	weight			= param.a * 3.0;
 	height			= param.a * 2.0 * sqrt(3.0) * voltexNum / 12.0;
 	cutoff			= param.cutoff;
+	
 
 	//初期化が成功したときMD法を実行する
 	if (InitApp())
@@ -123,8 +125,8 @@ void MD::MainLoop() {
 	
 	//メインループ
 	double time = 0;
-	double maxtime = 30.0;
-	while (time <= maxtime) {
+	
+	while (time <= maxTime) {
 		//運動方程式を解く
 		CalcEOMOverDamp(time);
 
@@ -334,9 +336,9 @@ void MD::CalcEOMOverDamp(double time)
 		if (r2.y() < 0)      r2(1) += height;
 		if (r2.y() > height) r2(1) -= height;
 
-		voltexs[i].SetForce(f2.x(), f2.y());
-		voltexs[i].SetVelocity(v2.x(), v2.y());
-		voltexs[i].SetPos(r2.x(), r2.y());
+		voltexs[i].SetForce(f2.x(), f2.y());		//外力の更新
+		voltexs[i].SetVelocity(v2.x(), v2.y());		//速度の更新
+		voltexs[i].SetPos(r2.x(), r2.y());			//位置の更新
 	}
 }
 
