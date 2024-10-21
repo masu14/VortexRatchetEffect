@@ -58,6 +58,7 @@ int main() {
 		paramater.voltexNum = 6;		//ボルテックスの数
 		paramater.piningSiteNum = 6;	//ピニングサイトの数
 		paramater.dt = 0.001;			//時間変化量
+		paramater.maxTime = 15;			//計算時間
 		paramater.a = 6;				//初期のボルテックスの格子間隔
 		paramater.cutoff = 16;
 

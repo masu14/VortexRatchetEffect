@@ -128,7 +128,7 @@ void MD::MainLoop() {
 	
 	while (time <= maxTime) {
 		//運動方程式を解く
-		CalcEOMOverDamp(time);
+		CalcEOM(time);
 
 		//計算結果をファイルに書き込む
 		filePos.     WritePos(time, voltexs, voltexNum);
@@ -159,7 +159,7 @@ void MD::InitForce() {
 void MD::CalcVVI() {
 	for (int i = 0; i < voltexNum -1 ; i++) {
 		for (int j = i+1; j < voltexNum; j++) {
-			double f0 = 1.0;	//VVIの係数f0
+			double f0 = 3.0;	//VVIの係数f0
 			
 			Vector2d difPos = voltexs[i].GetPos() - voltexs[j].GetPos();		//ベクトルの差
 			std::cout << i << difPos.transpose() << std::endl;
@@ -190,7 +190,7 @@ void MD::CalcVVI() {
 //		ピニング力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcPiningForce() {
-	double kp = 2.0;	//kpはピニング力の大きさを決める係数
+	double kp = 1.0;	//kpはピニング力の大きさを決める係数
 	double lp = 0.3*sqrt(2.0);	//lpはピニングサイトにおける常伝導から超伝導への回復長
 	
 	for (int i = 0; i < voltexNum; i++) {
@@ -217,7 +217,7 @@ void MD::CalcPiningForce() {
 //		ローレンツ力を計算する	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce() {
-	double force = 2.0;
+	double force = 0.8;
 	for (int i = 0; i < voltexNum; i++) {
 		voltexs[i].AddForce(force, 0.0);
 	}
@@ -323,7 +323,7 @@ void MD::CalcEOMOverDamp(double time)
 	CalcPiningForce();
 	CalcLorentzForce();
 	
-
+	//終端速度を求め、そこから位置を求める
 	for (int i = 0; i < voltexNum; i++) {
 		Vector2d r1 = voltexs[i].GetPos();							//r(t)の取得
 		Vector2d f2 = voltexs[i].GetForce();						//f(t+dt)の取得
