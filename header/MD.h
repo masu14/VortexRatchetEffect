@@ -25,6 +25,7 @@ struct Paramater {
 	double maxTime = 10.0;		//計算時間
 	double a = 0.25;			//初期配置時のボルテックス間距離(三角格子)
 	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
+	double eta = 1.0;			//粘性抵抗η
 };
 
 
@@ -59,6 +60,7 @@ private:
 	double height = 5;			//シミュレーションボックスの高さ
 	double weight = 5;			//シミュレーションボックスの幅
 	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
+	double eta = 1.0;			//粘性抵抗η
 
 	unique_ptr<Voltex[]> voltexs;					//ボルテックスのインスタンス、　voltexNum個の配列として扱う
 	unique_ptr<PiningSiteCircle[]> piningSites;		//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う

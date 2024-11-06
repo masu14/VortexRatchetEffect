@@ -24,6 +24,7 @@ void MD::Run(Paramater param) {
 	weight			= param.a * 3.0;
 	height			= param.a * 2.0 * sqrt(3.0) * voltexNum / 12.0;
 	cutoff			= param.cutoff;
+	eta				= param.eta;
 	
 
 	//初期化が成功したときMD法を実行する
@@ -217,7 +218,7 @@ void MD::CalcPiningForce() {
 //		ローレンツ力を計算する	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce() {
-	double force = 0.8;
+	double force = 0.9;
 	for (int i = 0; i < voltexNum; i++) {
 		voltexs[i].AddForce(force, 0.0);
 	}
@@ -227,7 +228,6 @@ void MD::CalcLorentzForce() {
 //		粘性抵抗による力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcResistForce() {
-	double eta = 1.0;
 	for (int i = 0; i < voltexNum; i++) {
 		Vector2d velocity = voltexs[i].GetVelocity();	//ボルテックスの速度を取得する
 		Vector2d force = -eta * velocity;				//粘性抵抗による力を計算する
@@ -254,7 +254,6 @@ void MD::CalcEOM(double time)
 		if (time == 0) {
 			return;
 		}
-		double eta = 1.0;							//粘性抵抗η
 
 		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(voltexNum);	//速度v(t)の動的配列、v(t+dt)の計算に使う
 		unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(voltexNum);	//外力F(t)、v(t+dt)の計算に使う
