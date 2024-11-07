@@ -5,6 +5,7 @@
 #include "Voltex.h"
 #include "PiningSite.h"
 #include "FileHandler.h"
+#include "InputReader.h"
 
 template<typename T> using unique_ptr = std::unique_ptr<T>;		//長くて冗長なので「std::」を省略してるだけ
 
@@ -14,19 +15,6 @@ class Voltex;
 class PiningSite;
 class PiningSiteCircle;
 
-/// <summary>
-/// Paramater構造体
-/// 実験条件をまとめた構造体、本シミュレーションのパラメータはすべてここで管理する。
-/// </summary>
-struct Paramater {
-	int voltexNum;				//ボルテックスの数
-	int piningSiteNum;			//ピニングサイトの数
-	double dt = 0.001;			//時間変化量
-	double maxTime = 10.0;		//計算時間
-	double a = 0.25;			//初期配置時のボルテックス間距離(三角格子)
-	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
-	double eta = 1.0;			//粘性抵抗η
-};
 
 
 /// <summary>

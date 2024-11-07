@@ -10,9 +10,12 @@
 #include "Voltex.h"
 #include "MD.h"
 
+using string = std::string;
+
+
 // 文字列を数値に変換する関数
 template <typename T>
-T stringToNumber(const std::string& str) {
+T stringToNumber(const string& str) {
 
 	std::istringstream iss(str);
 	T num;
@@ -21,10 +24,10 @@ T stringToNumber(const std::string& str) {
 }
 
 //文字列をカンマ区切りで分割して数値のベクトルに変換
-std::vector<double> ParseRange(const std::string& str) {
+std::vector<double> ReadRange(const string& str) {
 	std::vector<double> range;
 	std::istringstream iss(str);
-	std::string token;
+	string token;
 	while (std::getline(iss, token, ',')) {
 		range.push_back(stringToNumber<double>(token));
 	}
@@ -32,7 +35,7 @@ std::vector<double> ParseRange(const std::string& str) {
 }
 
 // 文字列を真偽値に変換する関数
-bool stringToBool(std::string str) {
+bool stringToBool(const string& str) {
 
 	//文字列から真偽値を返す
 	if (str == "true" || str == "True" || str == "1") return true;
@@ -41,11 +44,11 @@ bool stringToBool(std::string str) {
 }
 
 //設定ファイルを読み込んでパラメータをマップに格納
-std::map<std::string, std::map<std::string, std::string>> readSettings(const std::string& filename) {
-	std::map<std::string, std::map<std::string, std::string>> sections;
+std::map<string, std::map<string, string>> ReadInputFile(const string& filename) {
+	std::map<string, std::map<string, string>> sections;
 	std::ifstream file(filename);
-	std::string line;
-	std::string currentSection;
+	string line;
+	string currentSection;
 
 	while (std::getline(file, line)) {
 		if (line[0] == '/' || line.empty()) continue;
@@ -55,8 +58,8 @@ std::map<std::string, std::map<std::string, std::string>> readSettings(const std
 		}
 		else {
 			size_t delimiterPos = line.find("=");
-			std::string key = line.substr(0, delimiterPos);
-			std::string value = line.substr(delimiterPos + 1);
+			string key = line.substr(0, delimiterPos);
+			string value = line.substr(delimiterPos + 1);
 			key.erase(std::remove_if(key.begin(), key.end(), ::isspace), key.end());
 			value.erase(std::remove_if(value.begin(), value.end(), ::isspace), value.end());
 			sections[currentSection][key] = value;
@@ -73,7 +76,7 @@ int FileHandler::index = 0;
 int main() {
 	{
 		//シミュレーションの設定パラメータをinput.iniファイルから取得する
-		std::map<std::string, std::map<std::string, std::string>> settings  = readSettings("input.ini");
+		std::map<string, std::map<string, string>> settings  = ReadInputFile("input.ini");
 		
 
 		
@@ -85,7 +88,7 @@ int main() {
 			double time_step = stringToNumber<double>(settings["Constant"]["time_step"]);
 			int duration = stringToNumber<int>(settings["Constant"]["duration"]);
 			//変数パラメータ
-			std::vector<double> particleRange = ParseRange(settings["Variable"]["particles"]);
+			std::vector<double> particleRange = ReadRange(settings["Variable"]["particles"]);
 			//設定フラグパラメータ
 			bool enableLogging = stringToBool(settings["Settings"]["enable_loggings"]);
 			bool useAdvancedFeatures = stringToBool(settings["Settings"]["use_advanced_features"]);

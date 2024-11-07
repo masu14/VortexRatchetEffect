@@ -1,6 +1,33 @@
 #pragma once
+#include <iostream>
+#include <fstream>
 #include <string>
+#include <vector>		// 文字列を可変長の配列で処理する
+#include <map>			// 辞書(key, value)を使う
+#include <algorithm>	// std::remove_if 入力データの文字列処理
+#include <cctype>		// std::isspace   入力データの文字列処理
 
+//型エイリアス
+using string = std::string;
+
+/// <summary>
+/// Paramater構造体
+/// 実験条件をまとめた構造体、本シミュレーションのパラメータはすべてここで管理する。
+/// </summary>
+struct Paramater {
+	int voltexNum;				//ボルテックスの数
+	int piningSiteNum;			//ピニングサイトの数
+	double dt = 0.001;			//時間変化量
+	double maxTime = 10.0;		//計算時間
+	double a = 0.25;			//初期配置時のボルテックス間距離(三角格子)
+	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
+	double eta = 1.0;			//粘性抵抗η
+};
+
+
+/// <summary>
+/// InputReaderクラス
+/// </summary>
 class InputReader
 {
 public:
@@ -12,9 +39,11 @@ public:
 	//=========================================================================================
 	// public methods
 	//=========================================================================================
-	template <typename T>
-	T StringToNumber(const std::string& str);		// 文字列を数値に変換する関数
+	InputReader();
+	~InputReader();
 
+	Paramater GetParam();
+	void SetParam(const string& filename);
 	
 private:
 	//=========================================================================================
@@ -24,5 +53,11 @@ private:
 	//=========================================================================================
 	// private methods
 	//=========================================================================================
+	template <typename T>
+	T					StringToNumber(const string& str);		// 文字列を数値に変換する関数
+	template <typename T>
+	std::vector<T>		ReadRange(const string& str);			// 文字列から変数の定義域と刻み幅を取得する関数
+	bool				stringToBool(const string& str);		// 文字列を真偽値に変換する関数
+	std::map <string, std::map<string, string>> ReadInputFile(const string& filename);	//入力ファイルを読み込む関数
 
 };
