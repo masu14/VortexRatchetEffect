@@ -21,6 +21,25 @@ Paramater InputReader::GetParam()
 	param.a;
 	param.cutoff;
 	param.eta;
+
+	return param;
+}
+
+void InputReader::SetParam(const string& filename)
+{
+	std::map<string, std::map<string, string>> settings = ReadInputFile(filename);
+	Paramater param = {};
+	try {
+		param.voltexNum = StringToNumber<int>(settings["Constant"]["voltexNum"]);
+		param.piningSiteNum = StringToNumber<int>(settings["Constant"]["piningsiteNum"]);
+		param.dt = StringToNumber<double>(settings["Constant"]["dt"]);
+		param.a = StringToNumber<double>(settings["Constant"]["a"]);
+
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		std::exit(EXIT_FAILURE);
+	}
 }
 
 //•¶Žš—ñ‚ð”’l‚É•ÏŠ·‚·‚éŠÖ”
