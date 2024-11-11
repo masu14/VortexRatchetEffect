@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>		// 文字列を可変長の配列で処理する
 #include <map>			// 辞書(key, value)を使う
@@ -22,6 +23,7 @@ struct Paramater {
 	double a = 0.25;			//初期配置時のボルテックス間距離(三角格子)
 	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
 	double eta = 1.0;			//粘性抵抗η
+	double lorentzForce;		//ローレンツ力の大きさ
 };
 
 

@@ -27,14 +27,39 @@ Paramater InputReader::GetParam()
 
 void InputReader::SetParam(const string& filename)
 {
-	std::map<string, std::map<string, string>> settings = ReadInputFile(filename);
-	Paramater param = {};
+	std::map<string, std::map<string, string>> sections = ReadInputFile(filename);
 	try {
-		param.voltexNum = StringToNumber<int>(settings["Constant"]["voltexNum"]);
-		param.piningSiteNum = StringToNumber<int>(settings["Constant"]["piningsiteNum"]);
-		param.dt = StringToNumber<double>(settings["Constant"]["dt"]);
-		param.a = StringToNumber<double>(settings["Constant"]["a"]);
+		//定数パラメータ
+		int voltexNum = StringToNumber<int>(sections["Constant"]["voltexNum"]);
+		int piningSiteNum = StringToNumber<int>(sections["Constant"]["piningsiteNum"]);
+		double dt = StringToNumber<double>(sections["Constant"]["dt"]);
+		double maxTime = StringToNumber<double>(sections["Constant"]["maxTime"]);
+		double a = StringToNumber<double>(sections["Constant"]["a"]);
+		int cutoff = StringToNumber<int>(sections["Constant"]["cutoff"]);
+		double eta = StringToNumber<double>(sections["Constant"]["eta"]);
 
+		//変数パラメータ
+		std::vector<double> lorentzForce = ReadRange<double>(sections["Variable"]["lorentzForce"]);
+
+		//設定フラグパラメータ
+		bool enableLoggings = stringToBool(sections["Settings"]["enable_loggings"]);
+		bool debugMode = stringToBool(sections["Settings"]["dobug_mode"]);
+
+		std::cout << "[Paramater]" << std::endl;
+		std::cout << "voltexNum: " << voltexNum << std::endl;
+		std::cout << "piningSiteNum: " << piningSiteNum << std::endl;
+		std::cout << "dt: " << dt << std::endl;
+		std::cout << "maxTime: " << maxTime << std::endl;
+		std::cout << "a: " << a << std::endl;
+		std::cout << "cutoff: " << cutoff << std::endl;
+		std::cout << "eta: " << eta << std::endl;
+
+		std::cout << "[Variable]" << std::endl;
+		std::cout << "lorentzForce: " << lorentzForce[0] << "," << lorentzForce[1] << "," << lorentzForce[2] << std::endl;
+
+		std::cout << "[Setting]" << std::endl;
+		std::cout << "Enable Logging: " << enableLoggings << std::endl;
+		std::cout << "Debug Mode: " << debugMode << std::endl;
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
@@ -59,9 +84,15 @@ std::vector<T> InputReader::ReadRange(const string& str)
 	std::vector<T> range;
 	std::istringstream iss(str);
 	string token;
-	
 	while (std::getline(iss, token, ',')) {
-		range.push_back(stringToNumber<T>(token));
+		range.push_back(StringToNumber<T>(token));
+	}
+	
+	
+	std::cout << range.size() << std::endl;
+	if (range.size() != 3) {
+		throw std::invalid_argument("[Variable]パラメータの形式が正しくありません: " + str);
+
 	}
 	return range;
 }

@@ -77,7 +77,8 @@ int main() {
 	{
 		//シミュレーションの設定パラメータをinput.iniファイルから取得する
 		std::map<string, std::map<string, string>> settings  = ReadInputFile("input.ini");
-		
+		InputReader inputReader;
+		//inputReader.SetParam("input.ini");
 
 		
 		
@@ -96,7 +97,7 @@ int main() {
 
 			if (particleRange.size() != 3) {
 				std::cerr << "変数の入力形式が正しくありません。" << std::endl;
-				return 1;
+				//return 1;
 			}
 
 			double particle_start = particleRange[0];
