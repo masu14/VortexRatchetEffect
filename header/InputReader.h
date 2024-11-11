@@ -14,7 +14,7 @@ using string = std::string;
 /// <summary>
 /// Paramater構造体
 /// 実験条件をまとめた構造体、本シミュレーションのパラメータはすべてここで管理する。
-/// </summary>
+/// <summary>
 struct Paramater {
 	int voltexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
