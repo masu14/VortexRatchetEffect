@@ -5,7 +5,7 @@
 #include "Voltex.h"
 #include "PiningSite.h"
 #include "FileHandler.h"
-#include "InputReader.h"
+#include "InputReader.h"	//Paramater\‘¢‘Ì‚ğ‚Æ‚é
 
 template<typename T> using unique_ptr = std::unique_ptr<T>;		//’·‚­‚Äç’·‚È‚Ì‚Åustd::v‚ğÈ—ª‚µ‚Ä‚é‚¾‚¯
 

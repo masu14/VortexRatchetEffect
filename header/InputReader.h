@@ -45,12 +45,14 @@ public:
 	~InputReader();
 
 	Paramater GetParam();
-	void SetParam(const string& filename);
+	void ReadParam(const string& filename);
 	
 private:
 	//=========================================================================================
 	// private variables
 	//=========================================================================================
+	std::map<string, std::map<string, string>> sections;
+
 
 	//=========================================================================================
 	// private methods

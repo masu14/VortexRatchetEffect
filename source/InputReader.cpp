@@ -25,9 +25,9 @@ Paramater InputReader::GetParam()
 	return param;
 }
 
-void InputReader::SetParam(const string& filename)
+void InputReader::ReadParam(const string& filename)
 {
-	std::map<string, std::map<string, string>> sections = ReadInputFile(filename);
+	sections = ReadInputFile(filename);
 	try {
 		//定数パラメータ
 		int voltexNum = StringToNumber<int>(sections["Constant"]["voltexNum"]);
@@ -43,7 +43,7 @@ void InputReader::SetParam(const string& filename)
 
 		//設定フラグパラメータ
 		bool enableLoggings = stringToBool(sections["Settings"]["enable_loggings"]);
-		bool debugMode = stringToBool(sections["Settings"]["dobug_mode"]);
+		bool debugMode = stringToBool(sections["Settings"]["debug_mode"]);
 
 		std::cout << "[Paramater]" << std::endl;
 		std::cout << "voltexNum: " << voltexNum << std::endl;
@@ -71,6 +71,7 @@ void InputReader::SetParam(const string& filename)
 template <typename T>
 T InputReader::StringToNumber(const string& str)
 {
+	if (str == sections.end()) return null;
 	std::istringstream iss(str);
 	T num;
 	iss >> num;
@@ -115,8 +116,8 @@ std::map<string, std::map<string, string>> InputReader::ReadInputFile(const stri
 	string currentSection;
 
 	while (std::getline(file, line)) {
-		//「/」や空白から始まる場合は無視する
-		if (line[0] == '/' || line.empty()) continue;
+		//「/」から始まる場合や空行の場合は無視する
+		if (line.empty() || line[0] == '/') continue;
 
 		//セクション(定数や変数タグ)を判別する
 		if (line[0] == '[') {
@@ -126,7 +127,7 @@ std::map<string, std::map<string, string>> InputReader::ReadInputFile(const stri
 		else {
 			size_t delimiterPos = line.find("=");
 			string key = line.substr(0, delimiterPos);
-			string value = line.substr(0, delimiterPos + 1);
+			string value = line.substr(delimiterPos + 1);
 			key.erase(std::remove_if(key.begin(), key.end(), ::isspace), key.end());
 			value.erase(std::remove_if(value.begin(), value.end(), ::isspace), value.end());
 			sections[currentSection][key] = value;
