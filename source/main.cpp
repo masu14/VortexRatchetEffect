@@ -11,18 +11,22 @@ int main() {
 		inputReader.ReadParam("input.ini");
 
 		//パラメーターの設定
-		Paramater paramater = {};
-		paramater.voltexNum = 6;		//ボルテックスの数
-		paramater.piningSiteNum = 6;	//ピニングサイトの数
-		paramater.dt = 0.001;			//時間変化量
-		paramater.maxTime = 1;			//計算時間
-		paramater.a = 6;				//初期のボルテックスの格子間隔
-		paramater.cutoff = 16;
-		paramater.eta = 1.0;
+		Paramater<double> param = inputReader.GetParam();
+		
+		double var1Start, var1end, var1step,
+			   var2Start, var2end, var2step;
+
+		param.voltexNum = 6;		//ボルテックスの数
+		param.piningSiteNum = 6;	//ピニングサイトの数
+		param.dt = 0.001;			//時間変化量
+		param.maxTime = 1;			//計算時間
+		param.a = 6;				//初期のボルテックスの格子間隔
+		param.cutoff = 16;
+		param.eta = 1.0;
 
 		//分子動力学法の実行
 		unique_ptr<MD> md = std::make_unique<MD>();
-		//md->Run(paramater);
+		//md->Run(param);
 
 		
 	}

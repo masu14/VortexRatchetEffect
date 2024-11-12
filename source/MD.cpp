@@ -13,7 +13,7 @@ MD::~MD() {
 }
 
 //main.cppでparamaterを設定し、Runメソッドでmd計算を実行する
-void MD::Run(Paramater param) {
+void MD::Run(Paramater<double> param) {
 
 	//パラメーターをもとに変数を設定する
 	voltexNum		= param.voltexNum;
