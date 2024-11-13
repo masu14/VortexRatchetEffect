@@ -18,6 +18,21 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\FileHandler.cpp" />
+    <ClCompile Include="..\source\InputReader.cpp" />
+    <ClCompile Include="..\source\main.cpp" />
+    <ClCompile Include="..\source\MD.cpp" />
+    <ClCompile Include="..\source\PiningSite.cpp" />
+    <ClCompile Include="..\source\Voltex.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\header\FileHandler.h" />
+    <ClInclude Include="..\header\InputReader.h" />
+    <ClInclude Include="..\header\MD.h" />
+    <ClInclude Include="..\header\PiningSite.h" />
+    <ClInclude Include="..\header\Voltex.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -131,21 +146,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="header\FileHandler.h" />
-    <ClInclude Include="header\MD.h" />
-    <ClInclude Include="header\PiningSite.h" />
-    <ClInclude Include="header\InputReader.h" />
-    <ClInclude Include="header\Voltex.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="source\FileHandler.cpp" />
-    <ClCompile Include="source\MD.cpp" />
-    <ClCompile Include="source\PiningSite.cpp" />
-    <ClCompile Include="source\InputReader.cpp" />
-    <ClCompile Include="source\Voltex.cpp" />
-    <ClCompile Include="source\main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

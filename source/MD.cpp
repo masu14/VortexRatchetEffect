@@ -100,7 +100,7 @@ bool MD::InitPinPos() {
 void MD::MainLoop() {
 
 	//今日の日付のディレクトリを作成
-	std::string dirName = "output/" + FileHandler::GetCurrentTimeStr();
+	std::string dirName = "../output/" + FileHandler::GetCurrentTimeStr();
 	FileHandler::CreateDir(dirName);
 
 	//出力ファイルの作成
