@@ -30,6 +30,7 @@ void InputReader::ReadParam(const string& filename)
 		param.eta = StringToNumber<double>(sections["Constant"]["eta"]);
 
 		//変数パラメータ
+		//[Variable]タグのついたmapから変数名を取り出す
 		const auto& innerMap = sections["Variable"];
 		std::cout  << std::endl;
 		std::array<string, 2> varStrs;
@@ -56,17 +57,6 @@ void InputReader::ReadParam(const string& filename)
 		bool enableLoggings = stringToBool(sections["Settings"]["enable_loggings"]);
 		bool debugMode = stringToBool(sections["Settings"]["debug_mode"]);
 
-		std::cout << "[Paramater]" << std::endl;
-		std::cout << "voltexNum: " << param.voltexNum << std::endl;
-		std::cout << "piningSiteNum: " << param.piningSiteNum << std::endl;
-		std::cout << "dt: " << param.dt << std::endl;
-		std::cout << "maxTime: " << param.maxTime << std::endl;
-		std::cout << "a: " << param.a << std::endl;
-		std::cout << "cutoff: " << param.cutoff << std::endl;
-		std::cout << "eta: " << param.eta << std::endl;
-
-		std::cout << "[Variable]" << std::endl;
-		std::cout << "lorentzForce: " << param.var1[0] << "," << param.var1[1] << "," << param.var1[2] << std::endl;
 
 		std::cout << "[Setting]" << std::endl;
 		std::cout << "Enable Logging: " << enableLoggings << std::endl;

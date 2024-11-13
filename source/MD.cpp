@@ -25,6 +25,7 @@ void MD::Run(Paramater<double> param) {
 	height			= param.a * 2.0 * sqrt(3.0) * voltexNum / 12.0;
 	cutoff			= param.cutoff;
 	eta				= param.eta;
+	lorentzForce    = param.lorentzForce;
 	
 
 	//初期化が成功したときMD法を実行する
@@ -88,7 +89,6 @@ bool MD::InitPinPos() {
 	
 	piningSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
 
-	
 	PlacePinManual();
 	return true;
 
@@ -163,7 +163,7 @@ void MD::CalcVVI() {
 			double f0 = 3.0;	//VVIの係数f0
 			
 			Vector2d difPos = voltexs[i].GetPos() - voltexs[j].GetPos();		//ベクトルの差
-			std::cout << i << difPos.transpose() << std::endl;
+			//std::cout << i << difPos.transpose() << std::endl;
 			
 			//周期的に繰り返すボルテックスのうち、近いボルテックスを計算する
 			//周期的境界条件に対してカットオフ長さが短ければこの計算でもうまくいくが要検討
@@ -218,9 +218,8 @@ void MD::CalcPiningForce() {
 //		ローレンツ力を計算する	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce() {
-	double force = 0.9;
 	for (int i = 0; i < voltexNum; i++) {
-		voltexs[i].AddForce(force, 0.0);
+		voltexs[i].AddForce(lorentzForce, 0.0);
 	}
 }
 

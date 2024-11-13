@@ -49,6 +49,7 @@ private:
 	double weight = 5;			//シミュレーションボックスの幅
 	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
 	double eta = 1.0;			//粘性抵抗η
+	double lorentzForce;		//ローレンツ力の大きさ
 
 	unique_ptr<Voltex[]> voltexs;					//ボルテックスのインスタンス、　voltexNum個の配列として扱う
 	unique_ptr<PiningSiteCircle[]> piningSites;		//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う

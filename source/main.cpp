@@ -8,27 +8,33 @@ int main() {
 	{
 		//シミュレーションの設定パラメータをinput.iniファイルから取得する
 		InputReader inputReader;
-		inputReader.ReadParam("input.ini");
+		inputReader.ReadParam("input/input.ini");
 
 		//パラメーターの設定
 		Paramater<double> param = inputReader.GetParam();
 		
-		double var1Start, var1end, var1step,
-			   var2Start, var2end, var2step;
+		std::cout << "[Paramater]" << std::endl;
+		std::cout << "voltexNum: " << param.voltexNum << std::endl;
+		std::cout << "piningSiteNum: " << param.piningSiteNum << std::endl;
+		std::cout << "dt: " << param.dt << std::endl;
+		std::cout << "maxTime: " << param.maxTime << std::endl;
+		std::cout << "a: " << param.a << std::endl;
+		std::cout << "cutoff: " << param.cutoff << std::endl;
+		std::cout << "eta: " << param.eta << std::endl;
 
-		param.voltexNum = 6;		//ボルテックスの数
-		param.piningSiteNum = 6;	//ピニングサイトの数
-		param.dt = 0.001;			//時間変化量
-		param.maxTime = 1;			//計算時間
-		param.a = 6;				//初期のボルテックスの格子間隔
-		param.cutoff = 16;
-		param.eta = 1.0;
+		std::cout << "[Variable]" << std::endl;
+		std::cout << param.var1name <<": " << param.var1[0] << "," << param.var1[1] << "," << param.var1[2] << std::endl;
+		std::cout << param.var2name <<": " << param.var2[0] << "," << param.var2[1] << "," << param.var2[2] << std::endl;
 
-		//分子動力学法の実行
-		unique_ptr<MD> md = std::make_unique<MD>();
-		//md->Run(param);
+		if(param.var1name == "lorentzForce") param.lorentzForce = param.var1[0];
 
-		
+
+		while (param.lorentzForce <= param.var1[1]) {
+			//分子動力学法の実行
+			unique_ptr<MD> md = std::make_unique<MD>();
+			md->Run(param);
+			param.lorentzForce += param.var1[2];
+		}
 	}
 	
 	return 0;
