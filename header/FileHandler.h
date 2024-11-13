@@ -5,7 +5,7 @@
 #include <iomanip>		//std::setw, std::setfill
 #include <filesystem>	//
 #include <regex>		//正規表現
-#include "Voltex.h"
+#include "Vortex.h"
 #include "PiningSite.h"
 
 enum class OutputType
@@ -17,7 +17,7 @@ enum class OutputType
 
 template<typename T> using unique_ptr = std::unique_ptr<T>;
 
-class Voltex;
+class Vortex;
 class PiningSiteCircle;
 
 class FileHandler {
@@ -43,15 +43,15 @@ public:
 	std::string GetName() const;
 
 	void WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningSites, int pinNum);
-	void WriteLabel(int voltexNum);//csvファイル書き込み用、ラベルを記載する
+	void WriteLabel(int vortexNum);//csvファイル書き込み用、ラベルを記載する
 	
-	void WritePos(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
-	void WriteVelocity(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
-	void WriteForce(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum);
+	void WritePos(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum);
+	void WriteVelocity(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum);
+	void WriteForce(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum);
 
-	void WritePos(const unique_ptr<Voltex[]>& voltexs, int voltexNum);
-	void WriteVelocity(const unique_ptr<Voltex[]>& voltexs, int voltexNum);
-	void WriteForce(const unique_ptr<Voltex[]>& voltexs, int voltexNum);
+	void WritePos(const unique_ptr<Vortex[]>& vortexs, int vortexNum);
+	void WriteVelocity(const unique_ptr<Vortex[]>& vortexs, int vortexNum);
+	void WriteForce(const unique_ptr<Vortex[]>& vortexs, int vortexNum);
 
 private:
 	//=======================================================================================

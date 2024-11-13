@@ -2,7 +2,7 @@
 #include <memory>
 #include <math.h>			//Šî–{“I‚ÈŠÖ”‚ğˆµ‚¤‚½‚ß‚Ì•W€ƒ‰ƒCƒuƒ‰ƒŠ
 #include <random>
-#include "Voltex.h"
+#include "Vortex.h"
 #include "PiningSite.h"
 #include "FileHandler.h"
 #include "InputReader.h"	//Paramater\‘¢‘Ì‚ğ‚Æ‚é
@@ -11,7 +11,7 @@ template<typename T> using unique_ptr = std::unique_ptr<T>;		//’·‚­‚Äç’·‚È‚Ì‚Å
 
 
 //ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾
-class Voltex;		
+class Vortex;		
 class PiningSite;
 class PiningSiteCircle;
 
@@ -40,7 +40,7 @@ private:
 	//=======================================================================================
 	// private variables.
 	//=======================================================================================
-	int voltexNum;				//ƒ{ƒ‹ƒeƒbƒNƒX‚Ì”
+	int vortexNum;				//ƒ{ƒ‹ƒeƒbƒNƒX‚Ì”
 	int piningSiteNum;			//ƒsƒjƒ“ƒOƒTƒCƒg‚Ì”
 	double dt = 0.001;			//ŠÔ•Ï‰»—Ê
 	double maxTime = 10.0;		//ŒvZŠÔ
@@ -51,7 +51,7 @@ private:
 	double eta = 1.0;			//”S«’ïRƒÅ
 	double lorentzForce;		//ƒ[ƒŒƒ“ƒc—Í‚Ì‘å‚«‚³
 
-	unique_ptr<Voltex[]> voltexs;					//ƒ{ƒ‹ƒeƒbƒNƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒXA@voltexNumŒÂ‚Ì”z—ñ‚Æ‚µ‚Äˆµ‚¤
+	unique_ptr<Vortex[]> vortexs;					//ƒ{ƒ‹ƒeƒbƒNƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒXA@vortexNumŒÂ‚Ì”z—ñ‚Æ‚µ‚Äˆµ‚¤
 	unique_ptr<PiningSiteCircle[]> piningSites;		//ƒsƒjƒ“ƒOƒTƒCƒg‚ÌƒCƒ“ƒXƒ^ƒ“ƒXApiningSiteNumŒÂ‚Ì”z—ñ‚Æ‚µ‚Äˆµ‚¤
 	bool noPiningSite = false;						//ƒsƒjƒ“ƒOƒTƒCƒg–³‚µ‚Ìê‡‚Ìƒtƒ‰ƒO
 	double lambda = 1.0;
@@ -62,7 +62,7 @@ private:
 	bool InitApp();
 	void MainLoop();
 
-	bool InitVolPos();			//ƒ{ƒ‹ƒeƒbƒNƒX‚Ì‰Šú”z’u‚ğs‚¤
+	bool InitVorPos();			//ƒ{ƒ‹ƒeƒbƒNƒX‚Ì‰Šú”z’u‚ğs‚¤
 	bool InitPinPos();			//ƒsƒjƒ“ƒOƒTƒCƒg‚Ì‰Šú”z’u‚ğs‚¤
 
 	

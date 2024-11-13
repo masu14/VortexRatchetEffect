@@ -16,13 +16,13 @@ MD::~MD() {
 void MD::Run(Paramater<double> param) {
 
 	//パラメーターをもとに変数を設定する
-	voltexNum		= param.voltexNum;
+	vortexNum		= param.vortexNum;
 	piningSiteNum	= param.piningSiteNum;
 	dt				= param.dt;
 	maxTime			= param.maxTime;
 	a				= param.a;
 	weight			= param.a * 3.0;
-	height			= param.a * 2.0 * sqrt(3.0) * voltexNum / 12.0;
+	height			= param.a * 2.0 * sqrt(3.0) * vortexNum / 12.0;
 	cutoff			= param.cutoff;
 	eta				= param.eta;
 	lorentzForce    = param.lorentzForce;
@@ -39,9 +39,9 @@ void MD::Run(Paramater<double> param) {
 bool MD::InitApp() {
 
 	// ボルテックスの初期化
-	if(!InitVolPos())
+	if(!InitVorPos())
 	{
-		std::cout << "!initvoltexpos" << std::endl;
+		std::cout << "!initvortexpos" << std::endl;
 		return false;
 	}
 
@@ -61,12 +61,12 @@ bool MD::InitApp() {
 //-------------------------------------------------------------------------------------------------
 //		ボルテックスを初期位置に配置する
 //-------------------------------------------------------------------------------------------------
-bool MD::InitVolPos() {
-	if (voltexNum <= 0) {
+bool MD::InitVorPos() {
+	if (vortexNum <= 0) {
 		std::cout << "vortexNumに不正な値が入力されました" << std::endl;
 		return false;
 	}
-	voltexs = std::make_unique<Voltex[]>(voltexNum);
+	vortexs = std::make_unique<Vortex[]>(vortexNum);
 	
 	PlaceVorSquare();		//ボルテックスが三角格子となるように配置
 	
@@ -114,15 +114,15 @@ void MD::MainLoop() {
 	fileForce.   CreateFile(dirName, OutputType::force);
 
 	//ボルテックスの初期分布(位置、速度、外力)の書き込み
-	//filePos.WritePos(voltexs, voltexNum);
-	//fileVelocity.WriteVelocity(voltexs, voltexNum);
-	//fileForce.WriteForce(voltexs, voltexNum);
+	//filePos.WritePos(vortexs, vortexNum);
+	//fileVelocity.WriteVelocity(vortexs, vortexNum);
+	//fileForce.WriteForce(vortexs, vortexNum);
 	
 	//ラベルの書き込み、簡易的なもの
 	filePos.WritePinPos(piningSites, piningSiteNum);
-	filePos.     WriteLabel(voltexNum);
-	fileVelocity.WriteLabel(voltexNum);
-	fileForce.   WriteLabel(voltexNum);
+	filePos.     WriteLabel(vortexNum);
+	fileVelocity.WriteLabel(vortexNum);
+	fileForce.   WriteLabel(vortexNum);
 	
 	//メインループ
 	double time = 0;
@@ -132,25 +132,25 @@ void MD::MainLoop() {
 		CalcEOM(time);
 
 		//計算結果をファイルに書き込む
-		filePos.     WritePos(time, voltexs, voltexNum);
-		fileVelocity.WriteVelocity(time, voltexs, voltexNum);
-		fileForce.   WriteForce(time, voltexs, voltexNum);
+		filePos.     WritePos(time, vortexs, vortexNum);
+		fileVelocity.WriteVelocity(time, vortexs, vortexNum);
+		fileForce.   WriteForce(time, vortexs, vortexNum);
 
 		time += dt;
 	}
 
 	//最終的なボルテックスの分布(位置、速度、外力)の書き込み
-	//filePos.WritePos(voltexs, voltexNum);
-	//fileVelocity.WriteVelocity(voltexs, voltexNum);
-	//fileForce.WriteForce(voltexs, voltexNum);
+	//filePos.WritePos(vortexs, vortexNum);
+	//fileVelocity.WriteVelocity(vortexs, vortexNum);
+	//fileForce.WriteForce(vortexs, vortexNum);
 }
 
 //-------------------------------------------------------------------------------------------------
 //		外力を0に初期化する
 //-------------------------------------------------------------------------------------------------
 void MD::InitForce() {
-	for (int i = 0; i < voltexNum; i++) {
-		voltexs[i].SetForce(0.0, 0.0);
+	for (int i = 0; i < vortexNum; i++) {
+		vortexs[i].SetForce(0.0, 0.0);
 	}
 }
 
@@ -158,11 +158,11 @@ void MD::InitForce() {
 //		ボルテックス・ボルテックス相互作用(VVI)を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcVVI() {
-	for (int i = 0; i < voltexNum -1 ; i++) {
-		for (int j = i+1; j < voltexNum; j++) {
+	for (int i = 0; i < vortexNum -1 ; i++) {
+		for (int j = i+1; j < vortexNum; j++) {
 			double f0 = 3.0;	//VVIの係数f0
 			
-			Vector2d difPos = voltexs[i].GetPos() - voltexs[j].GetPos();		//ベクトルの差
+			Vector2d difPos = vortexs[i].GetPos() - vortexs[j].GetPos();		//ベクトルの差
 			//std::cout << i << difPos.transpose() << std::endl;
 			
 			//周期的に繰り返すボルテックスのうち、近いボルテックスを計算する
@@ -180,8 +180,8 @@ void MD::CalcVVI() {
 			double xForce = force.x();				//VVIのx成分
 			double yForce = force.y();				//VVIのy成分
 			
-			voltexs[i].AddForce(xForce, yForce);	//作用
-			voltexs[j].AddForce(-xForce, -yForce);	//反作用
+			vortexs[i].AddForce(xForce, yForce);	//作用
+			vortexs[j].AddForce(-xForce, -yForce);	//反作用
 		}
 	}
 	
@@ -194,9 +194,9 @@ void MD::CalcPiningForce() {
 	double kp = 1.0;	//kpはピニング力の大きさを決める係数
 	double lp = 0.3*sqrt(2.0);	//lpはピニングサイトにおける常伝導から超伝導への回復長
 	
-	for (int i = 0; i < voltexNum; i++) {
+	for (int i = 0; i < vortexNum; i++) {
 		for (int j = 0; j < piningSiteNum; j++) {
-			Vector2d difPos = voltexs[i].GetPos() - piningSites[j].GetPos();
+			Vector2d difPos = vortexs[i].GetPos() - piningSites[j].GetPos();
 
 			if (difPos.x() < -weight / 2) difPos(0) += weight;
 			if (difPos.x() > weight / 2) difPos(0) -= weight;
@@ -209,7 +209,7 @@ void MD::CalcPiningForce() {
 			Vector2d force = -kp / pow(cosh((difPos.norm() - piningSites[j].GetR()) / lp), 2.0) * difPos/difPos.norm();
 			double xForce = force.x();
 			double yForce = force.y();
-			voltexs[i].AddForce(xForce, yForce);
+			vortexs[i].AddForce(xForce, yForce);
 		}
 	}
 }
@@ -218,8 +218,8 @@ void MD::CalcPiningForce() {
 //		ローレンツ力を計算する	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce() {
-	for (int i = 0; i < voltexNum; i++) {
-		voltexs[i].AddForce(lorentzForce, 0.0);
+	for (int i = 0; i < vortexNum; i++) {
+		vortexs[i].AddForce(lorentzForce, 0.0);
 	}
 }
 
@@ -227,10 +227,10 @@ void MD::CalcLorentzForce() {
 //		粘性抵抗による力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcResistForce() {
-	for (int i = 0; i < voltexNum; i++) {
-		Vector2d velocity = voltexs[i].GetVelocity();	//ボルテックスの速度を取得する
+	for (int i = 0; i < vortexNum; i++) {
+		Vector2d velocity = vortexs[i].GetVelocity();	//ボルテックスの速度を取得する
 		Vector2d force = -eta * velocity;				//粘性抵抗による力を計算する
-		voltexs[i].AddForce(force.x(), force.y());		//ボルテックスへの外力に加える
+		vortexs[i].AddForce(force.x(), force.y());		//ボルテックスへの外力に加える
 	}
 }
 
@@ -254,13 +254,13 @@ void MD::CalcEOM(double time)
 			return;
 		}
 
-		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(voltexNum);	//速度v(t)の動的配列、v(t+dt)の計算に使う
-		unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(voltexNum);	//外力F(t)、v(t+dt)の計算に使う
-		for (int i = 0; i < voltexNum; i++) {
+		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(vortexNum);	//速度v(t)の動的配列、v(t+dt)の計算に使う
+		unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);	//外力F(t)、v(t+dt)の計算に使う
+		for (int i = 0; i < vortexNum; i++) {
 
-			Vector2d r1 = voltexs[i].GetPos();		//位置r(t)
-			v1[i] = voltexs[i].GetVelocity();		//速度v(t)
-			f1[i] = voltexs[i].GetForce();			//外力F(t)
+			Vector2d r1 = vortexs[i].GetPos();		//位置r(t)
+			v1[i] = vortexs[i].GetVelocity();		//速度v(t)
+			f1[i] = vortexs[i].GetForce();			//外力F(t)
 
 			//位置r(t+dt)を計算し、更新する
 			Vector2d r2 = r1 + v1[i] * dt + (f1[i] / eta) / 2 * dt * dt;	//位置r(t+dt)の計算
@@ -271,7 +271,7 @@ void MD::CalcEOM(double time)
 			if (r2.y() < 0)      r2(1) += height;
 			if (r2.y() > height) r2(1) -= height;
 			
-			voltexs[i].SetPos(r2.x(), r2.y());								//位置r(t+dt)の更新
+			vortexs[i].SetPos(r2.x(), r2.y());								//位置r(t+dt)の更新
 		}
 
 		//外力の再計算を行い、F(t+dt)を計算する
@@ -284,13 +284,13 @@ void MD::CalcEOM(double time)
 		CalcResistForce();
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
-		for (int i = 0; i < voltexNum; i++) {
+		for (int i = 0; i < vortexNum; i++) {
 			
-			Vector2d f2 = voltexs[i].GetForce();
+			Vector2d f2 = vortexs[i].GetForce();
 			Vector2d v2 = v1[i] + (f1[i] + f2) / (2 * eta) * dt;	//速度v(t+dt)の計算
 			
-			voltexs[i].SetForce(f2.x(), f2.y());					//外力F(t+dt)の更新、次の時間発展の位置r(t)計算で使う
-			voltexs[i].SetVelocity(v2.x(), v2.y());					//速度v(t+dt)の更新
+			vortexs[i].SetForce(f2.x(), f2.y());					//外力F(t+dt)の更新、次の時間発展の位置r(t)計算で使う
+			vortexs[i].SetVelocity(v2.x(), v2.y());					//速度v(t+dt)の更新
 		}
 	}
 }
@@ -308,10 +308,10 @@ void MD::CalcEOMOverDamp(double time)
 	}
 	double eta = 1.0;	//粘性抵抗η
 
-	unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(voltexNum);
-	for (int i = 0; i < voltexNum; i++) {
+	unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);
+	for (int i = 0; i < vortexNum; i++) {
 
-		f1[i] = voltexs[i].GetForce();	//f(t)の取得
+		f1[i] = vortexs[i].GetForce();	//f(t)の取得
 	}
 
 	InitForce();	//ボルテックスへの外力を初期化
@@ -322,9 +322,9 @@ void MD::CalcEOMOverDamp(double time)
 	CalcLorentzForce();
 	
 	//終端速度を求め、そこから位置を求める
-	for (int i = 0; i < voltexNum; i++) {
-		Vector2d r1 = voltexs[i].GetPos();							//r(t)の取得
-		Vector2d f2 = voltexs[i].GetForce();						//f(t+dt)の取得
+	for (int i = 0; i < vortexNum; i++) {
+		Vector2d r1 = vortexs[i].GetPos();							//r(t)の取得
+		Vector2d f2 = vortexs[i].GetForce();						//f(t+dt)の取得
 		Vector2d v2 = f2 / eta;										//v(t+dt)の計算
 		Vector2d r2 = r1 + v2 * dt + (f2 - f1[i]) / (2 * eta) * dt;	//r(t+dt)の計算
 
@@ -334,9 +334,9 @@ void MD::CalcEOMOverDamp(double time)
 		if (r2.y() < 0)      r2(1) += height;
 		if (r2.y() > height) r2(1) -= height;
 
-		voltexs[i].SetForce(f2.x(), f2.y());		//外力の更新
-		voltexs[i].SetVelocity(v2.x(), v2.y());		//速度の更新
-		voltexs[i].SetPos(r2.x(), r2.y());			//位置の更新
+		vortexs[i].SetForce(f2.x(), f2.y());		//外力の更新
+		vortexs[i].SetVelocity(v2.x(), v2.y());		//速度の更新
+		vortexs[i].SetPos(r2.x(), r2.y());			//位置の更新
 	}
 }
 
@@ -346,12 +346,12 @@ void MD::CalcEOMOverDamp(double time)
 //------------------------------------------------------------------------------------------------
 void MD::PlaceVorTriangle() {
 	double y = a * sqrt(3.0) / 4.0;
-	for (int i = 0; i < voltexNum / 3.0; i++) { 
+	for (int i = 0; i < vortexNum / 3.0; i++) { 
 		double x = a / 4.0;
 		if (i % 2 == 1) x += a / 2.0;
 		
 		for (int j = 0; j < 3; j++) {
-			voltexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
+			vortexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
 		}
 	}
 }
@@ -362,10 +362,10 @@ void MD::PlaceVorTriangle() {
 //------------------------------------------------------------------------------------------------
 void MD::PlaceVorSquare() {
 	double y = a * sqrt(3.0) / 4.0;
-	for (int i = 0; i < voltexNum / 3.0; i++) {
+	for (int i = 0; i < vortexNum / 3.0; i++) {
 		double x = a / 4.0;
 		for (int j = 0; j < 3; j++) {
-			voltexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
+			vortexs[3 * i + j].SetPos(x + a * (double)j, y + sqrt(3) / 2.0 * a * (double)i);
 		}
 	}
 }
@@ -388,7 +388,7 @@ void MD::PlaceVorRandom() {
 		for (int j = 0; j < 3; j++) {
 			double x = xdis(gen);
 			double y = ydis(gen);
-			voltexs[3 * i + j].SetPos(x, y);
+			vortexs[3 * i + j].SetPos(x, y);
 		}
 		
 	}
@@ -400,18 +400,18 @@ void MD::PlaceVorRandom() {
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceVorManual()
 {
-	voltexs[0].SetPos(0.01, 0.108253);
-	/*voltexs[1].SetPos(0.4, 0.4);
-	voltexs[2].SetPos(0.744743, 0.180336);
-	voltexs[3].SetPos(0.172043,0.705768);
-	voltexs[4].SetPos(0.135809,0.483818);
-	voltexs[5].SetPos(0.550069,0.052258);
-	voltexs[6].SetPos(0.551065,0.176116);
-	voltexs[7].SetPos(0.292968,0.059621);
-	voltexs[8].SetPos(0.081272,0.490255);
-	voltexs[9].SetPos(0.351897,0.686276);
-	voltexs[10].SetPos(0.113886,0.285068);
-	voltexs[11].SetPos(0.610364,0.741576);*/
+	vortexs[0].SetPos(0.01, 0.108253);
+	/*vortexs[1].SetPos(0.4, 0.4);
+	vortexs[2].SetPos(0.744743, 0.180336);
+	vortexs[3].SetPos(0.172043,0.705768);
+	vortexs[4].SetPos(0.135809,0.483818);
+	vortexs[5].SetPos(0.550069,0.052258);
+	vortexs[6].SetPos(0.551065,0.176116);
+	vortexs[7].SetPos(0.292968,0.059621);
+	vortexs[8].SetPos(0.081272,0.490255);
+	vortexs[9].SetPos(0.351897,0.686276);
+	vortexs[10].SetPos(0.113886,0.285068);
+	vortexs[11].SetPos(0.610364,0.741576);*/
 	
 }
 
@@ -421,8 +421,8 @@ void MD::PlaceVorManual()
 void MD::PlacePin()
 {
 	for (int i = 0; i < piningSiteNum; i++) {
-		double x = voltexs[i].GetPos().x();
-		double y = voltexs[i].GetPos().y();
+		double x = vortexs[i].GetPos().x();
+		double y = vortexs[i].GetPos().y();
 		piningSites[i].SetPos(x, y);
 		piningSites[i].SetR(a * (double)(i + 1.0) / 16.0);
 		std::cout << "piningSite[" << i << "] pos" << piningSites[i].GetPos().transpose() << std::endl;

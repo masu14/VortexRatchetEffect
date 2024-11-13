@@ -159,10 +159,10 @@ void FileHandler::WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningsites,
 //----------------------------------------------------------------------------------------------
 //     csvファイル書き込み用、ラベルを記載する
 //----------------------------------------------------------------------------------------------
-void FileHandler::WriteLabel(int voltexNum)
+void FileHandler::WriteLabel(int vortexNum)
 {
 	file << "time";
-	for (int i = 0; i < voltexNum; i++) {
+	for (int i = 0; i < vortexNum; i++) {
 		file << ",x"<<i+1<<",y"<<i+1;
 	}
 	file << "\n";
@@ -171,11 +171,11 @@ void FileHandler::WriteLabel(int voltexNum)
 //----------------------------------------------------------------------------------------------
 //    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む(時間発展用)
 //----------------------------------------------------------------------------------------------
-void FileHandler::WritePos(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+void FileHandler::WritePos(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum)
 {
 	file << time;
-	for (int i = 0; i < voltexNum; i++) {
-		file << "," << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y();
+	for (int i = 0; i < vortexNum; i++) {
+		file << "," << vortexs[i].GetPos().x() << "," << vortexs[i].GetPos().y();
 	}
 	file << "\n";
 }
@@ -183,11 +183,11 @@ void FileHandler::WritePos(double time, const unique_ptr<Voltex[]>& voltexs, int
 //----------------------------------------------------------------------------------------------
 //    csvファイル書き込み用、各ボルテックスの速度をファイルに書き込む(時間発展用)
 //----------------------------------------------------------------------------------------------
-void FileHandler::WriteVelocity(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+void FileHandler::WriteVelocity(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum)
 {
 	file << time;
-	for (int i = 0; i < voltexNum; i++) {
-		file << "," << voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y();
+	for (int i = 0; i < vortexNum; i++) {
+		file << "," << vortexs[i].GetVelocity().x() << "," << vortexs[i].GetVelocity().y();
 	}
 	file << "\n";
 }
@@ -195,11 +195,11 @@ void FileHandler::WriteVelocity(double time, const unique_ptr<Voltex[]>& voltexs
 //----------------------------------------------------------------------------------------------
 //    csvファイル書き込み用、各ボルテックスの外力をファイルに書き込む(時間発展用)
 //----------------------------------------------------------------------------------------------
-void FileHandler::WriteForce(double time, const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+void FileHandler::WriteForce(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum)
 {
 	file << time;
-	for (int i = 0; i < voltexNum; i++) {
-		file << "," << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y();
+	for (int i = 0; i < vortexNum; i++) {
+		file << "," << vortexs[i].GetForce().x() << "," << vortexs[i].GetForce().y();
 	}
 	file << "\n";
 }
@@ -207,32 +207,32 @@ void FileHandler::WriteForce(double time, const unique_ptr<Voltex[]>& voltexs, i
 //----------------------------------------------------------------------------------------------
 //    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む(分布用)
 //----------------------------------------------------------------------------------------------
-void FileHandler::WritePos(const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+void FileHandler::WritePos(const unique_ptr<Vortex[]>& vortexs, int vortexNum)
 {
 	file << "x,y\n";
-	for (int i = 0; i < voltexNum; i++) {
-		file << voltexs[i].GetPos().x() << "," << voltexs[i].GetPos().y() << "\n";
+	for (int i = 0; i < vortexNum; i++) {
+		file << vortexs[i].GetPos().x() << "," << vortexs[i].GetPos().y() << "\n";
 	}
 }
 
 //----------------------------------------------------------------------------------------------
 //    csvファイル書き込み用、各ボルテックスの速度をファイルに書き込む(分布用)
 //----------------------------------------------------------------------------------------------
-void FileHandler::WriteVelocity(const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+void FileHandler::WriteVelocity(const unique_ptr<Vortex[]>& vortexs, int vortexNum)
 {
 	file << "x,y\n";
-	for (int i = 0; i < voltexNum; i++) {
-		file << voltexs[i].GetVelocity().x() << "," << voltexs[i].GetVelocity().y() << "\n";
+	for (int i = 0; i < vortexNum; i++) {
+		file << vortexs[i].GetVelocity().x() << "," << vortexs[i].GetVelocity().y() << "\n";
 	}
 }
 
 //----------------------------------------------------------------------------------------------
 //    csvファイル書き込み用、各ボルテックスの外力をファイルに書き込む(分布用)
 //----------------------------------------------------------------------------------------------
-void FileHandler::WriteForce(const unique_ptr<Voltex[]>& voltexs, int voltexNum)
+void FileHandler::WriteForce(const unique_ptr<Vortex[]>& vortexs, int vortexNum)
 {
 	file << "x,y\n";
-	for (int i = 0; i < voltexNum; i++) {
-		file << voltexs[i].GetForce().x() << "," << voltexs[i].GetForce().y() << "\n";
+	for (int i = 0; i < vortexNum; i++) {
+		file << vortexs[i].GetForce().x() << "," << vortexs[i].GetForce().y() << "\n";
 	}
 }

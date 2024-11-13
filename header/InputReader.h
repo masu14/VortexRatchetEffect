@@ -18,7 +18,7 @@ using string = std::string;
 /// <summary>
 template <typename T>
 struct Paramater {
-	int voltexNum;				//ボルテックスの数
+	int vortexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
 	double dt = 0.001;			//時間変化量
 	double maxTime = 10.0;		//計算時間

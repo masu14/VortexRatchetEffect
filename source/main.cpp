@@ -14,7 +14,7 @@ int main() {
 		Paramater<double> param = inputReader.GetParam();
 		
 		std::cout << "[Paramater]" << std::endl;
-		std::cout << "voltexNum: " << param.voltexNum << std::endl;
+		std::cout << "vortexNum: " << param.vortexNum << std::endl;
 		std::cout << "piningSiteNum: " << param.piningSiteNum << std::endl;
 		std::cout << "dt: " << param.dt << std::endl;
 		std::cout << "maxTime: " << param.maxTime << std::endl;

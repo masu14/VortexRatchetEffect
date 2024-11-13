@@ -21,7 +21,7 @@ void InputReader::ReadParam(const string& filename)
 	sections = ReadInputFile(filename);
 	try {
 		//’è”ƒpƒ‰ƒ[ƒ^
-		param.voltexNum = StringToNumber<int>(sections["Constant"]["voltexNum"]);
+		param.vortexNum = StringToNumber<int>(sections["Constant"]["vortexNum"]);
 		param.piningSiteNum = StringToNumber<int>(sections["Constant"]["piningsiteNum"]);
 		param.dt = StringToNumber<double>(sections["Constant"]["dt"]);
 		param.maxTime = StringToNumber<double>(sections["Constant"]["maxTime"]);
