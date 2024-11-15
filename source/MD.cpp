@@ -38,17 +38,17 @@ void MD::Run(Paramater<double> param) {
 
 bool MD::InitApp() {
 
-	// ボルテックスの初期化
-	if(!InitVorPos())
-	{
-		std::cout << "!initvortexpos" << std::endl;
-		return false;
-	}
-
 	// ピニングサイトの初期化
 	if(!InitPinPos())
 	{
 		std::cout << "!initpinpos" << std::endl;
+		return false;
+	}
+
+	// ボルテックスの初期化
+	if (!InitVorPos())
+	{
+		std::cout << "!initvortexpos" << std::endl;
 		return false;
 	}
 
