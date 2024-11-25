@@ -26,13 +26,18 @@ int main() {
 		std::cout << param.var1name <<": " << param.var1[0] << "," << param.var1[1] << "," << param.var1[2] << std::endl;
 		std::cout << param.var2name <<": " << param.var2[0] << "," << param.var2[1] << "," << param.var2[2] << std::endl;
 
-		if(param.var1name == "lorentzForce") param.lorentzForce = param.var1[0];
+		if (param.var1name == "lorentzForce") param.lorentzForce = param.var1[0];
+		if (param.var2name == "siteDistance") param.siteDistance = param.var2[0];
 
 
 		while (param.lorentzForce <= param.var1[1]) {
-			//分子動力学法の実行
-			unique_ptr<MD> md = std::make_unique<MD>();
-			md->Run(param);
+			while (param.siteDistance <= param.var2[1]) {
+				//分子動力学法の実行
+				unique_ptr<MD> md = std::make_unique<MD>();
+				md->Run(param);
+				param.siteDistance += param.var2[2];
+			}
+			
 			param.lorentzForce += param.var1[2];
 		}
 	}

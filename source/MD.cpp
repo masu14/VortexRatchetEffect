@@ -26,7 +26,9 @@ void MD::Run(Paramater<double> param) {
 	cutoff			= param.cutoff;
 	eta				= param.eta;
 	lorentzForce    = param.lorentzForce;
+	siteDistance    = param.siteDistance;
 	
+
 
 	//初期化が成功したときMD法を実行する
 	if (InitApp())
@@ -68,7 +70,7 @@ bool MD::InitVorPos() {
 	}
 	vortexs = std::make_unique<Vortex[]>(vortexNum);
 	
-	PlaceVorSquare();		//ボルテックスが三角格子となるように配置
+	PlaceVorSquare();		//ボルテックスを配置
 	
 	return true;
 }
@@ -87,9 +89,18 @@ bool MD::InitPinPos() {
 		return true;
 	}
 	
+	// TODO: input.iniのピニングサイトの設定に応じて型が変わるように変更する
 	piningSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
 
 	PlacePinManual();
+
+	//siteDistanceだけ円の中心をずらす、
+	// TODO: 実験条件で動かすピニングサイトを変更する必要有
+	piningSites[0].AddPos(siteDistance, 0);
+	piningSites[3].AddPos(siteDistance, 0);
+	for (int i = 0; i < piningSiteNum; i+=3) {
+		std::cout << piningSites[i].GetPos().transpose() << std::endl;
+	}
 	return true;
 
 }
@@ -99,19 +110,29 @@ bool MD::InitPinPos() {
 //-------------------------------------------------------------------------------------------------
 void MD::MainLoop() {
 
-	//今日の日付のディレクトリを作成
-	std::string dirName = "../output/" + FileHandler::GetCurrentTimeStr();
+	// TODO: ディレクトリの名前と階層は適切だろうか
+	//実験条件のディレクトリがなかったら作成
+	std::string dirName = "../output/Circle-S2M2L2-SisVariable";
+	std::string dirPos = dirName + "/position";
+	std::string dirVel = dirName + "/velocity";
+	std::string dirForce = dirName + "/force";
+	std::string dirLFtoVel = dirName + "/lorentzForce-velocity";
+
 	FileHandler::CreateDir(dirName);
+	FileHandler::CreateDir(dirPos);
+	FileHandler::CreateDir(dirVel);
+	FileHandler::CreateDir(dirForce);
+	FileHandler::CreateDir(dirLFtoVel);
 
 	//出力ファイルの作成
-	FileHandler::SetIndex(dirName);
+	FileHandler::SetIndex(dirPos);
 	FileHandler filePos;
 	FileHandler fileVelocity;
 	FileHandler fileForce;
 	
-	filePos.     CreateFile(dirName, OutputType::position);
-	fileVelocity.CreateFile(dirName, OutputType::velocity);
-	fileForce.   CreateFile(dirName, OutputType::force);
+	filePos.     CreateFile(dirPos, OutputType::position);
+	fileVelocity.CreateFile(dirVel, OutputType::velocity);
+	fileForce.   CreateFile(dirForce, OutputType::force);
 
 	//ボルテックスの初期分布(位置、速度、外力)の書き込み
 	//filePos.WritePos(vortexs, vortexNum);

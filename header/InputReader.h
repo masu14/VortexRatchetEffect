@@ -26,6 +26,7 @@ struct Paramater {
 	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
 	double eta = 1.0;			//粘性抵抗η
 	double lorentzForce;		//ローレンツ力の大きさ
+	double siteDistance;		//ピニングサイト間の距離
 	string var1name;
 	string var2name;
 	std::array<T,3> var1;				//ループ用、配列には[start, end, step]を入れる
