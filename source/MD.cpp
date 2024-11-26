@@ -27,6 +27,8 @@ void MD::Run(Paramater<double> param) {
 	eta				= param.eta;
 	lorentzForce    = param.lorentzForce;
 	siteDistance    = param.siteDistance;
+	var1name		= param.var1name;
+	var2name		= param.var2name;
 	
 
 
@@ -112,27 +114,29 @@ void MD::MainLoop() {
 
 	// TODO: ディレクトリの名前と階層は適切だろうか
 	//実験条件のディレクトリがなかったら作成
-	std::string dirName = "../output/Circle-S2M2L2-SisVariable";
-	std::string dirPos = dirName + "/position";
-	std::string dirVel = dirName + "/velocity";
-	std::string dirForce = dirName + "/force";
-	std::string dirLFtoVel = dirName + "/lorentzForce-velocity";
+	std::string dirName = "../output/Circle-S2M2L2-S_is_Variable";
+	std::string dirMD;
+
+	std::string dirLFtoVel;
 
 	FileHandler::CreateDir(dirName);
-	FileHandler::CreateDir(dirPos);
-	FileHandler::CreateDir(dirVel);
-	FileHandler::CreateDir(dirForce);
-	FileHandler::CreateDir(dirLFtoVel);
+	std::string var1, var2;
+	if (var1name == "lorentzForce") var1 = FileHandler::FixedValueStr(2, lorentzForce);
+	if (var2name == "siteDistance") var2 = FileHandler::FixedValueStr(2,siteDistance);
+
+	dirMD = dirName + "/MD" + FileHandler::GetIndex() + "/MD_" + var1name + "=" + var1 + "_" + var2name + "=" + var2;
+	//dirMD = dirName + "/MD" + FileHandler::GetIndex() + "/MD_var1=x_var2=y";
+	FileHandler::CreateDir(dirMD);
 
 	//出力ファイルの作成
-	FileHandler::SetIndex(dirPos);
+	
 	FileHandler filePos;
 	FileHandler fileVelocity;
 	FileHandler fileForce;
 	
-	filePos.     CreateFile(dirPos, OutputType::position);
-	fileVelocity.CreateFile(dirVel, OutputType::velocity);
-	fileForce.   CreateFile(dirForce, OutputType::force);
+	filePos.     CreateFile(dirMD, "position.csv");
+	fileVelocity.CreateFile(dirMD, "velocity.csv");
+	fileForce.   CreateFile(dirMD, "force.csv");
 
 	//ボルテックスの初期分布(位置、速度、外力)の書き込み
 	//filePos.WritePos(vortexs, vortexNum);

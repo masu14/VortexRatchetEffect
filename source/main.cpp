@@ -29,7 +29,8 @@ int main() {
 		if (param.var1name == "lorentzForce") param.lorentzForce = param.var1[0];
 		if (param.var2name == "siteDistance") param.siteDistance = param.var2[0];
 
-
+		std::string dirName = "../output/Circle-S2M2L2-S_is_Variable";
+		FileHandler::SetIndex(dirName);
 		while (param.lorentzForce <= param.var1[1]) {
 			while (param.siteDistance <= param.var2[1]) {
 				//分子動力学法の実行

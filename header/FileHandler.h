@@ -36,11 +36,14 @@ public:
 	static void SetIndex(const std::string& dirName);
 	static std::string GetCurrentTimeStr();
 	static void CreateDir(std::string dirName);
+	static std::string FixedValueStr(int num, double var);
 
 	void CreateFile(std::string dirName, OutputType type);
+	void CreateFile(std::string dirName, std::string filename);
 
-	int  GetIndex() const;
+	static std::string  GetIndex();
 	std::string GetName() const;
+	
 
 	void WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningSites, int pinNum);
 	void WriteLabel(int vortexNum);//csvファイル書き込み用、ラベルを記載する

@@ -26,6 +26,12 @@ void FileHandler::CreateFile(std::string dirName, OutputType type)
 	file.open(fileName);
 }
 
+void FileHandler::CreateFile(std::string dirName, std::string filename)
+{
+	fileName = dirName + "/" + filename;
+	file.open(fileName);
+}
+
 //----------------------------------------------------------------------------------------------
 //    ファイル名のナンバリングを設定する
 //    他のファイルのナンバリングを確認し、それより1だけ大きくした値を設定する
@@ -79,7 +85,7 @@ std::string FileHandler::GetCurrentTimeStr()
 }
 
 //------------------------------------------------------------------------------------------------
-//    outputディレクトリに今日の日付のディレクトリがなかった場合、ディレクトリを作成する
+//    outputディレクトリにdirNameのディレクトリがなかった場合、ディレクトリを作成する
 //------------------------------------------------------------------------------------------------
 void FileHandler::CreateDir(std::string dirName)
 {
@@ -91,9 +97,12 @@ void FileHandler::CreateDir(std::string dirName)
 //----------------------------------------------------------------------------------------------
 //    ファイル名のナンバリングを返す
 //----------------------------------------------------------------------------------------------
-int FileHandler::GetIndex() const
+std::string FileHandler::GetIndex()
 {
-	return index;
+	std::ostringstream oss;
+	oss << std::setw(3) << std::setfill('0') << index;
+	std::string indexStr = oss.str();
+	return indexStr;
 }
 
 //----------------------------------------------------------------------------------------------
@@ -102,6 +111,18 @@ int FileHandler::GetIndex() const
 std::string FileHandler::GetName() const
 {
 	return fileName;
+}
+
+
+//----------------------------------------------------------------------------------------------
+//    ファイル名を返す
+//----------------------------------------------------------------------------------------------
+std::string FileHandler::FixedValueStr(int num, double var)
+{
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(num) << var;
+	std::string result = oss.str();
+	return result;
 }
 
 //----------------------------------------------------------------------------------------------

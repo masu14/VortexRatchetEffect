@@ -51,6 +51,8 @@ private:
 	double eta = 1.0;			//粘性抵抗η
 	double lorentzForce;		//ローレンツ力の大きさ
 	double siteDistance;
+	std::string var1name;
+	std::string var2name;
 
 	unique_ptr<Vortex[]> vortexs;					//ボルテックスのインスタンス、　vortexNum個の配列として扱う
 	unique_ptr<PiningSiteCircle[]> piningSites;		//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
