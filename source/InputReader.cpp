@@ -21,6 +21,7 @@ void InputReader::ReadParam(const string& filename)
 	sections = ReadInputFile(filename);
 	try {
 		//’è”ƒpƒ‰ƒ[ƒ^
+		param.condition = sections["Constant"]["condition"];
 		param.vortexNum = StringToNumber<int>(sections["Constant"]["vortexNum"]);
 		param.piningSiteNum = StringToNumber<int>(sections["Constant"]["piningsiteNum"]);
 		param.dt = StringToNumber<double>(sections["Constant"]["dt"]);

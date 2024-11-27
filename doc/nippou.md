@@ -1,6 +1,14 @@
-# 20241121  
+# 日報  
 
-## 予定作業  
+## 日付  
+
+### 作業内容詳細  
+
+### その他  
+
+## 20241121  
+
+### 予定作業  
 
 - 入力データ  
   - ボルテックス、ピニングサイトの初期位置を与える入力ファイルとその読み込み
@@ -12,9 +20,9 @@
   - 矩形ピニングサイト
   - 線ピニングサイト
 
-## 作業内容詳細  
+### 作業内容詳細  
 
-### 入力データ
+#### 入力データ
 
 オブジェクト(ボルテックス、ピニングサイト)の数はinput.inファイルで決める  
 inputVortexPos.iniにボルテックスの初期座標を  
@@ -27,14 +35,36 @@ InputReaderからMDへの可変長配列の受け渡しはstd::move()関数を�
 ```cpp
 unique_ptr<Vortex[]> vortexs = std::make_unique<Vortex[]>(5);
 for (int i = 0; i < 5; i++) {
-	vortexs[i].SetPos(i, i);
+  vortexs[i].SetPos(i, i);
 }
 unique_ptr<Vortex[]> vortexs2 = std::move(vortexs);
 for (int i = 0; i < 5; i++) {
-	std::cout << vortexs2[i].GetPos().x() << std::endl;
+  std::cout << vortexs2[i].GetPos().x() << std::endl;
 }
 ```
 
-## 次への作業  
+### 次への作業  
 
-## その他  
+### その他  
+
+## 20241127  
+
+### 作業内容詳細  
+
+#### 出力ファイル  
+
+```markdown
+├── output/  
+│   ├── condition1/  
+│   │   ├── MD_001/
+│   │   │   ├── MD_var1=x_var2=y/
+│   │   │   │   ├── position.csv
+│   │   │   │   ├── velocity.csv
+│   │   │   │   ├── force.csv
+```
+
+1回のシミュレーションでMD_00Xが作成され、input.iniの変数設定に応じてMD_var1=x_var2=yが作成される。  
+
+ex.MD_lorentzForce=1.00_siteDistance=0.00
+
+### その他  

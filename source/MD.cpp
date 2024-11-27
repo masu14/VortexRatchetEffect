@@ -16,6 +16,7 @@ MD::~MD() {
 void MD::Run(Paramater<double> param) {
 
 	//パラメーターをもとに変数を設定する
+	condition		= param.condition;
 	vortexNum		= param.vortexNum;
 	piningSiteNum	= param.piningSiteNum;
 	dt				= param.dt;
@@ -100,9 +101,7 @@ bool MD::InitPinPos() {
 	// TODO: 実験条件で動かすピニングサイトを変更する必要有
 	piningSites[0].AddPos(siteDistance, 0);
 	piningSites[3].AddPos(siteDistance, 0);
-	for (int i = 0; i < piningSiteNum; i+=3) {
-		std::cout << piningSites[i].GetPos().transpose() << std::endl;
-	}
+	
 	return true;
 
 }
@@ -114,22 +113,18 @@ void MD::MainLoop() {
 
 	// TODO: ディレクトリの名前と階層は適切だろうか
 	//実験条件のディレクトリがなかったら作成
-	std::string dirName = "../output/Circle-S2M2L2-S_is_Variable";
+	std::string dirName = "../output/" + condition;
 	std::string dirMD;
 
-	std::string dirLFtoVel;
-
-	FileHandler::CreateDir(dirName);
 	std::string var1, var2;
 	if (var1name == "lorentzForce") var1 = FileHandler::FixedValueStr(2, lorentzForce);
 	if (var2name == "siteDistance") var2 = FileHandler::FixedValueStr(2,siteDistance);
 
-	dirMD = dirName + "/MD" + FileHandler::GetIndex() + "/MD_" + var1name + "=" + var1 + "_" + var2name + "=" + var2;
-	//dirMD = dirName + "/MD" + FileHandler::GetIndex() + "/MD_var1=x_var2=y";
+	dirMD = dirName + "/MD" + FileHandler::GetIndex();
+	dirMD += "/MD_" + var1name + "=" + var1 + "_" + var2name + "=" + var2;
 	FileHandler::CreateDir(dirMD);
 
 	//出力ファイルの作成
-	
 	FileHandler filePos;
 	FileHandler fileVelocity;
 	FileHandler fileForce;
@@ -137,13 +132,8 @@ void MD::MainLoop() {
 	filePos.     CreateFile(dirMD, "position.csv");
 	fileVelocity.CreateFile(dirMD, "velocity.csv");
 	fileForce.   CreateFile(dirMD, "force.csv");
-
-	//ボルテックスの初期分布(位置、速度、外力)の書き込み
-	//filePos.WritePos(vortexs, vortexNum);
-	//fileVelocity.WriteVelocity(vortexs, vortexNum);
-	//fileForce.WriteForce(vortexs, vortexNum);
 	
-	//ラベルの書き込み、簡易的なもの
+	//ラベルの書き込み
 	filePos.WritePinPos(piningSites, piningSiteNum);
 	filePos.     WriteLabel(vortexNum);
 	fileVelocity.WriteLabel(vortexNum);
@@ -163,11 +153,6 @@ void MD::MainLoop() {
 
 		time += dt;
 	}
-
-	//最終的なボルテックスの分布(位置、速度、外力)の書き込み
-	//filePos.WritePos(vortexs, vortexNum);
-	//fileVelocity.WriteVelocity(vortexs, vortexNum);
-	//fileForce.WriteForce(vortexs, vortexNum);
 }
 
 //-------------------------------------------------------------------------------------------------
