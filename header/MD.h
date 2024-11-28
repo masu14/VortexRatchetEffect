@@ -52,6 +52,8 @@ private:
 	double eta = 1.0;			//粘性抵抗η
 	double lorentzForce;		//ローレンツ力の大きさ
 	double siteDistance;
+	double annealTime;
+	double lorentzFrequency;
 	std::string var1name;
 	std::string var2name;
 
@@ -73,7 +75,7 @@ private:
 	void InitForce();						//外力を0に初期化する
 	void CalcVVI();							//ボルテックス・ボルテックス相互作用(VVI)を計算する
 	void CalcPiningForce();					//ピニング力を計算する
-	void CalcLorentzForce();				//ローレンツ力を計算する	
+	void CalcLorentzForce(double time);				//ローレンツ力を計算する	
 	void CalcResistForce();					//粘性抵抗による力を計算する
 	void CalcThermalForce();				//サーマル力を計算する
 	void CalcEOM(double time);				//運動方程式を解いて位置、速度、加速度を更新する
@@ -86,6 +88,8 @@ private:
 
 	void PlacePin();
 	void PlacePinManual();
+
+	std::string SetVariableName(std::string varname);
 
 };
 

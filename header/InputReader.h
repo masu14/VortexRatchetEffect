@@ -27,6 +27,8 @@ struct Paramater {
 	double eta = 1.0;			//粘性抵抗η
 	double lorentzForce;		//ローレンツ力の大きさ
 	double siteDistance;		//ピニングサイト間の距離
+	double annealTime;			//アニールにかける時間
+	double lorentzFrequency;	//ローレンツ力の周波数
 
 	string condition;
 

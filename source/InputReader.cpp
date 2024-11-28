@@ -29,6 +29,8 @@ void InputReader::ReadParam(const string& filename)
 		param.a = StringToNumber<double>(sections["Constant"]["a"]);
 		param.cutoff = StringToNumber<int>(sections["Constant"]["cutoff"]);
 		param.eta = StringToNumber<double>(sections["Constant"]["eta"]);
+		param.annealTime = StringToNumber<double>(sections["Constant"]["annealTime"]);
+		param.lorentzFrequency = StringToNumber<double>(sections["Constant"]["lorentzFrequency"]);
 
 		//変数パラメータ
 		//[Variable]タグのついたmapから変数名を取り出す

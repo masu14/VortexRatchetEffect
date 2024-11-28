@@ -16,20 +16,24 @@ MD::~MD() {
 void MD::Run(Paramater<double> param) {
 
 	//パラメーターをもとに変数を設定する
-	condition		= param.condition;
-	vortexNum		= param.vortexNum;
-	piningSiteNum	= param.piningSiteNum;
-	dt				= param.dt;
-	maxTime			= param.maxTime;
-	a				= param.a;
-	weight			= param.a * 3.0;
-	height			= param.a * 2.0 * sqrt(3.0) * vortexNum / 12.0;
-	cutoff			= param.cutoff;
-	eta				= param.eta;
-	lorentzForce    = param.lorentzForce;
-	siteDistance    = param.siteDistance;
-	var1name		= param.var1name;
-	var2name		= param.var2name;
+	condition			= param.condition;
+	vortexNum			= param.vortexNum;
+	piningSiteNum		= param.piningSiteNum;
+	dt					= param.dt;
+	maxTime				= param.maxTime;
+	a					= param.a;
+	weight				= param.a * 3.0;
+	height				= param.a * 2.0 * sqrt(3.0) * vortexNum / 12.0;
+	cutoff				= param.cutoff;
+	eta					= param.eta;
+	lorentzForce		= param.lorentzForce;
+	siteDistance		= param.siteDistance;
+	annealTime			= param.annealTime;
+	lorentzFrequency	= param.lorentzFrequency;
+	var1name			= param.var1name;
+	var2name			= param.var2name;
+
+	std::cout << "maxTime: " << maxTime << std::endl;
 	
 
 
@@ -106,22 +110,36 @@ bool MD::InitPinPos() {
 
 }
 
+std::string MD::SetVariableName(std::string varname)
+{
+	try {
+		if (varname == "lorentzForce") return FileHandler::FixedValueStr(2, lorentzForce);
+		if (varname == "siteDistance") return FileHandler::FixedValueStr(2, siteDistance);
+		else throw "変数名に該当する文字列が正しくありません";
+	}
+	catch (const char* e) {
+		std::cout << "Error: " << e << std::endl;
+	}
+	
+}
+
 //-------------------------------------------------------------------------------------------------
 //     時間発展させるメインループ
 //-------------------------------------------------------------------------------------------------
 void MD::MainLoop() {
 
-	// TODO: ディレクトリの名前と階層は適切だろうか
-	//実験条件のディレクトリがなかったら作成
+	//dirMDに記載する変数パラメータ名を取得する
+	//var1nameは変数名、var1strは変数の値の文字列
+	std::string var1str, var2str;
+	var1str = SetVariableName(var1name);
+	var2str = SetVariableName(var2name);
+
+	//出力ファイルを入れるディレクトリdirMDを作成する
 	std::string dirName = "../output/" + condition;
 	std::string dirMD;
 
-	std::string var1, var2;
-	if (var1name == "lorentzForce") var1 = FileHandler::FixedValueStr(2, lorentzForce);
-	if (var2name == "siteDistance") var2 = FileHandler::FixedValueStr(2,siteDistance);
-
 	dirMD = dirName + "/MD" + FileHandler::GetIndex();
-	dirMD += "/MD_" + var1name + "=" + var1 + "_" + var2name + "=" + var2;
+	dirMD += "/MD_" + var1name + "=" + var1str + "_" + var2name + "=" + var2str;
 	FileHandler::CreateDir(dirMD);
 
 	//出力ファイルの作成
@@ -173,7 +191,6 @@ void MD::CalcVVI() {
 			double f0 = 3.0;	//VVIの係数f0
 			
 			Vector2d difPos = vortexs[i].GetPos() - vortexs[j].GetPos();		//ベクトルの差
-			//std::cout << i << difPos.transpose() << std::endl;
 			
 			//周期的に繰り返すボルテックスのうち、近いボルテックスを計算する
 			//周期的境界条件に対してカットオフ長さが短ければこの計算でもうまくいくが要検討
@@ -227,9 +244,14 @@ void MD::CalcPiningForce() {
 //-------------------------------------------------------------------------------------------------
 //		ローレンツ力を計算する	
 //-------------------------------------------------------------------------------------------------
-void MD::CalcLorentzForce() {
+void MD::CalcLorentzForce(double time) {
+	const double PI = 3.141592653589;
+	double force;
+	if (sin( PI / lorentzFrequency * (time-annealTime)) > 0) force = lorentzForce;
+	else force = -lorentzForce;
+	
 	for (int i = 0; i < vortexNum; i++) {
-		vortexs[i].AddForce(lorentzForce, 0.0);
+		vortexs[i].AddForce(force, 0.0);
 	}
 }
 
@@ -290,7 +312,7 @@ void MD::CalcEOM(double time)
 		//F(t+dt)の計算
 		CalcVVI();
 		CalcPiningForce();
-		CalcLorentzForce();
+		if (time > annealTime)CalcLorentzForce(time);
 		CalcResistForce();
 
 		//v(t),F(t),F(t+dt)を用いて速度v(t+dt)を計算し、更新する
@@ -329,7 +351,7 @@ void MD::CalcEOMOverDamp(double time)
 	//F(t+dt)の計算
 	CalcVVI();
 	CalcPiningForce();
-	CalcLorentzForce();
+	if (time < annealTime)CalcLorentzForce(time);
 	
 	//終端速度を求め、そこから位置を求める
 	for (int i = 0; i < vortexNum; i++) {

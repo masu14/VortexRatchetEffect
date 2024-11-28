@@ -22,6 +22,8 @@ int main() {
 		std::cout << "a: " << param.a << std::endl;
 		std::cout << "cutoff: " << param.cutoff << std::endl;
 		std::cout << "eta: " << param.eta << std::endl;
+		std::cout << "annealTime: " << param.annealTime << std::endl;
+		std::cout << "lorentzFrequency: " << param.lorentzFrequency << std::endl;
 
 		std::cout << "\n[Variable]" << std::endl;
 		std::cout << param.var1name <<": " << param.var1[0] << "," << param.var1[1] << "," << param.var1[2] << std::endl;
