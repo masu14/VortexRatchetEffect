@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\Analysis.cpp" />
     <ClCompile Include="..\source\FileHandler.cpp" />
     <ClCompile Include="..\source\InputReader.cpp" />
     <ClCompile Include="..\source\main.cpp" />
@@ -27,6 +28,7 @@
     <ClCompile Include="..\source\Vortex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\header\Analysis.h" />
     <ClInclude Include="..\header\FileHandler.h" />
     <ClInclude Include="..\header\InputReader.h" />
     <ClInclude Include="..\header\MD.h" />
