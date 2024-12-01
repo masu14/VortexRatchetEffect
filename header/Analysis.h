@@ -14,7 +14,7 @@ public:
 	//=======================================================================================
 	// public variables.
 	//=======================================================================================
-	void MakeVelFile(const std::string& filename);
+	void MakeVelFile(const std::string& dirname);
 	//=======================================================================================
 	// public methods.
 	//=======================================================================================
@@ -30,5 +30,6 @@ private:
 	//=======================================================================================
 	double CalcVelAve(const std::string& filePath);
 	std::pair<std::string, std::string> GetVarValues(const std::string& path);
-	void WriteResult(const std::string& filename);
+	void WriteResult(const std::string& filename,
+		const std::vector<std::tuple<std::string, std::string ,double>>& results);
 };

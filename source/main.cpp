@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "MD.h"
+#include "Analysis.h"
 #include <cmath>
 
 int FileHandler::index = 0;
@@ -40,6 +41,7 @@ int main() {
 		std::string dirName = "../output/" + param.condition;
 		FileHandler::CreateDir(dirName);
 		FileHandler::SetIndex(dirName);
+		std::string dirMD = dirName + "/MD" + FileHandler::GetIndex();
 		while (param.lorentzForce <= param.var1[1]) {
 			param.siteDistance = param.var2[0];
 			while (param.siteDistance <= param.var2[1]) {
@@ -53,7 +55,11 @@ int main() {
 			
 			param.lorentzForce += param.var1[2];
 		}
+
+		unique_ptr<Analysis> analysis = std::make_unique<Analysis>();
+		analysis->MakeVelFile(dirMD);
 	}
+
 	
 	return 0;
 }

@@ -162,7 +162,7 @@ void MD::MainLoop() {
 	
 	while (time <= maxTime) {
 		//運動方程式を解く
-		CalcEOM(time);
+		CalcEOMOverDamp(time);
 
 		//計算結果をファイルに書き込む
 		filePos.     WritePos(time, vortexs, vortexNum);
@@ -188,7 +188,7 @@ void MD::InitForce() {
 void MD::CalcVVI() {
 	for (int i = 0; i < vortexNum -1 ; i++) {
 		for (int j = i+1; j < vortexNum; j++) {
-			double f0 = 3.0;	//VVIの係数f0
+			double f0 = 1.0;	//VVIの係数f0
 			
 			Vector2d difPos = vortexs[i].GetPos() - vortexs[j].GetPos();		//ベクトルの差
 			
@@ -218,7 +218,7 @@ void MD::CalcVVI() {
 //		ピニング力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcPiningForce() {
-	double kp = 1.0;	//kpはピニング力の大きさを決める係数
+	double kp = 2.0;	//kpはピニング力の大きさを決める係数
 	double lp = 0.3*sqrt(2.0);	//lpはピニングサイトにおける常伝導から超伝導への回復長
 	
 	for (int i = 0; i < vortexNum; i++) {
@@ -351,7 +351,7 @@ void MD::CalcEOMOverDamp(double time)
 	//F(t+dt)の計算
 	CalcVVI();
 	CalcPiningForce();
-	if (time < annealTime)CalcLorentzForce(time);
+	if (time > annealTime)CalcLorentzForce(time);
 	
 	//終端速度を求め、そこから位置を求める
 	for (int i = 0; i < vortexNum; i++) {
