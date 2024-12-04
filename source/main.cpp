@@ -37,14 +37,11 @@ int main() {
 		std::cout << param.var1name <<": " << param.var1[0] << "," << param.var1[1] << "," << param.var1[2] << std::endl;
 		std::cout << param.var2name <<": " << param.var2[0] << "," << param.var2[1] << "," << param.var2[2] << std::endl;
 
+		//変数パラメータを設定する
 		if (param.var1name == "lorentzForce") param.lorentzForce = param.var1[0];
 		if (param.var2name == "siteDistance") param.siteDistance = param.var2[0];
 
-		//md法を行う回数を見積もる
-		int mdNum = static_cast<int>(std::floor((param.var1[1] - param.var1[0]) / param.var1[2]))+1;	
-		mdNum *= (static_cast<int>(std::floor((param.var2[1] - param.var2[0]) / param.var2[2]))+1);
-		
-		int count = 1;
+		//設定したパラメータを出力先に記録する
 		std::string dirName = "../output/" + param.condition;
 		FileHandler::CreateDir(dirName);
 		FileHandler::SetIndex(dirName);
@@ -53,6 +50,13 @@ int main() {
 		FileHandler paramFile;
 		paramFile.CreateFile(dirMD, "paramater.txt");
 		paramFile.WriteParam(param);
+
+		//md法を行う回数を見積もる
+		int mdNum = static_cast<int>(std::floor((param.var1[1] - param.var1[0]) / param.var1[2]))+1;	
+		mdNum *= (static_cast<int>(std::floor((param.var2[1] - param.var2[0]) / param.var2[2]))+1);
+		
+		int count = 1;
+		
 		while (param.lorentzForce <= param.var1[1]) {
 			param.siteDistance = param.var2[0];
 			while (param.siteDistance <= param.var2[1]) {
@@ -68,7 +72,7 @@ int main() {
 		}
 
 		unique_ptr<Analysis> analysis = std::make_unique<Analysis>();
-		//analysis->MakeVelFile(dirMD);
+		analysis->MakeVelFile(dirName + "/MD013");
 	}
 
 	

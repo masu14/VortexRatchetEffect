@@ -72,6 +72,33 @@ bool MD::InitApp() {
 }
 
 //-------------------------------------------------------------------------------------------------
+//		ピニングサイトを初期位置に配置する
+//-------------------------------------------------------------------------------------------------
+bool MD::InitPinPos() {
+	if (piningSiteNum < 0) {
+		std::cout << "piningSiteNumに不正な値が入力されました" << std::endl;
+		return false;
+	}
+	else if (piningSiteNum == 0) {
+		std::cout << "ピニングサイトを配置していません" << std::endl;
+		noPiningSite = true;
+		return true;
+	}
+
+	// TODO: input.iniのピニングサイトの設定に応じて型が変わるように変更する
+	piningSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
+
+	PlacePinManual();
+
+	//siteDistanceだけ円の中心をずらす、
+	// TODO: 実験条件で動かすピニングサイトを変更する必要有
+	piningSites[2].AddPos(siteDistance, 0);
+	piningSites[5].AddPos(siteDistance, 0);
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------
 //		ボルテックスを初期位置に配置する
 //-------------------------------------------------------------------------------------------------
 bool MD::InitVorPos() {
@@ -81,37 +108,9 @@ bool MD::InitVorPos() {
 	}
 	vortexs = std::make_unique<Vortex[]>(vortexNum);
 	
-	PlaceVorSquare();		//ボルテックスを配置
+	PlaceVorManual();		//ボルテックスを配置
 	
 	return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-//		ピニングサイトを初期位置に配置する
-//-------------------------------------------------------------------------------------------------
-bool MD::InitPinPos() {
-	if (piningSiteNum < 0) {
-		std::cout << "piningSiteNumに不正な値が入力されました" << std::endl;
-		return false;
-	}
-	else if(piningSiteNum == 0){
-		std::cout << "ピニングサイトを配置していません" << std::endl;
-		noPiningSite = true;
-		return true;
-	}
-	
-	// TODO: input.iniのピニングサイトの設定に応じて型が変わるように変更する
-	piningSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
-
-	PlacePinManual();
-
-	//siteDistanceだけ円の中心をずらす、
-	// TODO: 実験条件で動かすピニングサイトを変更する必要有
-	piningSites[0].AddPos(siteDistance, 0);
-	piningSites[3].AddPos(siteDistance, 0);
-	
-	return true;
-
 }
 
 std::string MD::SetVariableName(std::string varname)
@@ -149,17 +148,17 @@ void MD::MainLoop() {
 	//出力ファイルの作成
 	FileHandler filePos;
 	FileHandler fileVelocity;
-	FileHandler fileForce;
+	//FileHandler fileForce;
 	
 	filePos.     CreateFile(dirMD, "position.csv");
 	fileVelocity.CreateFile(dirMD, "velocity.csv");
-	fileForce.   CreateFile(dirMD, "force.csv");
+	//fileForce.   CreateFile(dirMD, "force.csv");
 	
 	//ラベルの書き込み
 	filePos.WritePinPos(piningSites, piningSiteNum);
 	filePos.     WriteLabel(vortexNum);
 	fileVelocity.WriteLabel(vortexNum);
-	fileForce.   WriteLabel(vortexNum);
+	//fileForce.   WriteLabel(vortexNum);
 	
 	//メインループ
 	double time = 0;
@@ -173,7 +172,7 @@ void MD::MainLoop() {
 		//計算結果をファイルに書き込む
 		filePos.     WritePos(time, vortexs, vortexNum);
 		fileVelocity.WriteVelocity(time, vortexs, vortexNum);
-		fileForce.   WriteForce(time, vortexs, vortexNum);
+		//fileForce.   WriteForce(time, vortexs, vortexNum);
 
 		time += dt;
 	}
@@ -435,18 +434,12 @@ void MD::PlaceVorRandom() {
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceVorManual()
 {
-	vortexs[0].SetPos(0.01, 0.108253);
-	/*vortexs[1].SetPos(0.4, 0.4);
-	vortexs[2].SetPos(0.744743, 0.180336);
-	vortexs[3].SetPos(0.172043,0.705768);
-	vortexs[4].SetPos(0.135809,0.483818);
-	vortexs[5].SetPos(0.550069,0.052258);
-	vortexs[6].SetPos(0.551065,0.176116);
-	vortexs[7].SetPos(0.292968,0.059621);
-	vortexs[8].SetPos(0.081272,0.490255);
-	vortexs[9].SetPos(0.351897,0.686276);
-	vortexs[10].SetPos(0.113886,0.285068);
-	vortexs[11].SetPos(0.610364,0.741576);*/
+	vortexs[0].SetPos(piningSites[0].GetPos().x(), piningSites[0].GetPos().y());
+	vortexs[1].SetPos(piningSites[1].GetPos().x(), piningSites[1].GetPos().y());
+	vortexs[2].SetPos(piningSites[2].GetPos().x(), piningSites[2].GetPos().y());
+	vortexs[3].SetPos(piningSites[3].GetPos().x(), piningSites[3].GetPos().y());
+	vortexs[4].SetPos(piningSites[4].GetPos().x(), piningSites[4].GetPos().y());
+	vortexs[5].SetPos(piningSites[5].GetPos().x(), piningSites[5].GetPos().y());
 	
 }
 
@@ -473,12 +466,12 @@ void MD::PlacePin()
 //-----------------------------------------------------------------------------------------------
 void MD::PlacePinManual()
 {
-	piningSites[0].SetPos(1.5, 2.6);
-	piningSites[1].SetPos(7.5, 2.6);
-	piningSites[2].SetPos(13.5, 2.6);
-	piningSites[3].SetPos(1.5, 7.8);
-	piningSites[4].SetPos(7.5, 7.8);
-	piningSites[5].SetPos(13.5, 7.8);
+	piningSites[0].SetPos(2.5, 2.6);
+	piningSites[1].SetPos(6.5, 2.6);
+	piningSites[2].SetPos(10.5, 2.6);
+	piningSites[3].SetPos(2.5, 7.8);
+	piningSites[4].SetPos(6.5, 7.8);
+	piningSites[5].SetPos(10.5, 7.8);
 
 	piningSites[0].SetR(1.5);
 	piningSites[1].SetR(1.0);
