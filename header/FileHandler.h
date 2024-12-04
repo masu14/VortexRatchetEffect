@@ -7,6 +7,7 @@
 #include <regex>		//正規表現
 #include "Vortex.h"
 #include "PiningSite.h"
+#include "InputReader.h"
 
 enum class OutputType
 {
@@ -44,7 +45,7 @@ public:
 	static std::string  GetIndex();
 	std::string GetName() const;
 	
-
+	void WriteParam(Paramater<double> param);
 	void WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningSites, int pinNum);
 	void WriteLabel(int vortexNum);//csvファイル書き込み用、ラベルを記載する
 	

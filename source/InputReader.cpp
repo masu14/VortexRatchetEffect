@@ -21,16 +21,22 @@ void InputReader::ReadParam(const string& filename)
 	sections = ReadInputFile(filename);
 	try {
 		//定数パラメータ
+		param.EOM = sections["Constant"]["EOM"];
 		param.condition = sections["Constant"]["condition"];
 		param.vortexNum = StringToNumber<int>(sections["Constant"]["vortexNum"]);
 		param.piningSiteNum = StringToNumber<int>(sections["Constant"]["piningsiteNum"]);
 		param.dt = StringToNumber<double>(sections["Constant"]["dt"]);
 		param.maxTime = StringToNumber<double>(sections["Constant"]["maxTime"]);
 		param.a = StringToNumber<double>(sections["Constant"]["a"]);
+		param.weight = StringToNumber<double>(sections["Constant"]["weight"]);
+		param.height = StringToNumber<double>(sections["Constant"]["height"]);
 		param.cutoff = StringToNumber<int>(sections["Constant"]["cutoff"]);
 		param.eta = StringToNumber<double>(sections["Constant"]["eta"]);
 		param.annealTime = StringToNumber<double>(sections["Constant"]["annealTime"]);
 		param.lorentzFrequency = StringToNumber<double>(sections["Constant"]["lorentzFrequency"]);
+		param.f0 = StringToNumber<double>(sections["Constant"]["f0"]);
+		param.kp = StringToNumber<double>(sections["Constant"]["kp"]);
+		param.lp = StringToNumber<double>(sections["Constant"]["lp"]);
 
 		//変数パラメータ
 		//[Variable]タグのついたmapから変数名を取り出す

@@ -16,6 +16,7 @@ MD::~MD() {
 void MD::Run(Paramater<double> param) {
 
 	//パラメーターをもとに変数を設定する
+	EOM					= param.EOM;
 	condition			= param.condition;
 	vortexNum			= param.vortexNum;
 	piningSiteNum		= param.piningSiteNum;
@@ -30,10 +31,13 @@ void MD::Run(Paramater<double> param) {
 	siteDistance		= param.siteDistance;
 	annealTime			= param.annealTime;
 	lorentzFrequency	= param.lorentzFrequency;
+	f0					= param.f0;
+	kp					= param.kp;
+	lp					= param.lp;
 	var1name			= param.var1name;
 	var2name			= param.var2name;
 
-	std::cout << "maxTime: " << maxTime << std::endl;
+	
 	
 
 
@@ -162,7 +166,9 @@ void MD::MainLoop() {
 	
 	while (time <= maxTime) {
 		//運動方程式を解く
-		CalcEOMOverDamp(time);
+		if (EOM == "ordinary") CalcEOM(time);
+		if (EOM == "overdamp") CalcEOMOverDamp(time);
+		
 
 		//計算結果をファイルに書き込む
 		filePos.     WritePos(time, vortexs, vortexNum);
@@ -188,7 +194,6 @@ void MD::InitForce() {
 void MD::CalcVVI() {
 	for (int i = 0; i < vortexNum -1 ; i++) {
 		for (int j = i+1; j < vortexNum; j++) {
-			double f0 = 1.0;	//VVIの係数f0
 			
 			Vector2d difPos = vortexs[i].GetPos() - vortexs[j].GetPos();		//ベクトルの差
 			
@@ -218,8 +223,6 @@ void MD::CalcVVI() {
 //		ピニング力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcPiningForce() {
-	double kp = 2.0;	//kpはピニング力の大きさを決める係数
-	double lp = 0.3*sqrt(2.0);	//lpはピニングサイトにおける常伝導から超伝導への回復長
 	
 	for (int i = 0; i < vortexNum; i++) {
 		for (int j = 0; j < piningSiteNum; j++) {
@@ -448,10 +451,11 @@ void MD::PlaceVorManual()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    ピニングサイトの初期配置
+//    円形ピニングサイトの初期配置、ボルテックスと同じ位置に配置、
 //-----------------------------------------------------------------------------------------------
 void MD::PlacePin()
 {
+	// TODO; 配置方法変える予定、ボルテックス基準で配置する意味あまりない
 	for (int i = 0; i < piningSiteNum; i++) {
 		double x = vortexs[i].GetPos().x();
 		double y = vortexs[i].GetPos().y();

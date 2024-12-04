@@ -40,6 +40,7 @@ private:
 	//=======================================================================================
 	// private variables.
 	//=======================================================================================
+	std::string EOM;
 	std::string condition;		//実験条件
 	int vortexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
@@ -54,6 +55,9 @@ private:
 	double siteDistance;
 	double annealTime;
 	double lorentzFrequency;
+	double f0;
+	double kp;
+	double lp;
 	std::string var1name;
 	std::string var2name;
 

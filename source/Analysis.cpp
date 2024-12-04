@@ -14,7 +14,7 @@ Analysis::~Analysis()
 
 void Analysis::MakeVelFile(const std::string& dirName)
 {
-	std::string fileName = dirName + "/Velocity_averages.csv";
+	std::string fileName = dirName + "/velocity_averages.csv";
 
 	std::vector<std::tuple<std::string, std::string, double>> results;
 

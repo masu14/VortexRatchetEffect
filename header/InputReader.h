@@ -23,13 +23,19 @@ struct Paramater {
 	double dt = 0.001;			//時間変化量
 	double maxTime = 10.0;		//計算時間
 	double a = 0.25;			//初期配置時のボルテックス間距離(三角格子)
+	double weight;				//周期的境界条件の横幅
+	double height;				//周期的境界条件の縦幅
 	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
 	double eta = 1.0;			//粘性抵抗η
 	double lorentzForce;		//ローレンツ力の大きさ
 	double siteDistance;		//ピニングサイト間の距離
 	double annealTime;			//アニールにかける時間
 	double lorentzFrequency;	//ローレンツ力の周波数
+	double f0;					//VVIの係数
+	double kp;					//ピニング力の大きさを決める係数
+	double lp;					//ピニングサイトにおける常伝導から超伝導への回復長
 
+	string EOM;
 	string condition;
 
 	string var1name;

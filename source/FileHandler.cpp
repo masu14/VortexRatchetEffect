@@ -162,6 +162,38 @@ std::string FileHandler::CreateForceFile(std::string dirName)
 }
 
 //----------------------------------------------------------------------------------------------
+//    csvファイル書き込み用、設定したパラメータを記載する
+//----------------------------------------------------------------------------------------------
+void FileHandler::WriteParam(Paramater<double> param) {
+	file << "[Constant]\n";
+	file << "EOM: " << param.EOM << "\n";
+	file << "condition: " << param.condition << "\n";
+	file << "vortexNum = " << param.vortexNum << "\n";
+	file << "piningsiteNum = " << param.piningSiteNum << "\n";
+	file << "dt = " << param.dt << "\n";
+	file << "maxTime = " << param.maxTime << "\n";
+	file << "a = " << param.a << "\n";
+	file << "weight = " << param.weight << "\n";
+	file << "height = " << param.height << "\n";
+	file << "cutoff = " << param.cutoff << "\n";
+	file << "eta = " << param.eta << "\n";
+	file << "annealTime = " << param.annealTime << "\n";
+	file << "lorentzFrequency = " << param.lorentzFrequency << "\n";
+	file << "f0 = " << param.f0 << "\n";
+	file << "kp = " << param.kp << "\n";
+	file << "lp = " << param.lp << "\n";
+
+	file << "\n[Variable]\n";
+	file << param.var1name << " first: " << param.var1[0] << ", end: " 
+		 << param.var1[1] << ", step: " << param.var1[2] << "\n";
+	file << param.var2name << " first:  " << param.var2[0] << ", end: "
+		 << param.var2[1] << ", step: " << param.var2[2] << "\n";
+
+	
+}
+
+
+//----------------------------------------------------------------------------------------------
 //     csvファイル書き込み用、ピニングサイトの位置と半径を記載する
 //----------------------------------------------------------------------------------------------
 void FileHandler::WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningsites, int pinNum)
