@@ -63,7 +63,7 @@ int main() {
 				std::cout << "全" << mdNum << "回のうち、第" << count << "回目が実行されています。" << std::endl;
 				//分子動力学法の実行
 				unique_ptr<MD> md = std::make_unique<MD>();
-				//md->Run(param);
+				md->Run(param);
 				param.siteDistance += param.var2[2];
 				count++;
 			}
@@ -72,7 +72,7 @@ int main() {
 		}
 
 		unique_ptr<Analysis> analysis = std::make_unique<Analysis>();
-		analysis->MakeVelFile(dirName + "/MD013");
+		analysis->MakeVelFile(dirMD);
 	}
 
 	

@@ -92,8 +92,8 @@ bool MD::InitPinPos() {
 
 	//siteDistanceだけ円の中心をずらす、
 	// TODO: 実験条件で動かすピニングサイトを変更する必要有
-	piningSites[2].AddPos(siteDistance, 0);
-	piningSites[5].AddPos(siteDistance, 0);
+	piningSites[1].AddPos(siteDistance, 0);
+	piningSites[4].AddPos(siteDistance, 0);
 
 	return true;
 }
@@ -466,17 +466,17 @@ void MD::PlacePin()
 //-----------------------------------------------------------------------------------------------
 void MD::PlacePinManual()
 {
-	piningSites[0].SetPos(2.5, 2.6);
-	piningSites[1].SetPos(6.5, 2.6);
-	piningSites[2].SetPos(10.5, 2.6);
-	piningSites[3].SetPos(2.5, 7.8);
-	piningSites[4].SetPos(6.5, 7.8);
-	piningSites[5].SetPos(10.5, 7.8);
+	piningSites[0].SetPos(1.5, 2.6);
+	piningSites[1].SetPos(5.5, 2.6);
+	piningSites[2].SetPos(9.5, 2.6);
+	piningSites[3].SetPos(1.5, 7.8);
+	piningSites[4].SetPos(5.5, 7.8);
+	piningSites[5].SetPos(9.5, 7.8);
 
-	piningSites[0].SetR(1.5);
-	piningSites[1].SetR(1.0);
-	piningSites[2].SetR(0.5);
-	piningSites[3].SetR(1.5);
-	piningSites[4].SetR(1.0);
-	piningSites[5].SetR(0.5);
+	piningSites[0].SetR(0.5);
+	piningSites[1].SetR(1.5);
+	piningSites[2].SetR(1.0);
+	piningSites[3].SetR(0.5);
+	piningSites[4].SetR(1.5);
+	piningSites[5].SetR(1.0);
 }
