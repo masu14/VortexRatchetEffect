@@ -23,8 +23,8 @@ void MD::Run(Paramater<double> param) {
 	dt					= param.dt;
 	maxTime				= param.maxTime;
 	a					= param.a;
-	weight				= param.a * 3.0;
-	height				= param.a * 2.0 * sqrt(3.0) * vortexNum / 12.0;
+	weight				= param.weight;
+	height				= param.height;
 	cutoff				= param.cutoff;
 	eta					= param.eta;
 	lorentzForce		= param.lorentzForce;
@@ -191,6 +191,7 @@ void MD::InitForce() {
 //		ボルテックス・ボルテックス相互作用(VVI)を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcVVI() {
+	const double eps = 1e-10;
 	for (int i = 0; i < vortexNum -1 ; i++) {
 		for (int j = i+1; j < vortexNum; j++) {
 			
@@ -206,7 +207,7 @@ void MD::CalcVVI() {
 			//以下、ボルテックス同士の距離がカットオフ長さより長ければ計算しない
 			//if (difPos.norm() > cutoff) continue;						
 			
-			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/difPos.norm();	//VVIの式を用いた
+			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/(difPos.norm() + eps);	//VVIの式を用いた
 			
 			double xForce = force.x();				//VVIのx成分
 			double yForce = force.y();				//VVIのy成分
@@ -222,8 +223,21 @@ void MD::CalcVVI() {
 //		ピニング力を計算する
 //-------------------------------------------------------------------------------------------------
 void MD::CalcPiningForce() {
+	const double eps = 1e-10;
 	
 	for (int i = 0; i < vortexNum; i++) {
+		bool inCircle = false;
+		//ボルテックスがピニングサイトの内部にいる場合はどのピニングサイトからも外力を受けない
+		for (int j = 0; j < piningSiteNum; j++) {
+			Vector2d difPos = vortexs[i].GetPos() - piningSites[j].GetPos();
+			if (difPos.norm() <= piningSites[j].GetR()) {
+				inCircle = true;
+				break;
+			}
+		}
+
+		if (inCircle == true) continue;
+
 		for (int j = 0; j < piningSiteNum; j++) {
 			Vector2d difPos = vortexs[i].GetPos() - piningSites[j].GetPos();
 
@@ -232,10 +246,10 @@ void MD::CalcPiningForce() {
 			//if (difPos.y() < -height / 2) difPos(1) += height;
 			//if (difPos.y() > height / 2) difPos(1) -= height;
 
-			if (difPos.norm() < piningSites[j].GetR()) continue;
+			
 			if (difPos.norm() > cutoff) continue;
 
-			Vector2d force = -kp / pow(cosh((difPos.norm() - piningSites[j].GetR()) / lp), 2.0) * difPos/difPos.norm();
+			Vector2d force = -kp / pow(cosh((difPos.norm() - piningSites[j].GetR()) / lp), 2.0) * difPos/(difPos.norm() + eps);
 			double xForce = force.x();
 			double yForce = force.y();
 			vortexs[i].AddForce(xForce, yForce);

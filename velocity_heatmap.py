@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 # CSVファイルを読み込む
-data = pd.read_csv("output\Circle-S2M2L2-S_is_Variable\MD008\\velocity_averages.csv")
+data = pd.read_csv("output\Circle-S2M2L2-S_is_Variable\MD021\\velocity_averages.csv")
 
 # データをピボットテーブル形式に変換
 pivot_table = data.pivot(index="siteDistance", columns="lorentzForce", values="vAve")
@@ -12,8 +12,11 @@ pivot_table = data.pivot(index="siteDistance", columns="lorentzForce", values="v
 # 正規化処理
 v_min = pivot_table.values.min()
 v_max = pivot_table.values.max()
+v_abs_max = max(abs(v_max), abs(v_min))
 
-normalized_values = 0.6 * (pivot_table.values - v_min) / (v_max - v_min) - 0.3
+# normalized_values = 0.6 * (pivot_table.values - v_min) / (v_max - v_min) - 0.3
+normalized_values = pivot_table.values / v_abs_max
+
 
 # カラーマップの定義(-1:青, 0:緑, 1:赤)
 colors = [
@@ -34,8 +37,8 @@ c = plt.pcolormesh(
     normalized_values,
     shading="auto",
     cmap=custom_cmap,
-    vmin=-0.3,
-    vmax=0.3,
+    vmin=-1,
+    vmax=1,
 )
 plt.colorbar(c, label="Average Velocity")
 
