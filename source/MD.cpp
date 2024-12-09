@@ -487,10 +487,10 @@ void MD::PlacePinManual()
 	piningSites[4].SetPos(5.5, 7.8);
 	piningSites[5].SetPos(9.5, 7.8);
 
-	piningSites[0].SetR(0.5);
-	piningSites[1].SetR(1.5);
-	piningSites[2].SetR(1.0);
-	piningSites[3].SetR(0.5);
-	piningSites[4].SetR(1.5);
-	piningSites[5].SetR(1.0);
+	piningSites[0].SetR(1.5);
+	piningSites[1].SetR(1.0);
+	piningSites[2].SetR(0.5);
+	piningSites[3].SetR(1.5);
+	piningSites[4].SetR(1.0);
+	piningSites[5].SetR(0.5);
 }

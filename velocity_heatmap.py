@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 # CSVファイルを読み込む
-data = pd.read_csv("output\Circle-S2M2L2-S_is_Variable\MD021\\velocity_averages.csv")
+data = pd.read_csv("output\Circle-S2M2L2-M_is_Variable\MD001\\velocity_averages.csv")
 
 # データをピボットテーブル形式に変換
 pivot_table = data.pivot(index="siteDistance", columns="lorentzForce", values="vAve")
