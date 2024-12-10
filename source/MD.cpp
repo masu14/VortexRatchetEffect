@@ -85,15 +85,19 @@ bool MD::InitPinPos() {
 		return true;
 	}
 
+	//ピニングサイトの種類を設定する
+	piningType = SetPinType();
+
 	// TODO: input.iniのピニングサイトの設定に応じて型が変わるように変更する
 	piningSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
 
-	PlacePinManual();
+	if(piningType == PiningType::tripleCircle) PlaceCirclePinTriple();
+	if (piningType == PiningType::doubleCircle) PlaceCirclePinDouble();
 
 	//siteDistanceだけ円の中心をずらす、
 	// TODO: 実験条件で動かすピニングサイトを変更する必要有
-	piningSites[1].AddPos(siteDistance, 0);
-	piningSites[4].AddPos(siteDistance, 0);
+	if (piningType == PiningType::tripleCircle) ShiftCirclePinTriple();
+	if (piningType == PiningType::doubleCircle) ShiftCirclePinDouble();
 
 	return true;
 }
@@ -448,13 +452,27 @@ void MD::PlaceVorRandom() {
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceVorManual()
 {
-	vortexs[0].SetPos(piningSites[0].GetPos().x(), piningSites[0].GetPos().y());
-	vortexs[1].SetPos(piningSites[1].GetPos().x(), piningSites[1].GetPos().y());
-	vortexs[2].SetPos(piningSites[2].GetPos().x(), piningSites[2].GetPos().y());
-	vortexs[3].SetPos(piningSites[3].GetPos().x(), piningSites[3].GetPos().y());
-	vortexs[4].SetPos(piningSites[4].GetPos().x(), piningSites[4].GetPos().y());
-	vortexs[5].SetPos(piningSites[5].GetPos().x(), piningSites[5].GetPos().y());
+	for (int i = 0; i < vortexNum; i++) {
+		vortexs[i].SetPos(piningSites[i].GetPos().x(), piningSites[i].GetPos().y());
+	}
 	
+}
+
+//-----------------------------------------------------------------------------------------------
+//    
+//-----------------------------------------------------------------------------------------------
+PiningType MD::SetPinType()
+{
+	if (condition == "Circle-S2M2L2-M_is_Variable" ||
+		condition == "Circle-S2M2L2-L_is_Variable" ||
+		condition == "Circle-S2M2L2-S_is_Variable") {
+		return PiningType::tripleCircle;
+	}
+
+	if (condition == "Circle-S2L2-S_is_Variable" ||
+		condition == "Circle-S2L2-L_is_Variable") {
+		return PiningType::doubleCircle;
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -478,7 +496,39 @@ void MD::PlacePin()
 //    デバック用、配列の長さに注意
 //　　特定の配置で外力項を変えて実験したいときに使う
 //-----------------------------------------------------------------------------------------------
-void MD::PlacePinManual()
+void MD::PlaceCirclePinDouble()
+{
+	piningSites[0].SetPos(1.5, 2.6);
+	piningSites[1].SetPos(5.5, 2.6);
+	piningSites[2].SetPos(9.5, 2.6);
+	piningSites[3].SetPos(13.5, 2.6);
+	piningSites[4].SetPos(1.5, 7.8);
+	piningSites[5].SetPos(5.5, 7.8);
+	piningSites[6].SetPos(9.5, 7.8);
+	piningSites[7].SetPos(13.5, 7.8);
+
+	double r1 = 0.0, r2 = 0.0;
+	if (condition == "Circle-S2L2-S_is_Variable") {
+		r1 = 1.5, r2 = 0.5;
+	}
+	else if (condition == "Circle-S2L2-L_is_Variable") {
+		r1 = 0.5, r2 = 1.5;
+	}
+	else {
+		std::cout << "該当するconditionが存在しません" << std::endl;
+	}
+
+	piningSites[0].SetR(r1);
+	piningSites[1].SetR(r2);
+	piningSites[2].SetR(r1);
+	piningSites[3].SetR(r2);
+	piningSites[4].SetR(r1);
+	piningSites[5].SetR(r2);
+	piningSites[6].SetR(r1);
+	piningSites[7].SetR(r2);
+}
+
+void MD::PlaceCirclePinTriple()
 {
 	piningSites[0].SetPos(1.5, 2.6);
 	piningSites[1].SetPos(5.5, 2.6);
@@ -487,10 +537,38 @@ void MD::PlacePinManual()
 	piningSites[4].SetPos(5.5, 7.8);
 	piningSites[5].SetPos(9.5, 7.8);
 
-	piningSites[0].SetR(1.5);
-	piningSites[1].SetR(1.0);
-	piningSites[2].SetR(0.5);
-	piningSites[3].SetR(1.5);
-	piningSites[4].SetR(1.0);
-	piningSites[5].SetR(0.5);
+	double r1 = 0.0, r2 = 0.0, r3 = 0.0;
+	if (condition == "Circle-S2M2L2-M_is_Variable") {
+		r1 = 1.5, r2 = 1.0, r3 = 0.5;
+	}
+	else if (condition == "Circle-S2M2L2-S_is_Variable") {
+		r1 = 1.0, r2 = 0.5, r3 = 1.5;
+	}
+	else if (condition == "Circle-S2M2L2-L_is_Variable") {
+		r1 = 0.5, r2 = 1.5, r3 = 1.0;
+	}
+	else {
+		std::cout << "該当するconditionが存在しません" << std::endl;
+	}
+
+	piningSites[0].SetR(r1);
+	piningSites[1].SetR(r2);
+	piningSites[2].SetR(r3);
+	piningSites[3].SetR(r1);
+	piningSites[4].SetR(r2);
+	piningSites[5].SetR(r3);
+}
+
+void MD::ShiftCirclePinDouble()
+{
+	piningSites[1].AddPos(siteDistance, 0);
+	piningSites[3].AddPos(siteDistance, 0);
+	piningSites[5].AddPos(siteDistance, 0);
+	piningSites[7].AddPos(siteDistance, 0);
+}
+
+void MD::ShiftCirclePinTriple()
+{
+	piningSites[1].AddPos(siteDistance, 0);
+	piningSites[4].AddPos(siteDistance, 0);
 }

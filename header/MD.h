@@ -15,7 +15,11 @@ class Vortex;
 class PiningSite;
 class PiningSiteCircle;
 
-
+enum class PiningType
+{
+	tripleCircle,
+	doubleCircle,
+};
 
 /// <summary>
 /// 分子動力学法のマネージャークラス、各ボルテックス、ピニングサイトの管理をする
@@ -40,7 +44,7 @@ private:
 	//=======================================================================================
 	// private variables.
 	//=======================================================================================
-	std::string EOM;
+	std::string EOM;			//運動方程式の種類、ordinary or overdamp
 	std::string condition;		//実験条件
 	int vortexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
@@ -52,14 +56,16 @@ private:
 	int cutoff = 4;				//ボルテックスへ相互作用を及ぼす対象の有効範囲
 	double eta = 1.0;			//粘性抵抗η
 	double lorentzForce;		//ローレンツ力の大きさ
-	double siteDistance;
-	double annealTime;
-	double lorentzFrequency;
-	double f0;
-	double kp;
-	double lp;
+	double siteDistance;		//対象のピニングサイトのずらす値
+	double annealTime;			//初めにローレンツ力をかけずにいる時間
+	double lorentzFrequency;	//ローレンツ力の向きを切り替える時間
+	double f0;					//VVIの係数の大きさ
+	double kp;					//ピニング力の係数の大きさ
+	double lp;					//
 	std::string var1name;
 	std::string var2name;
+
+	PiningType piningType;
 
 	unique_ptr<Vortex[]> vortexs;					//ボルテックスのインスタンス、　vortexNum個の配列として扱う
 	unique_ptr<PiningSiteCircle[]> piningSites;		//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
@@ -90,8 +96,12 @@ private:
 	void PlaceVorRandom();			//ボルテックスの初期配置をランダムにする
 	void PlaceVorManual();			//ボルテックスの初期配置を一つずつ指定する
 
+	PiningType SetPinType();
 	void PlacePin();
-	void PlacePinManual();
+	void PlaceCirclePinTriple();
+	void PlaceCirclePinDouble();
+	void ShiftCirclePinTriple();
+	void ShiftCirclePinDouble();
 
 	std::string SetVariableName(std::string varname);
 
