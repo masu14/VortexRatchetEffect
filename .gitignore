@@ -3,7 +3,11 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-output/
+output/**
+!output/**/
+!output/**/paramater.txt
+!output/**/velocity_averages.
+!output/**/velocity_heatmap.png
 
 # dotenv files
 .env
