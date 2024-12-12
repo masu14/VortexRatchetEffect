@@ -226,7 +226,7 @@ void MD::CalcVVI() {
 //-------------------------------------------------------------------------------------------------
 //		ピニング力を計算する
 //-------------------------------------------------------------------------------------------------
-void MD::CalcPiningForce() {
+void MD::CalcCirclePiningForce() {
 	const double eps = 1e-10;
 	
 	for (int i = 0; i < vortexNum; i++) {
@@ -331,7 +331,7 @@ void MD::CalcEOM(double time)
 
 		//F(t+dt)の計算
 		CalcVVI();
-		CalcPiningForce();
+		CalcCirclePiningForce();
 		if (time > annealTime)CalcLorentzForce(time);
 		CalcResistForce();
 
@@ -370,7 +370,7 @@ void MD::CalcEOMOverDamp(double time)
 
 	//F(t+dt)の計算
 	CalcVVI();
-	CalcPiningForce();
+	CalcCirclePiningForce();
 	if (time > annealTime)CalcLorentzForce(time);
 	
 	//終端速度を求め、そこから位置を求める
@@ -493,8 +493,7 @@ void MD::PlacePin()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    デバック用、配列の長さに注意
-//　　特定の配置で外力項を変えて実験したいときに使う
+//    大小2つの円形ピニングサイトの座標と半径をセットする
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceCirclePinDouble()
 {
@@ -528,6 +527,10 @@ void MD::PlaceCirclePinDouble()
 	piningSites[7].SetR(r2);
 }
 
+//-----------------------------------------------------------------------------------------------
+//    大中小3つの円形ピニングサイトの座標と半径をセットする
+//-----------------------------------------------------------------------------------------------
+
 void MD::PlaceCirclePinTriple()
 {
 	piningSites[0].SetPos(1.5, 2.6);
@@ -559,6 +562,10 @@ void MD::PlaceCirclePinTriple()
 	piningSites[5].SetR(r3);
 }
 
+//-----------------------------------------------------------------------------------------------
+//    大小2つのピニングサイトをずらす
+//-----------------------------------------------------------------------------------------------
+
 void MD::ShiftCirclePinDouble()
 {
 	piningSites[1].AddPos(siteDistance, 0);
@@ -566,6 +573,10 @@ void MD::ShiftCirclePinDouble()
 	piningSites[5].AddPos(siteDistance, 0);
 	piningSites[7].AddPos(siteDistance, 0);
 }
+
+//-----------------------------------------------------------------------------------------------
+//    大中小3つのピニングサイトをずらす
+//-----------------------------------------------------------------------------------------------
 
 void MD::ShiftCirclePinTriple()
 {
