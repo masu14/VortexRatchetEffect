@@ -50,3 +50,8 @@ double PiningSiteCircle::GetR() {
 void PiningSiteCircle::SetR(double radian) {
 	r = radian;
 }
+
+void PiningSiteCircle::CalcPiningForce() const
+{
+
+}

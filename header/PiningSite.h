@@ -32,6 +32,7 @@ public:
 	Vector2d GetPos();				//ピニングサイトの代表的な座標(円の場合は中心)を得る
 	void SetPos(double x, double y);	//ピニングサイトの座標を書き込む、初期化以降は変更しない
 	void AddPos(double x, double y);
+	virtual void CalcPiningForce() const = 0;
 
 
 private:
@@ -44,6 +45,11 @@ private:
 	// private methods
 	//=========================================================================================
 };
+
+/// <summary>
+/// 円形ピニングサイトのクラス
+/// PiningSiteクラスを継承している
+/// </summary>
 
 class PiningSiteCircle : public PiningSite {
 public:
@@ -60,6 +66,8 @@ public:
 
 	double GetR();
 	void SetR(double r);
+
+	void CalcPiningForce() const override;
 
 private:
 	//=========================================================================================

@@ -224,7 +224,7 @@ void MD::CalcVVI() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ピニング力を計算する
+//		ピニング力を計算する(円形)
 //-------------------------------------------------------------------------------------------------
 void MD::CalcCirclePiningForce() {
 	const double eps = 1e-10;
@@ -358,7 +358,6 @@ void MD::CalcEOMOverDamp(double time)
 	if (time == 0) {
 		return;
 	}
-	double eta = 1.0;	//粘性抵抗η
 
 	unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);
 	for (int i = 0; i < vortexNum; i++) {
@@ -508,10 +507,10 @@ void MD::PlaceCirclePinDouble()
 
 	double r1 = 0.0, r2 = 0.0;
 	if (condition == "Circle-S2L2-S_is_Variable") {
-		r1 = 1.5, r2 = 0.5;
+		r1 = 2.0, r2 = 1.0;
 	}
 	else if (condition == "Circle-S2L2-L_is_Variable") {
-		r1 = 0.5, r2 = 1.5;
+		r1 = 1.0, r2 = 2.0;
 	}
 	else {
 		std::cout << "該当するconditionが存在しません" << std::endl;

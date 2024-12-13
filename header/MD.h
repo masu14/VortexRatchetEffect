@@ -84,7 +84,8 @@ private:
 	
 	void InitForce();						//外力を0に初期化する
 	void CalcVVI();							//ボルテックス・ボルテックス相互作用(VVI)を計算する
-	void CalcCirclePiningForce();					//ピニング力を計算する
+	void CalcCirclePiningForce();					//ピニング力を計算する(円形)
+	void CalcPiningForce();				//ピニング力を計算する
 	void CalcLorentzForce(double time);				//ローレンツ力を計算する	
 	void CalcResistForce();					//粘性抵抗による力を計算する
 	void CalcThermalForce();				//サーマル力を計算する
