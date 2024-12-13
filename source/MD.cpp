@@ -253,7 +253,8 @@ void MD::CalcCirclePiningForce() {
 			
 			if (difPos.norm() > cutoff) continue;
 
-			Vector2d force = -kp / pow(cosh((difPos.norm() - piningSites[j].GetR()) / lp), 2.0) * difPos/(difPos.norm() + eps);
+			Vector2d force = piningSites[j].CalcPiningForce(difPos, kp, lp);
+
 			double xForce = force.x();
 			double yForce = force.y();
 			vortexs[i].AddForce(xForce, yForce);
@@ -507,10 +508,10 @@ void MD::PlaceCirclePinDouble()
 
 	double r1 = 0.0, r2 = 0.0;
 	if (condition == "Circle-S2L2-S_is_Variable") {
-		r1 = 2.0, r2 = 1.0;
+		r1 = 1.5, r2 = 0.5;
 	}
 	else if (condition == "Circle-S2L2-L_is_Variable") {
-		r1 = 1.0, r2 = 2.0;
+		r1 = 0.5, r2 = 1.5;
 	}
 	else {
 		std::cout << "ŠY“–‚·‚écondition‚ª‘¶Ý‚µ‚Ü‚¹‚ñ" << std::endl;

@@ -51,7 +51,42 @@ void PiningSiteCircle::SetR(double radian) {
 	r = radian;
 }
 
-void PiningSiteCircle::CalcPiningForce() const
+Vector2d PiningSiteCircle::CalcPiningForce(Vector2d difPos, double kp, double lp) const
 {
+	const double eps = 1e-10;
+	Vector2d force = -kp / pow(cosh((difPos.norm() - r) / lp), 2.0) * difPos / (difPos.norm() + eps);
+	
+	return force;
+}
 
+//----------------------------------------------------------------------------------------
+// PiningSiteLineクラス(派生クラス)
+// 線状のピニングサイトのクラス
+//----------------------------------------------------------------------------------------
+PiningSiteLine::PiningSiteLine() 
+{
+	SetPos(-1.0, -1.0);
+	length = -1.0;
+}
+
+PiningSiteLine::~PiningSiteLine()
+{
+	/* DO NOTHING */
+}
+
+double PiningSiteLine::GetLength()
+{
+	return length;
+}
+
+void PiningSiteLine::SetLength(double l)
+{
+	length = l;
+}
+
+Vector2d PiningSiteLine::CalcPiningForce(Vector2d difPos, double kp, double lp) const
+{
+	const double eps = 1e-10;
+	Vector2d force;
+	return force;
 }

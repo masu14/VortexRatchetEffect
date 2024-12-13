@@ -7,7 +7,7 @@
 #pragma once
 #include <iostream>
 #include <math.h>			//基本的な関数を扱うための標準ライブラリ
-#include <Eigen/Core>		//ベクトル、行列演算を行うためのライブラリ
+#include <Eigen/Core>		//ベクトル演算を行うためのライブラリ
 
 using namespace Eigen;
 
@@ -32,7 +32,7 @@ public:
 	Vector2d GetPos();				//ピニングサイトの代表的な座標(円の場合は中心)を得る
 	void SetPos(double x, double y);	//ピニングサイトの座標を書き込む、初期化以降は変更しない
 	void AddPos(double x, double y);
-	virtual void CalcPiningForce() const = 0;
+	virtual Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const = 0;	//派生先の形状に適した計算を行う
 
 
 private:
@@ -50,8 +50,8 @@ private:
 /// 円形ピニングサイトのクラス
 /// PiningSiteクラスを継承している
 /// </summary>
-
-class PiningSiteCircle : public PiningSite {
+class PiningSiteCircle : public PiningSite 
+{
 public:
 	//=========================================================================================
 	// public variables
@@ -67,7 +67,7 @@ public:
 	double GetR();
 	void SetR(double r);
 
-	void CalcPiningForce() const override;
+	Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const override;
 
 private:
 	//=========================================================================================
@@ -78,4 +78,39 @@ private:
 	//=========================================================================================
 	// private methods
 	//=========================================================================================
+};
+
+/// <summary>
+/// 円形ピニングサイトのクラス
+/// PiningSiteクラスを継承している
+/// </summary>
+class PiningSiteLine : public PiningSite
+{
+public:
+	//=========================================================================================
+	// public variables
+	//=========================================================================================
+	/* NOTHING */
+
+	//=========================================================================================
+	// public methods
+	//=========================================================================================
+	PiningSiteLine();
+	~PiningSiteLine();
+
+	double GetLength();
+	void SetLength(double length);
+
+	Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const override;
+
+private:
+	//=========================================================================================
+	// private variables
+	//=========================================================================================
+	double length = -1.0;
+
+	//=========================================================================================
+	// private methods
+	//=========================================================================================
+
 };
