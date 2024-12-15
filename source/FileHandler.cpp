@@ -210,6 +210,22 @@ void FileHandler::WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningsites,
 }
 
 //----------------------------------------------------------------------------------------------
+//     csvファイル書き込み用、ピニングサイトの位置と半径を記載する
+//----------------------------------------------------------------------------------------------
+void FileHandler::WritePinPos(const unique_ptr<PiningSiteLine[]>& piningsites, int pinNum)
+{
+	for (int i = 0; i < pinNum; i++) {
+		file << "x" << i + 1 << ",y" << i + 1 << ",l" << i + 1 << ",";
+	}
+	file << "\n";
+
+	for (int i = 0; i < pinNum; i++) {
+		file << piningsites[i].GetPos().x() << "," << piningsites[i].GetPos().y() << "," << piningsites[i].GetLength() << ",";
+	}
+	file << "\n";
+}
+
+//----------------------------------------------------------------------------------------------
 //     csvファイル書き込み用、ラベルを記載する
 //----------------------------------------------------------------------------------------------
 void FileHandler::WriteLabel(int vortexNum)

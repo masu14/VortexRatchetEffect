@@ -88,18 +88,38 @@ bool MD::InitPinPos() {
 	//ピニングサイトの種類を設定する
 	piningType = SetPinType();
 
-	// TODO: input.iniのピニングサイトの設定に応じて型が変わるように変更する
-	piningSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
-
-	if(piningType == PiningType::tripleCircle) PlaceCirclePinTriple();
-	if (piningType == PiningType::doubleCircle) PlaceCirclePinDouble();
-
-	//siteDistanceだけ円の中心をずらす、
-	// TODO: 実験条件で動かすピニングサイトを変更する必要有
-	if (piningType == PiningType::tripleCircle) ShiftCirclePinTriple();
-	if (piningType == PiningType::doubleCircle) ShiftCirclePinDouble();
+	//ピニングサイトの種類に応じて配置を行う
+	SetPin();
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+//    
+//-----------------------------------------------------------------------------------------------
+void MD::SetPin()
+{
+	//大中小3つの円形ピニングサイト
+	if (piningType == PiningType::tripleCircle) {
+		circlePinSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
+		PlaceCirclePinTriple();
+		ShiftCirclePinTriple();
+	}
+
+	//大小2つの円形ピニングサイト
+	if (piningType == PiningType::doubleCircle) {
+		circlePinSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
+		PlaceCirclePinDouble();
+		ShiftCirclePinDouble();
+	}
+
+	//大小2つの線ピニングサイト
+	if (piningType == PiningType::doubleLine) {
+		linePinSites = std::make_unique<PiningSiteLine[]>(piningSiteNum);
+		PlaceLinePinDouble();
+		ShiftLinePinDouble();
+	}
+	
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -159,7 +179,12 @@ void MD::MainLoop() {
 	//fileForce.   CreateFile(dirMD, "force.csv");
 	
 	//ラベルの書き込み
-	filePos.WritePinPos(piningSites, piningSiteNum);
+	if (piningType == PiningType::tripleCircle || piningType == PiningType::doubleCircle) {
+		filePos.WritePinPos(circlePinSites, piningSiteNum);
+	}
+	if (piningType == PiningType::doubleLine) {
+		filePos.WritePinPos(linePinSites, piningSiteNum);
+	}
 	filePos.     WriteLabel(vortexNum);
 	fileVelocity.WriteLabel(vortexNum);
 	//fileForce.   WriteLabel(vortexNum);
@@ -227,14 +252,14 @@ void MD::CalcVVI() {
 //		ピニング力を計算する(円形)
 //-------------------------------------------------------------------------------------------------
 void MD::CalcCirclePiningForce() {
-	const double eps = 1e-10;
 	
 	for (int i = 0; i < vortexNum; i++) {
+
 		bool inCircle = false;
 		//ボルテックスがピニングサイトの内部にいる場合はどのピニングサイトからも外力を受けない
 		for (int j = 0; j < piningSiteNum; j++) {
-			Vector2d difPos = vortexs[i].GetPos() - piningSites[j].GetPos();
-			if (difPos.norm() <= piningSites[j].GetR()) {
+			Vector2d difPos = vortexs[i].GetPos() - circlePinSites[j].GetPos();
+			if (difPos.norm() <= circlePinSites[j].GetR()) {
 				inCircle = true;
 				break;
 			}
@@ -243,7 +268,7 @@ void MD::CalcCirclePiningForce() {
 		if (inCircle == true) continue;
 
 		for (int j = 0; j < piningSiteNum; j++) {
-			Vector2d difPos = vortexs[i].GetPos() - piningSites[j].GetPos();
+			Vector2d difPos = vortexs[i].GetPos() - circlePinSites[j].GetPos();
 
 			if (difPos.x() < -weight / 2) difPos(0) += weight;
 			if (difPos.x() > weight / 2) difPos(0) -= weight;
@@ -253,8 +278,47 @@ void MD::CalcCirclePiningForce() {
 			
 			if (difPos.norm() > cutoff) continue;
 
-			Vector2d force = piningSites[j].CalcPiningForce(difPos, kp, lp);
+			Vector2d force = circlePinSites[j].CalcPiningForce(difPos, kp, lp);
 
+			double xForce = force.x();
+			double yForce = force.y();
+			vortexs[i].AddForce(xForce, yForce);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+//		ピニング力を計算する(線)
+//-------------------------------------------------------------------------------------------------
+void MD::CalcLinePiningForce()
+{
+	for (int i = 0; i < vortexNum; i++) {
+
+		const double eps = 1e-10;
+
+		//ピニングサイト内部にある場合はどのピニングサイトからも外力を受けない
+		bool inLine = false;
+		for (int j = 0; j < piningSiteNum; j++) {
+			Vector2d difPos = vortexs[i].GetPos() - linePinSites[j].GetPos();
+			if (abs(difPos.x()) <= (linePinSites[j].GetLength() / 2.0) && abs(difPos.y() <= eps)) {
+				inLine = true;
+				break;
+			}
+		}
+
+		if (inLine == true) continue;
+
+		for (int j = 0; j < piningSiteNum; j++) {
+			Vector2d difPos = vortexs[i].GetPos() - linePinSites[j].GetPos();
+
+			if (difPos.x() < -weight / 2) difPos(0) += weight;
+			if (difPos.x() > weight / 2) difPos(0) -= weight;
+			if (difPos.y() < -height / 2) difPos(1) += height;
+			if (difPos.y() > height / 2) difPos(1) -= height;
+
+			if (difPos.norm() > cutoff) continue;
+
+			Vector2d force = linePinSites[j].CalcPiningForce(difPos, kp, lp);
 			double xForce = force.x();
 			double yForce = force.y();
 			vortexs[i].AddForce(xForce, yForce);
@@ -332,7 +396,9 @@ void MD::CalcEOM(double time)
 
 		//F(t+dt)の計算
 		CalcVVI();
-		CalcCirclePiningForce();
+		if(piningType == PiningType::tripleCircle) CalcCirclePiningForce();
+		if (piningType == PiningType::doubleCircle) CalcCirclePiningForce();
+		if (piningType == PiningType::doubleLine) CalcLinePiningForce();
 		if (time > annealTime)CalcLorentzForce(time);
 		CalcResistForce();
 
@@ -453,7 +519,13 @@ void MD::PlaceVorRandom() {
 void MD::PlaceVorManual()
 {
 	for (int i = 0; i < vortexNum; i++) {
-		vortexs[i].SetPos(piningSites[i].GetPos().x(), piningSites[i].GetPos().y());
+		if (piningType == PiningType::tripleCircle || piningType == PiningType::doubleCircle) {
+			vortexs[i].SetPos(circlePinSites[i].GetPos().x(), circlePinSites[i].GetPos().y());
+		}
+		
+		if (piningType == PiningType::doubleLine) {
+			vortexs[i].SetPos(linePinSites[i].GetPos().x(), linePinSites[i].GetPos().y());
+		}
 	}
 	
 }
@@ -463,68 +535,61 @@ void MD::PlaceVorManual()
 //-----------------------------------------------------------------------------------------------
 PiningType MD::SetPinType()
 {
+	//大中小3種類の円形ピニングサイトの実験
 	if (condition == "Circle-S2M2L2-M_is_Variable" ||
 		condition == "Circle-S2M2L2-L_is_Variable" ||
 		condition == "Circle-S2M2L2-S_is_Variable") {
 		return PiningType::tripleCircle;
 	}
 
+	//大小2種類の円形ピニングサイトの実験
 	if (condition == "Circle-S2L2-S_is_Variable" ||
 		condition == "Circle-S2L2-L_is_Variable") {
 		return PiningType::doubleCircle;
 	}
-}
 
-//-----------------------------------------------------------------------------------------------
-//    円形ピニングサイトの初期配置、ボルテックスと同じ位置に配置、
-//-----------------------------------------------------------------------------------------------
-void MD::PlacePin()
-{
-	// TODO; 配置方法変える予定、ボルテックス基準で配置する意味あまりない
-	for (int i = 0; i < piningSiteNum; i++) {
-		double x = vortexs[i].GetPos().x();
-		double y = vortexs[i].GetPos().y();
-		piningSites[i].SetPos(x, y);
-		piningSites[i].SetR(a * (double)(i + 1.0) / 16.0);
-		std::cout << "piningSite[" << i << "] pos" << piningSites[i].GetPos().transpose() << std::endl;
-		std::cout << "piningSite[" << i << "] r  " << piningSites[i].GetR() << std::endl;
-
+	//線ピニングサイトの実験
+	if (condition == "Line-S2L2-S_is_Variable" ||
+		condition == "Line-S2L2-S_is_Variable") {
+		return PiningType::doubleLine;
 	}
 }
+
 
 //-----------------------------------------------------------------------------------------------
 //    大小2つの円形ピニングサイトの座標と半径をセットする
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceCirclePinDouble()
 {
-	piningSites[0].SetPos(1.5, 2.6);
-	piningSites[1].SetPos(5.5, 2.6);
-	piningSites[2].SetPos(9.5, 2.6);
-	piningSites[3].SetPos(13.5, 2.6);
-	piningSites[4].SetPos(1.5, 7.8);
-	piningSites[5].SetPos(5.5, 7.8);
-	piningSites[6].SetPos(9.5, 7.8);
-	piningSites[7].SetPos(13.5, 7.8);
+	circlePinSites[0].SetPos(1.5, 2.6);
+	circlePinSites[1].SetPos(5.5, 2.6);
+	circlePinSites[2].SetPos(9.5, 2.6);
+	circlePinSites[3].SetPos(13.5, 2.6);
+	circlePinSites[4].SetPos(1.5, 7.8);
+	circlePinSites[5].SetPos(5.5, 7.8);
+	circlePinSites[6].SetPos(9.5, 7.8);
+	circlePinSites[7].SetPos(13.5, 7.8);
 
+	const double L = 1.5, S = 0.5;
 	double r1 = 0.0, r2 = 0.0;
 	if (condition == "Circle-S2L2-S_is_Variable") {
-		r1 = 1.5, r2 = 0.5;
+		r1 = L, r2 = S;
 	}
 	else if (condition == "Circle-S2L2-L_is_Variable") {
-		r1 = 0.5, r2 = 1.5;
+		r1 = S, r2 = L;
 	}
 	else {
 		std::cout << "該当するconditionが存在しません" << std::endl;
 	}
 
-	piningSites[0].SetR(r1);
-	piningSites[1].SetR(r2);
-	piningSites[2].SetR(r1);
-	piningSites[3].SetR(r2);
-	piningSites[4].SetR(r1);
-	piningSites[5].SetR(r2);
-	piningSites[6].SetR(r1);
-	piningSites[7].SetR(r2);
+	circlePinSites[0].SetR(r1);
+	circlePinSites[1].SetR(r2);
+	circlePinSites[2].SetR(r1);
+	circlePinSites[3].SetR(r2);
+	circlePinSites[4].SetR(r1);
+	circlePinSites[5].SetR(r2);
+	circlePinSites[6].SetR(r1);
+	circlePinSites[7].SetR(r2);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -533,33 +598,85 @@ void MD::PlaceCirclePinDouble()
 
 void MD::PlaceCirclePinTriple()
 {
-	piningSites[0].SetPos(1.5, 2.6);
-	piningSites[1].SetPos(5.5, 2.6);
-	piningSites[2].SetPos(9.5, 2.6);
-	piningSites[3].SetPos(1.5, 7.8);
-	piningSites[4].SetPos(5.5, 7.8);
-	piningSites[5].SetPos(9.5, 7.8);
+	circlePinSites[0].SetPos(1.5, 2.6);
+	circlePinSites[1].SetPos(5.5, 2.6);
+	circlePinSites[2].SetPos(9.5, 2.6);
+	circlePinSites[3].SetPos(1.5, 7.8);
+	circlePinSites[4].SetPos(5.5, 7.8);
+	circlePinSites[5].SetPos(9.5, 7.8);
+
+	const double L = 1.5, M = 1.0, S = 0.5;
 
 	double r1 = 0.0, r2 = 0.0, r3 = 0.0;
 	if (condition == "Circle-S2M2L2-M_is_Variable") {
-		r1 = 1.5, r2 = 1.0, r3 = 0.5;
+		r1 = L, r2 = M, r3 = S;
 	}
 	else if (condition == "Circle-S2M2L2-S_is_Variable") {
-		r1 = 1.0, r2 = 0.5, r3 = 1.5;
+		r1 = M, r2 = S, r3 = L;
 	}
 	else if (condition == "Circle-S2M2L2-L_is_Variable") {
-		r1 = 0.5, r2 = 1.5, r3 = 1.0;
+		r1 = S, r2 = L, r3 = M;
 	}
 	else {
 		std::cout << "該当するconditionが存在しません" << std::endl;
 	}
 
-	piningSites[0].SetR(r1);
-	piningSites[1].SetR(r2);
-	piningSites[2].SetR(r3);
-	piningSites[3].SetR(r1);
-	piningSites[4].SetR(r2);
-	piningSites[5].SetR(r3);
+	circlePinSites[0].SetR(r1);
+	circlePinSites[1].SetR(r2);
+	circlePinSites[2].SetR(r3);
+	circlePinSites[3].SetR(r1);
+	circlePinSites[4].SetR(r2);
+	circlePinSites[5].SetR(r3);
+}
+
+//-----------------------------------------------------------------------------------------------
+//    大小2つの線ピニングサイトの座標と長さをセットする
+//-----------------------------------------------------------------------------------------------
+void MD::PlaceLinePinDouble()
+{
+	linePinSites[0].SetPos(1.5, 0.5);
+	linePinSites[1].SetPos(5.5, 0.5);
+	linePinSites[2].SetPos(9.5, 0.5);
+	linePinSites[3].SetPos(13.5, 0.5);
+	linePinSites[4].SetPos(1.5, 1.5);
+	linePinSites[5].SetPos(5.5, 1.5);
+	linePinSites[6].SetPos(9.5, 1.5);
+	linePinSites[7].SetPos(13.5, 1.5);
+	linePinSites[8].SetPos(1.5, 2.5);
+	linePinSites[9].SetPos(5.5, 2.5);
+	linePinSites[10].SetPos(9.5, 2.5);
+	linePinSites[11].SetPos(13.5, 2.5);
+	linePinSites[12].SetPos(1.5, 3.5);
+	linePinSites[13].SetPos(5.5, 3.5);
+	linePinSites[14].SetPos(9.5, 3.5);
+	linePinSites[15].SetPos(13.5, 3.5);
+
+	const double L = 1.0, S = 0.1;
+
+	double l1 = 0.0, l2 = 0.0;
+	if (condition == "Line-S2L2-S_is_Variable") {
+		l1 = L, l2 = S;
+	}
+	else {
+		std::cout << "該当するconditionが存在しません" << std::endl;
+	}
+
+	linePinSites[0].SetLength(l1);
+	linePinSites[1].SetLength(l2);
+	linePinSites[2].SetLength(l1);
+	linePinSites[3].SetLength(l2);
+	linePinSites[4].SetLength(l1);
+	linePinSites[5].SetLength(l2);
+	linePinSites[6].SetLength(l1);
+	linePinSites[7].SetLength(l2);
+	linePinSites[8].SetLength(l1);
+	linePinSites[9].SetLength(l2);
+	linePinSites[10].SetLength(l1);
+	linePinSites[11].SetLength(l2);
+	linePinSites[12].SetLength(l1);
+	linePinSites[13].SetLength(l2);
+	linePinSites[14].SetLength(l1);
+	linePinSites[15].SetLength(l2);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -568,10 +685,10 @@ void MD::PlaceCirclePinTriple()
 
 void MD::ShiftCirclePinDouble()
 {
-	piningSites[1].AddPos(siteDistance, 0);
-	piningSites[3].AddPos(siteDistance, 0);
-	piningSites[5].AddPos(siteDistance, 0);
-	piningSites[7].AddPos(siteDistance, 0);
+	circlePinSites[1].AddPos(siteDistance, 0);
+	circlePinSites[3].AddPos(siteDistance, 0);
+	circlePinSites[5].AddPos(siteDistance, 0);
+	circlePinSites[7].AddPos(siteDistance, 0);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -580,6 +697,18 @@ void MD::ShiftCirclePinDouble()
 
 void MD::ShiftCirclePinTriple()
 {
-	piningSites[1].AddPos(siteDistance, 0);
-	piningSites[4].AddPos(siteDistance, 0);
+	circlePinSites[1].AddPos(siteDistance, 0);
+	circlePinSites[4].AddPos(siteDistance, 0);
+}
+
+void MD::ShiftLinePinDouble()
+{
+	linePinSites[1].AddPos(siteDistance, 0);
+	linePinSites[3].AddPos(siteDistance, 0);
+	linePinSites[5].AddPos(siteDistance, 0);
+	linePinSites[7].AddPos(siteDistance, 0);
+	linePinSites[9].AddPos(siteDistance, 0);
+	linePinSites[11].AddPos(siteDistance, 0);
+	linePinSites[13].AddPos(siteDistance, 0);
+	linePinSites[15].AddPos(siteDistance, 0);
 }

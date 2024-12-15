@@ -19,6 +19,7 @@ enum class PiningType
 {
 	tripleCircle,
 	doubleCircle,
+	doubleLine,
 };
 
 /// <summary>
@@ -68,7 +69,8 @@ private:
 	PiningType piningType;
 
 	unique_ptr<Vortex[]> vortexs;					//ボルテックスのインスタンス、　vortexNum個の配列として扱う
-	unique_ptr<PiningSiteCircle[]> piningSites;		//ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
+	unique_ptr<PiningSiteCircle[]> circlePinSites;	//円ピニングサイトのインスタンス、piningSiteNum個の配列として扱う
+	unique_ptr<PiningSiteLine[]> linePinSites;		//線ピニングサイト
 	bool noPiningSite = false;						//ピニングサイト無しの場合のフラグ
 	double lambda = 1.0;
 
@@ -80,12 +82,13 @@ private:
 
 	bool InitVorPos();			//ボルテックスの初期配置を行う
 	bool InitPinPos();			//ピニングサイトの初期配置を行う
+	
 
 	
 	void InitForce();						//外力を0に初期化する
 	void CalcVVI();							//ボルテックス・ボルテックス相互作用(VVI)を計算する
 	void CalcCirclePiningForce();					//ピニング力を計算する(円形)
-	void CalcPiningForce();				//ピニング力を計算する
+	void CalcLinePiningForce();				//ピニング力を計算する
 	void CalcLorentzForce(double time);				//ローレンツ力を計算する	
 	void CalcResistForce();					//粘性抵抗による力を計算する
 	void CalcThermalForce();				//サーマル力を計算する
@@ -98,11 +101,14 @@ private:
 	void PlaceVorManual();			//ボルテックスの初期配置を一つずつ指定する
 
 	PiningType SetPinType();
-	void PlacePin();
+	void SetPin();				//ピニングサイトの種類に応じて配置を行う
+	
 	void PlaceCirclePinTriple();
 	void PlaceCirclePinDouble();
+	void PlaceLinePinDouble();
 	void ShiftCirclePinTriple();
 	void ShiftCirclePinDouble();
+	void ShiftLinePinDouble();
 
 	std::string SetVariableName(std::string varname);
 

@@ -47,6 +47,7 @@ public:
 	
 	void WriteParam(Paramater<double> param);
 	void WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningSites, int pinNum);
+	void WritePinPos(const unique_ptr<PiningSiteLine[]>& piningSites, int pinNum);
 	void WriteLabel(int vortexNum);//csvファイル書き込み用、ラベルを記載する
 	
 	void WritePos(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum);
