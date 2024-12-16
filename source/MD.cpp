@@ -436,7 +436,9 @@ void MD::CalcEOMOverDamp(double time)
 
 	//F(t+dt)の計算
 	CalcVVI();
-	CalcCirclePiningForce();
+	if (piningType == PiningType::tripleCircle) CalcCirclePiningForce();
+	if (piningType == PiningType::doubleCircle) CalcCirclePiningForce();
+	if (piningType == PiningType::doubleLine) CalcLinePiningForce();
 	if (time > annealTime)CalcLorentzForce(time);
 	
 	//終端速度を求め、そこから位置を求める
@@ -550,7 +552,7 @@ PiningType MD::SetPinType()
 
 	//線ピニングサイトの実験
 	if (condition == "Line-S2L2-S_is_Variable" ||
-		condition == "Line-S2L2-S_is_Variable") {
+		condition == "Line-S2L2-L_is_Variable") {
 		return PiningType::doubleLine;
 	}
 }

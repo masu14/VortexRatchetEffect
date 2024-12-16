@@ -10,7 +10,7 @@ int main() {
 	{
 		//シミュレーションの設定パラメータをinput.iniファイルから取得する
 		InputReader inputReader;
-		inputReader.ReadParam("../input/input003.ini");
+		inputReader.ReadParam("../input/input004.ini");
 
 		//パラメーターの設定
 		Paramater<double> param = inputReader.GetParam();
