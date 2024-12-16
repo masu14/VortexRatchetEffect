@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 # CSVファイルを読み込む
-dir = "output\Circle-S2L2-S_is_Variable\MD009"
+dir = "output\Line-S2L2-S_is_Variable\MD004"
 data = pd.read_csv(dir + "\\velocity_averages.csv")
 
 # データをピボットテーブル形式に変換
