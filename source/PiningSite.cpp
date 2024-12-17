@@ -30,6 +30,21 @@ void PiningSite::AddPos(double x, double y)
 	position = position + addPos;
 }
 
+double PiningSite::GetPotentialE()
+{
+	return potentialE;
+}
+
+void PiningSite::SetPotentialE(double energy)
+{
+	potentialE = energy;
+}
+
+void PiningSite::AddPotentialE(double energy)
+{
+	potentialE += energy;
+}
+
 //----------------------------------------------------------------------------------------
 // PiningSiteCircleクラス(派生クラス)
 // 円形のピニングサイトのクラス
@@ -56,6 +71,12 @@ Vector2d PiningSiteCircle::CalcPiningForce(Vector2d difPos, double kp, double lp
 	const double eps = 1e-10;
 	Vector2d force = -kp / pow(cosh((difPos.norm() - r) / lp), 2.0) * difPos / (difPos.norm() + eps);
 	
+	return force;
+}
+
+double PiningSiteCircle::CalcPotentialE(Vector2d difPos, double kp, double lp) const
+{
+	double force=0;
 	return force;
 }
 
@@ -102,5 +123,11 @@ Vector2d PiningSiteLine::CalcPiningForce(Vector2d difPos, double kp, double lp) 
 		force = -kp / pow(cosh(d / lp), 2.0) * difPos / (difPos.norm() + eps);
 	}
 	
+	return force;
+}
+
+double PiningSiteLine::CalcPotentialE(Vector2d difPos, double kp, double lp) const
+{
+	double force=0;
 	return force;
 }

@@ -102,6 +102,7 @@ private:
 
 	PiningType SetPinType();
 	void SetPin();				//ピニングサイトの種類に応じて配置を行う
+	void SetPotential();		//ピニングサイトにより生じるポテンシャルを設定する
 	
 	void PlaceCirclePinTriple();
 	void PlaceCirclePinDouble();

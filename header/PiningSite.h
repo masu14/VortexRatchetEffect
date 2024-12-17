@@ -21,7 +21,7 @@ public:
 	//=========================================================================================
 	// public variables
 	//=========================================================================================
-	/* NOTHING */
+	static double potentialE;		//ピニングサイトが形成するポテンシャルエネルギー
 
 	//=========================================================================================
 	// public methods
@@ -29,17 +29,22 @@ public:
 	PiningSite();				//不正な値で初期化(初期化もれした際にエラーを出すため)
 	~PiningSite();				
 
-	Vector2d GetPos();				//ピニングサイトの代表的な座標(円の場合は中心)を得る
+	Vector2d GetPos();					//ピニングサイトの中心座標を得る
 	void SetPos(double x, double y);	//ピニングサイトの座標を書き込む、初期化以降は変更しない
 	void AddPos(double x, double y);
-	virtual Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const = 0;	//派生先の形状に適した計算を行う
 
+	double GetPotentialE();
+	void SetPotentialE(double energy);
+	void AddPotentialE(double energy);
+	virtual Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const = 0;	//派生先の形状に適した計算を行う
+	virtual double CalcPotentialE(Vector2d pos, double kp, double lp) const = 0;		//派生先の形状に適した計算を行う
 
 private:
 	//=========================================================================================
 	// private variables
 	//=========================================================================================
 	Vector2d position;		//ピニングサイトの座標
+	
 
 	//=========================================================================================
 	// private methods
@@ -68,7 +73,7 @@ public:
 	void SetR(double r);
 
 	Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const override;
-
+	double CalcPotentialE(Vector2d pos, double kp, double lp) const override;
 private:
 	//=========================================================================================
 	// private variables
@@ -102,6 +107,9 @@ public:
 	void SetLength(double length);
 
 	Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const override;
+	double CalcPotentialE(Vector2d pos, double kp, double lp) const override;
+
+
 
 private:
 	//=========================================================================================
