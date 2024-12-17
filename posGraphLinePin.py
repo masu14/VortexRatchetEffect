@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # csvファイルの読み込み
-dir_name = "output\Line-S2L2-S_is_Variable\MD003\MD_lorentzForce=1.96_siteDistance=2.00"
+dir_name = "output\Line-S2L2-S_is_Variable\MD007\MD_lorentzForce=2.00_siteDistance=1.00"
 file_name = dir_name + "\\position.csv"
 line_data = pd.read_csv(file_name, nrows=1)
 vortex_data = pd.read_csv(file_name, skiprows=2)
@@ -24,6 +24,7 @@ num_vortexs = (len(vortex_data.columns) - 1) // 2
 fig, ax = plt.subplots()
 ax.set_xlim(0, 16)
 ax.set_ylim(0, 4)
+ax.set_aspect("equal")
 
 # 線を描画
 lines = []
