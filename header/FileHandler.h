@@ -49,6 +49,7 @@ public:
 	void WritePinPos(const unique_ptr<PiningSiteCircle[]>& piningSites, int pinNum);
 	void WritePinPos(const unique_ptr<PiningSiteLine[]>& piningSites, int pinNum);
 	void WriteLabel(int vortexNum);//csvファイル書き込み用、ラベルを記載する
+	void WritePotentialLabel();
 	
 	void WritePos(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum);
 	void WriteVelocity(double time, const unique_ptr<Vortex[]>& vortexs, int vortexNum);
@@ -57,6 +58,7 @@ public:
 	void WritePos(const unique_ptr<Vortex[]>& vortexs, int vortexNum);
 	void WriteVelocity(const unique_ptr<Vortex[]>& vortexs, int vortexNum);
 	void WriteForce(const unique_ptr<Vortex[]>& vortexs, int vortexNum);
+	void WritePotential(Vector2d pos, double energy);
 
 private:
 	//=======================================================================================

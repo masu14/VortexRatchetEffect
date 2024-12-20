@@ -65,11 +65,11 @@ void InputReader::ReadParam(const string& filename)
 		//設定フラグパラメータ
 		bool enableLoggings = stringToBool(sections["Settings"]["enable_loggings"]);
 		bool debugMode = stringToBool(sections["Settings"]["debug_mode"]);
+		param.outPosition = stringToBool(sections["Settings"]["outPosition"]);
+		param.outVelocity = stringToBool(sections["Settings"]["outVelocity"]);
+		param.outForce = stringToBool(sections["Settings"]["outForce"]);
+		param.outPinPotential = stringToBool(sections["Settings"]["outPinPotential"]);
 
-
-		std::cout << "[Setting]" << std::endl;
-		std::cout << "Enable Logging: " << enableLoggings << std::endl;
-		std::cout << "Debug Mode: " << debugMode << std::endl;
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;

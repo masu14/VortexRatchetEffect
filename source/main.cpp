@@ -36,6 +36,12 @@ int main() {
 		std::cout << param.var1name <<": " << param.var1[0] << "," << param.var1[1] << "," << param.var1[2] << std::endl;
 		std::cout << param.var2name <<": " << param.var2[0] << "," << param.var2[1] << "," << param.var2[2] << std::endl;
 
+		std::cout << "\n[Settings]" << std::endl;
+		std::cout << "outPosition: " << param.outPosition << std::endl;
+		std::cout << "outVelocity: " << param.outVelocity << std::endl;
+		std::cout << "outForce: " << param.outForce << std::endl;
+		std::cout << "outPinPotential: " << param.outPinPotential << std::endl;
+
 		//変数パラメータを設定する
 		if (param.var1name == "lorentzForce") param.lorentzForce = param.var1[0];
 		if (param.var2name == "siteDistance") param.siteDistance = param.var2[0];
@@ -62,7 +68,7 @@ int main() {
 				std::cout << "全" << mdNum << "回のうち、第" << count << "回目が実行されています。" << std::endl;
 				//分子動力学法の実行
 				unique_ptr<MD> md = std::make_unique<MD>();
-				//md->Run(param);
+				md->Run(param);
 				param.siteDistance += param.var2[2];
 				count++;
 			}

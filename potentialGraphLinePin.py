@@ -4,11 +4,11 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 # CSVファイルを読み込む
-dir = "output\Line-S2L2-S_is_Variable\MD009"
-data = pd.read_csv(dir + "\\velocity_averages.csv")
+dir = "output\Line-S2L2-S_is_Variable\MD017"
+data = pd.read_csv(dir + "\PinningPotential.csv")
 
 # データをピボットテーブル形式に変換
-pivot_table = data.pivot(index="siteDistance", columns="lorentzForce", values="vAve")
+pivot_table = data.pivot(index="y", columns="x", values="E")
 
 # 正規化処理
 v_min = pivot_table.values.min()
@@ -41,13 +41,13 @@ c = plt.pcolormesh(
     vmin=-1,
     vmax=1,
 )
-plt.colorbar(c, label="Average Velocity")
+plt.colorbar(c, label="Potential Energy")
 
 # 軸ラベルとタイトル
-plt.xlabel("lorentzForce")
-plt.ylabel("siteDistance")
-plt.title("Average Velocity (lorentzForce vs siteDistance)")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Pinning Potential")
 
 # グラフを保存または表示
-plt.savefig(dir + "\\velocity_heatmap.png", dpi=300)
+plt.savefig(dir + "\PinningPotential.png", dpi=300)
 plt.show()

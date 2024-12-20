@@ -11,6 +11,7 @@
 
 using namespace Eigen;
 
+
 /// <summary>
 /// PiningSite
 /// ピニングサイトの座標や形状の情報をまとめたクラス、とりあえず円形のピニングサイトを考えるが
@@ -22,12 +23,17 @@ public:
 	// public variables
 	//=========================================================================================
 	static double potentialE;		//ピニングサイトが形成するポテンシャルエネルギー
+	static double kp;
+	static double lp;
 
 	//=========================================================================================
 	// public methods
 	//=========================================================================================
 	PiningSite();				//不正な値で初期化(初期化もれした際にエラーを出すため)
-	~PiningSite();				
+	~PiningSite();
+
+	static void Setkp(double kp);
+	static void Setlp(double lp);
 
 	Vector2d GetPos();					//ピニングサイトの中心座標を得る
 	void SetPos(double x, double y);	//ピニングサイトの座標を書き込む、初期化以降は変更しない
@@ -36,8 +42,8 @@ public:
 	double GetPotentialE();
 	void SetPotentialE(double energy);
 	void AddPotentialE(double energy);
-	virtual Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const = 0;	//派生先の形状に適した計算を行う
-	virtual double CalcPotentialE(Vector2d pos, double kp, double lp) const = 0;		//派生先の形状に適した計算を行う
+	virtual Vector2d CalcPiningForce(Vector2d difPos) const = 0;	//派生先の形状に適した計算を行う
+	virtual double CalcPotentialE(Vector2d pos) const = 0;		//派生先の形状に適した計算を行う
 
 private:
 	//=========================================================================================
@@ -72,8 +78,8 @@ public:
 	double GetR();
 	void SetR(double r);
 
-	Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const override;
-	double CalcPotentialE(Vector2d pos, double kp, double lp) const override;
+	Vector2d CalcPiningForce(Vector2d difPos) const override;
+	double CalcPotentialE(Vector2d pos) const override;
 private:
 	//=========================================================================================
 	// private variables
@@ -106,8 +112,8 @@ public:
 	double GetLength();
 	void SetLength(double length);
 
-	Vector2d CalcPiningForce(Vector2d difPos, double kp, double lp) const override;
-	double CalcPotentialE(Vector2d pos, double kp, double lp) const override;
+	Vector2d CalcPiningForce(Vector2d difPos) const override;
+	double CalcPotentialE(Vector2d pos) const override;
 
 
 

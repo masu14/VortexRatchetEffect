@@ -2,6 +2,7 @@
 #include <memory>
 #include <math.h>			//基本的な関数を扱うための標準ライブラリ
 #include <random>
+#include <functional>
 #include "Vortex.h"
 #include "PiningSite.h"
 #include "FileHandler.h"
@@ -63,6 +64,11 @@ private:
 	double f0;					//VVIの係数の大きさ
 	double kp;					//ピニング力の係数の大きさ
 	double lp;					//
+	bool outPosition = false;
+	bool outVelocity = false;
+	bool outForce = false;
+	bool outPinPotential = false;
+
 	std::string var1name;
 	std::string var2name;
 
@@ -83,8 +89,8 @@ private:
 	bool InitVorPos();			//ボルテックスの初期配置を行う
 	bool InitPinPos();			//ピニングサイトの初期配置を行う
 	
-
-	
+	std::function<double(Vector2d vpos)> CreatePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite);
+		
 	void InitForce();						//外力を0に初期化する
 	void CalcVVI();							//ボルテックス・ボルテックス相互作用(VVI)を計算する
 	void CalcCirclePiningForce();					//ピニング力を計算する(円形)

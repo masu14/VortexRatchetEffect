@@ -9,6 +9,7 @@ output/**
 !output/**/velocity_averages.csv
 !output/**/velocity_heatmap.png
 !output/**/vortex_animation.mp4
+!output/**/PinningPotential.png
 
 # dotenv files
 .env

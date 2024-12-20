@@ -237,6 +237,11 @@ void FileHandler::WriteLabel(int vortexNum)
 	file << "\n";
 }
 
+void FileHandler::WritePotentialLabel()
+{
+	file << "x,y,E\n";
+}
+
 //----------------------------------------------------------------------------------------------
 //    csvファイル書き込み用、各ボルテックスの位置をファイルに書き込む(時間発展用)
 //----------------------------------------------------------------------------------------------
@@ -304,4 +309,12 @@ void FileHandler::WriteForce(const unique_ptr<Vortex[]>& vortexs, int vortexNum)
 	for (int i = 0; i < vortexNum; i++) {
 		file << vortexs[i].GetForce().x() << "," << vortexs[i].GetForce().y() << "\n";
 	}
+}
+
+//----------------------------------------------------------------------------------------------
+//    csvファイル書き込み用、ポテンシャルの分布をファイルに書き込む
+//----------------------------------------------------------------------------------------------
+void FileHandler::WritePotential(Vector2d pos, double energy)
+{
+	file << pos.x() << "," << pos.y() << "," << energy << "\n";
 }

@@ -15,6 +15,16 @@ PiningSite::~PiningSite(){
 	/* DO NOTHING */
 }
 
+void PiningSite::Setkp(double value) {
+	kp = value;
+}
+
+void PiningSite::Setlp(double value) {
+	lp = value;
+}
+
+
+
 Vector2d PiningSite::GetPos() {
 	return position;
 }
@@ -66,7 +76,7 @@ void PiningSiteCircle::SetR(double radian) {
 	r = radian;
 }
 
-Vector2d PiningSiteCircle::CalcPiningForce(Vector2d difPos, double kp, double lp) const
+Vector2d PiningSiteCircle::CalcPiningForce(Vector2d difPos) const
 {
 	const double eps = 1e-10;
 	Vector2d force = -kp / pow(cosh((difPos.norm() - r) / lp), 2.0) * difPos / (difPos.norm() + eps);
@@ -74,7 +84,7 @@ Vector2d PiningSiteCircle::CalcPiningForce(Vector2d difPos, double kp, double lp
 	return force;
 }
 
-double PiningSiteCircle::CalcPotentialE(Vector2d difPos, double kp, double lp) const
+double PiningSiteCircle::CalcPotentialE(Vector2d difPos) const
 {
 	double force=0;
 	return force;
@@ -105,7 +115,7 @@ void PiningSiteLine::SetLength(double l)
 	length = l;
 }
 
-Vector2d PiningSiteLine::CalcPiningForce(Vector2d difPos, double kp, double lp) const
+Vector2d PiningSiteLine::CalcPiningForce(Vector2d difPos) const
 {
 	const double eps = 1e-10;
 	Vector2d force;
@@ -126,7 +136,7 @@ Vector2d PiningSiteLine::CalcPiningForce(Vector2d difPos, double kp, double lp) 
 	return force;
 }
 
-double PiningSiteLine::CalcPotentialE(Vector2d difPos, double kp, double lp) const
+double PiningSiteLine::CalcPotentialE(Vector2d difPos) const
 {
 	double force=0;
 	return force;

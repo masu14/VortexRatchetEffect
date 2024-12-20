@@ -1,6 +1,8 @@
 #include "MD.h"
 
 double PiningSite::potentialE = 0.0;
+double PiningSite::kp = 0.0;
+double PiningSite::lp = 0.0;
 
 //コンストラクタ
 MD::MD()
@@ -35,8 +37,13 @@ void MD::Run(Paramater<double> param) {
 	f0					= param.f0;
 	kp					= param.kp;
 	lp					= param.lp;
+	outPosition			= param.outPosition;
+	outVelocity			= param.outVelocity;
+	outForce			= param.outForce;
+	outPinPotential		= param.outPinPotential;
 	var1name			= param.var1name;
 	var2name			= param.var2name;
+
 
 	
 	
@@ -86,13 +93,16 @@ bool MD::InitPinPos() {
 		return true;
 	}
 
+	PiningSite::Setkp(kp);
+	PiningSite::Setlp(lp);
+
 	//ピニングサイトの種類を設定する
 	piningType = SetPinType();
 
 	//ピニングサイトの種類に応じて配置を行う
 	SetPin();
 
-	SetPotential();
+	//SetPotential();
 
 	return true;
 }
@@ -140,6 +150,83 @@ bool MD::InitVorPos() {
 	return true;
 }
 
+void MD::SetPotential()
+{
+	//ピニングポテンシャルの計算式を作成する
+	auto CalcPinPotential = CreatePinPotential(linePinSites);
+
+	std::string dirName = "../output/" + condition;
+	std::string dirMD = dirName + "/MD" + FileHandler::GetIndex();
+
+	FileHandler filePotential;
+	filePotential.CreateFile(dirMD, "PinningPotential.csv");
+
+	//ラベルの書き込み
+	filePotential.WritePotentialLabel();
+
+	//各位置でのポテンシャルを計算する
+	Vector2d pos = { 0.0,0.0 };
+	while (pos.x() < weight) {
+		pos(1) = 0.0;
+		while (pos.y() < height) {
+			double energy = CalcPinPotential(pos);
+			filePotential.WritePotential(pos, energy);
+			pos(1) += 0.01;
+		}
+		pos(0) += 0.01;
+	}
+	
+}
+
+
+std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite)
+{
+	return [this](Vector2d vpos) {
+		const double eps = 1e-10;
+		double potentialE = 0.0;
+
+		bool inLine = false;
+		
+		for (int i = 0; i < piningSiteNum; i++) {
+			Vector2d difPos = vpos - linePinSites[i].GetPos();
+			if (abs(difPos.x()) <= (linePinSites[i].GetLength() / 2.0)&& abs(difPos.y()) <= eps) {
+				inLine = true;
+				break;
+			}
+		}
+		if (inLine) return potentialE;
+		for (int i = 0; i < piningSiteNum; i++) {
+			
+			Vector2d difPos = vpos - linePinSites[i].GetPos();
+
+			if (difPos.x() < -weight / 2) difPos(0) += weight;
+			if (difPos.x() > weight / 2) difPos(0) -= weight;
+			if (difPos.y() < -height / 2) difPos(1) += height;
+			if (difPos.y() > height / 2) difPos(1) -= height;
+
+			if (difPos.norm() > cutoff) continue;
+			
+			//x座標が線内部
+			if (abs(difPos.x()) <= (linePinSites[i].GetLength() / 2.0)) {
+				potentialE += kp * tanh(abs(difPos.y()) / lp);
+			}
+			//x座標が線より右側にある
+			else if (difPos.x() < -(linePinSites[i].GetLength() / 2.0)) {
+				Vector2d l = { linePinSites[i].GetLength(),0.0 };
+				double d = (difPos + l).norm();
+				potentialE += kp * tanh(d / lp);
+			}
+			//x座標が線より左側にある
+			else if (difPos.x() > (linePinSites[i].GetLength() / 2.0)) {
+				Vector2d l = { linePinSites[i].GetLength(),0.0 };
+				double d = (difPos - l).norm();
+				potentialE += kp * tanh(d / lp);
+			}
+		}
+		return potentialE;
+		};
+}
+
 std::string MD::SetVariableName(std::string varname)
 {
 	try {
@@ -152,6 +239,8 @@ std::string MD::SetVariableName(std::string varname)
 	}
 	
 }
+
+
 
 //-------------------------------------------------------------------------------------------------
 //     時間発展させるメインループ
@@ -177,18 +266,18 @@ void MD::MainLoop() {
 	FileHandler fileVelocity;
 	//FileHandler fileForce;
 	
-	filePos.     CreateFile(dirMD, "position.csv");
+	if (outPosition) filePos.CreateFile(dirMD, "position.csv");
 	fileVelocity.CreateFile(dirMD, "velocity.csv");
 	//fileForce.   CreateFile(dirMD, "force.csv");
 	
 	//ラベルの書き込み
 	if (piningType == PiningType::tripleCircle || piningType == PiningType::doubleCircle) {
-		filePos.WritePinPos(circlePinSites, piningSiteNum);
+		if (outPosition) filePos.WritePinPos(circlePinSites, piningSiteNum);
 	}
 	if (piningType == PiningType::doubleLine) {
-		filePos.WritePinPos(linePinSites, piningSiteNum);
+		if (outPosition) filePos.WritePinPos(linePinSites, piningSiteNum);
 	}
-	filePos.     WriteLabel(vortexNum);
+	if (outPosition) filePos.     WriteLabel(vortexNum);
 	fileVelocity.WriteLabel(vortexNum);
 	//fileForce.   WriteLabel(vortexNum);
 	
@@ -202,7 +291,7 @@ void MD::MainLoop() {
 		
 
 		//計算結果をファイルに書き込む
-		filePos.     WritePos(time, vortexs, vortexNum);
+		if (outPosition) filePos.     WritePos(time, vortexs, vortexNum);
 		fileVelocity.WriteVelocity(time, vortexs, vortexNum);
 		//fileForce.   WriteForce(time, vortexs, vortexNum);
 
@@ -281,7 +370,7 @@ void MD::CalcCirclePiningForce() {
 			
 			if (difPos.norm() > cutoff) continue;
 
-			Vector2d force = circlePinSites[j].CalcPiningForce(difPos, kp, lp);
+			Vector2d force = circlePinSites[j].CalcPiningForce(difPos);
 
 			double xForce = force.x();
 			double yForce = force.y();
@@ -303,7 +392,7 @@ void MD::CalcLinePiningForce()
 		bool inLine = false;
 		for (int j = 0; j < piningSiteNum; j++) {
 			Vector2d difPos = vortexs[i].GetPos() - linePinSites[j].GetPos();
-			if (abs(difPos.x()) <= (linePinSites[j].GetLength() / 2.0) && abs(difPos.y() <= eps)) {
+			if (abs(difPos.x()) <= (linePinSites[j].GetLength() / 2.0) && abs(difPos.y()) <= eps) {
 				inLine = true;
 				break;
 			}
@@ -321,7 +410,7 @@ void MD::CalcLinePiningForce()
 
 			if (difPos.norm() > cutoff) continue;
 
-			Vector2d force = linePinSites[j].CalcPiningForce(difPos, kp, lp);
+			Vector2d force = linePinSites[j].CalcPiningForce(difPos);
 			double xForce = force.x();
 			double yForce = force.y();
 			vortexs[i].AddForce(xForce, yForce);
@@ -559,6 +648,7 @@ PiningType MD::SetPinType()
 		return PiningType::doubleLine;
 	}
 }
+
 
 
 //-----------------------------------------------------------------------------------------------

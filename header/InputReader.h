@@ -42,6 +42,11 @@ struct Paramater {
 	string var2name;
 	std::array<T,3> var1;				//ループ用、配列には[start, end, step]を入れる
 	std::array<T,3> var2;				//ループ用、配列には[start, end, step]を入れる
+
+	bool outPosition;
+	bool outVelocity;
+	bool outForce;
+	bool outPinPotential;
 };
 
 
