@@ -86,16 +86,19 @@ private:
 	bool InitApp();
 	void MainLoop();
 
-	bool InitVorPos();			//ボルテックスの初期配置を行う
-	bool InitPinPos();			//ピニングサイトの初期配置を行う
+	bool InitVortex();			//ボルテックスの初期配置を行う
+	bool InitPiningSite();			//ピニングサイトの初期配置を行う
 	
 	std::function<double(Vector2d vpos)> CreatePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite);
+	//std::function<Vector2d(Vector2d vpos)>CreatePinForce(const unique_ptr<PiningSiteLine[]>& pinSite);
+
+	//std::function<Vector2d(Vector2d vpos)>CalcPinForce;
 		
 	void InitForce();						//外力を0に初期化する
 	void CalcVVI();							//ボルテックス・ボルテックス相互作用(VVI)を計算する
-	void CalcCirclePiningForce();					//ピニング力を計算する(円形)
-	void CalcLinePiningForce();				//ピニング力を計算する
-	void CalcLorentzForce(double time);				//ローレンツ力を計算する	
+	void CalcCirclePiningForce();			//ピニング力を計算する(円形)
+	void CalcLinePiningForce();				//ピニング力を計算する(線)
+	void CalcLorentzForce(double time);		//ローレンツ力を計算する	
 	void CalcResistForce();					//粘性抵抗による力を計算する
 	void CalcThermalForce();				//サーマル力を計算する
 	void CalcEOM(double time);				//運動方程式を解いて位置、速度、加速度を更新する

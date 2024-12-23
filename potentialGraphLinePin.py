@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 # CSVファイルを読み込む
-dir = "output\Line-S2L2-S_is_Variable\MD017"
+dir = "output\Line-S2L2-S_is_Variable\MD011"
 data = pd.read_csv(dir + "\PinningPotential.csv")
 
 # データをピボットテーブル形式に変換
@@ -31,7 +31,7 @@ colors = [
 custom_cmap = LinearSegmentedColormap.from_list("custom_jet", colors)
 
 # グラフを描画
-plt.figure(figsize=(10, 8))
+plt.figure(figsize=(16, 4))
 c = plt.pcolormesh(
     pivot_table.columns,
     pivot_table.index,

@@ -60,14 +60,14 @@ void MD::Run(Paramater<double> param) {
 bool MD::InitApp() {
 
 	// ピニングサイトの初期化
-	if(!InitPinPos())
+	if(!InitPiningSite())
 	{
 		std::cout << "!initpinpos" << std::endl;
 		return false;
 	}
 
 	// ボルテックスの初期化
-	if (!InitVorPos())
+	if (!InitVortex())
 	{
 		std::cout << "!initvortexpos" << std::endl;
 		return false;
@@ -82,7 +82,7 @@ bool MD::InitApp() {
 //-------------------------------------------------------------------------------------------------
 //		ピニングサイトを初期位置に配置する
 //-------------------------------------------------------------------------------------------------
-bool MD::InitPinPos() {
+bool MD::InitPiningSite() {
 	if (piningSiteNum < 0) {
 		std::cout << "piningSiteNumに不正な値が入力されました" << std::endl;
 		return false;
@@ -102,7 +102,9 @@ bool MD::InitPinPos() {
 	//ピニングサイトの種類に応じて配置を行う
 	SetPin();
 
-	//SetPotential();
+	//配置したピニングサイトによるピニングポテンシャルを作成する
+	
+	if (outPinPotential) SetPotential();
 
 	return true;
 }
@@ -138,7 +140,7 @@ void MD::SetPin()
 //-------------------------------------------------------------------------------------------------
 //		ボルテックスを初期位置に配置する
 //-------------------------------------------------------------------------------------------------
-bool MD::InitVorPos() {
+bool MD::InitVortex() {
 	if (vortexNum <= 0) {
 		std::cout << "vortexNumに不正な値が入力されました" << std::endl;
 		return false;
@@ -150,10 +152,14 @@ bool MD::InitVorPos() {
 	return true;
 }
 
+//-------------------------------------------------------------------------------------------------
+//		
+//-------------------------------------------------------------------------------------------------
 void MD::SetPotential()
 {
 	//ピニングポテンシャルの計算式を作成する
 	auto CalcPinPotential = CreatePinPotential(linePinSites);
+	//CalcPinForce = CreatePinForce(linePinSites);
 
 	std::string dirName = "../output/" + condition;
 	std::string dirMD = dirName + "/MD" + FileHandler::GetIndex();
@@ -175,10 +181,14 @@ void MD::SetPotential()
 		}
 		pos(0) += 0.01;
 	}
-	
+	outPinPotential = false;
+
+
 }
 
-
+//-------------------------------------------------------------------------------------------------
+//		
+//-------------------------------------------------------------------------------------------------
 std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite)
 {
 	return [this](Vector2d vpos) {
@@ -212,13 +222,13 @@ std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<Pin
 			}
 			//x座標が線より右側にある
 			else if (difPos.x() < -(linePinSites[i].GetLength() / 2.0)) {
-				Vector2d l = { linePinSites[i].GetLength(),0.0 };
+				Vector2d l = { linePinSites[i].GetLength()/2.0,0.0 };
 				double d = (difPos + l).norm();
 				potentialE += kp * tanh(d / lp);
 			}
 			//x座標が線より左側にある
 			else if (difPos.x() > (linePinSites[i].GetLength() / 2.0)) {
-				Vector2d l = { linePinSites[i].GetLength(),0.0 };
+				Vector2d l = { linePinSites[i].GetLength()/2.0,0.0 };
 				double d = (difPos - l).norm();
 				potentialE += kp * tanh(d / lp);
 			}
@@ -226,6 +236,44 @@ std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<Pin
 		return potentialE;
 		};
 }
+
+//-------------------------------------------------------------------------------------------------
+//		
+//-------------------------------------------------------------------------------------------------
+/*std::function<Vector2d(Vector2d vpos)> MD::CreatePinForce(const unique_ptr<PiningSiteLine[]>& pinSite)
+{
+	return [this](Vector2d vpos) {
+		const double eps = 1e-10;
+		Vector2d force = { 0.0,0.0 };
+
+		//ボルテックスがピニングサイト内部にある場合、ピニング力は作用しない
+		bool inLine = false;
+		for (int i = 0; i < piningSiteNum; i++) {
+			Vector2d difPos = vpos - linePinSites[i].GetPos();
+			if (abs(difPos.x()) <= (linePinSites[i].GetLength() / 2.0) && abs(difPos.y()) <= eps) {
+				inLine = true;
+				break;
+			}
+		}
+
+		if (inLine) return force;
+
+		for (int i = 0; i < piningSiteNum; i++) {
+			Vector2d difPos = vpos - linePinSites[i].GetPos();
+
+			if (difPos.x() < -weight / 2) difPos(0) += weight;
+			if (difPos.x() > weight / 2) difPos(0) -= weight;
+			if (difPos.y() < -height / 2) difPos(1) += height;
+			if (difPos.y() > height / 2) difPos(1) -= height;
+
+			if (difPos.norm() > cutoff) continue;
+
+			force += linePinSites[i].CalcPiningForce(difPos);
+
+		}
+		return force;
+		};
+}*/
 
 std::string MD::SetVariableName(std::string varname)
 {
@@ -264,11 +312,11 @@ void MD::MainLoop() {
 	//出力ファイルの作成
 	FileHandler filePos;
 	FileHandler fileVelocity;
-	//FileHandler fileForce;
+	FileHandler fileForce;
 	
 	if (outPosition) filePos.CreateFile(dirMD, "position.csv");
-	fileVelocity.CreateFile(dirMD, "velocity.csv");
-	//fileForce.   CreateFile(dirMD, "force.csv");
+	if (outVelocity) fileVelocity.CreateFile(dirMD, "velocity.csv");
+	if (outForce) fileForce.CreateFile(dirMD, "force.csv");
 	
 	//ラベルの書き込み
 	if (piningType == PiningType::tripleCircle || piningType == PiningType::doubleCircle) {
@@ -278,8 +326,8 @@ void MD::MainLoop() {
 		if (outPosition) filePos.WritePinPos(linePinSites, piningSiteNum);
 	}
 	if (outPosition) filePos.     WriteLabel(vortexNum);
-	fileVelocity.WriteLabel(vortexNum);
-	//fileForce.   WriteLabel(vortexNum);
+	if (outVelocity) fileVelocity.WriteLabel(vortexNum);
+	if (outForce) fileForce.WriteLabel(vortexNum);
 	
 	//メインループ
 	double time = 0;
@@ -292,8 +340,8 @@ void MD::MainLoop() {
 
 		//計算結果をファイルに書き込む
 		if (outPosition) filePos.     WritePos(time, vortexs, vortexNum);
-		fileVelocity.WriteVelocity(time, vortexs, vortexNum);
-		//fileForce.   WriteForce(time, vortexs, vortexNum);
+		if (outVelocity) fileVelocity.WriteVelocity(time, vortexs, vortexNum);
+		if (outForce)fileForce.WriteForce(time, vortexs, vortexNum);
 
 		time += dt;
 	}
@@ -385,7 +433,12 @@ void MD::CalcCirclePiningForce() {
 void MD::CalcLinePiningForce()
 {
 	for (int i = 0; i < vortexNum; i++) {
-
+		/*
+		Vector2d force = CalcPinForce(vortexs[i].GetPos());
+		double xForce = force.x();
+		double yForce = force.y();
+		vortexs[i].AddForce(xForce, yForce);
+		*/
 		const double eps = 1e-10;
 
 		//ピニングサイト内部にある場合はどのピニングサイトからも外力を受けない
