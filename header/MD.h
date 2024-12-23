@@ -90,9 +90,9 @@ private:
 	bool InitPiningSite();			//ピニングサイトの初期配置を行う
 	
 	std::function<double(Vector2d vpos)> CreatePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite);
-	//std::function<Vector2d(Vector2d vpos)>CreatePinForce(const unique_ptr<PiningSiteLine[]>& pinSite);
+	std::function<Vector2d(Vector2d vpos)>CreatePinForce(const unique_ptr<PiningSiteLine[]>& pinSite);
 
-	//std::function<Vector2d(Vector2d vpos)>CalcPinForce;
+	std::function<Vector2d(Vector2d vpos)>CalcPinForce;
 		
 	void InitForce();						//外力を0に初期化する
 	void CalcVVI();							//ボルテックス・ボルテックス相互作用(VVI)を計算する
@@ -109,7 +109,7 @@ private:
 	void PlaceVorRandom();			//ボルテックスの初期配置をランダムにする
 	void PlaceVorManual();			//ボルテックスの初期配置を一つずつ指定する
 
-	PiningType SetPinType();
+	PiningType SetPinType() const;
 	void SetPin();				//ピニングサイトの種類に応じて配置を行う
 	void SetPotential();		//ピニングサイトにより生じるポテンシャルを設定する
 	

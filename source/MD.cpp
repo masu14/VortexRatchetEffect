@@ -159,7 +159,7 @@ void MD::SetPotential()
 {
 	//ピニングポテンシャルの計算式を作成する
 	auto CalcPinPotential = CreatePinPotential(linePinSites);
-	//CalcPinForce = CreatePinForce(linePinSites);
+	CalcPinForce = CreatePinForce(linePinSites);
 
 	std::string dirName = "../output/" + condition;
 	std::string dirMD = dirName + "/MD" + FileHandler::GetIndex();
@@ -240,7 +240,7 @@ std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<Pin
 //-------------------------------------------------------------------------------------------------
 //		
 //-------------------------------------------------------------------------------------------------
-/*std::function<Vector2d(Vector2d vpos)> MD::CreatePinForce(const unique_ptr<PiningSiteLine[]>& pinSite)
+std::function<Vector2d(Vector2d vpos)> MD::CreatePinForce(const unique_ptr<PiningSiteLine[]>& pinSite)
 {
 	return [this](Vector2d vpos) {
 		const double eps = 1e-10;
@@ -273,7 +273,7 @@ std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<Pin
 		}
 		return force;
 		};
-}*/
+}
 
 std::string MD::SetVariableName(std::string varname)
 {
@@ -433,41 +433,11 @@ void MD::CalcCirclePiningForce() {
 void MD::CalcLinePiningForce()
 {
 	for (int i = 0; i < vortexNum; i++) {
-		/*
+		
 		Vector2d force = CalcPinForce(vortexs[i].GetPos());
 		double xForce = force.x();
 		double yForce = force.y();
 		vortexs[i].AddForce(xForce, yForce);
-		*/
-		const double eps = 1e-10;
-
-		//ピニングサイト内部にある場合はどのピニングサイトからも外力を受けない
-		bool inLine = false;
-		for (int j = 0; j < piningSiteNum; j++) {
-			Vector2d difPos = vortexs[i].GetPos() - linePinSites[j].GetPos();
-			if (abs(difPos.x()) <= (linePinSites[j].GetLength() / 2.0) && abs(difPos.y()) <= eps) {
-				inLine = true;
-				break;
-			}
-		}
-
-		if (inLine == true) continue;
-
-		for (int j = 0; j < piningSiteNum; j++) {
-			Vector2d difPos = vortexs[i].GetPos() - linePinSites[j].GetPos();
-
-			if (difPos.x() < -weight / 2) difPos(0) += weight;
-			if (difPos.x() > weight / 2) difPos(0) -= weight;
-			if (difPos.y() < -height / 2) difPos(1) += height;
-			if (difPos.y() > height / 2) difPos(1) -= height;
-
-			if (difPos.norm() > cutoff) continue;
-
-			Vector2d force = linePinSites[j].CalcPiningForce(difPos);
-			double xForce = force.x();
-			double yForce = force.y();
-			vortexs[i].AddForce(xForce, yForce);
-		}
 	}
 }
 
@@ -671,7 +641,8 @@ void MD::PlaceVorManual()
 		}
 		
 		if (piningType == PiningType::doubleLine) {
-			vortexs[i].SetPos(linePinSites[i].GetPos().x(), linePinSites[i].GetPos().y());
+			vortexs[i].SetPos(linePinSites[i].GetPos().x()-(linePinSites[i].GetLength()/2.0), linePinSites[i].GetPos().y());
+			
 		}
 	}
 	
@@ -680,7 +651,7 @@ void MD::PlaceVorManual()
 //-----------------------------------------------------------------------------------------------
 //    
 //-----------------------------------------------------------------------------------------------
-PiningType MD::SetPinType()
+PiningType MD::SetPinType() const
 {
 	//大中小3種類の円形ピニングサイトの実験
 	if (condition == "Circle-S2M2L2-M_is_Variable" ||
@@ -782,22 +753,22 @@ void MD::PlaceCirclePinTriple()
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceLinePinDouble()
 {
-	linePinSites[0].SetPos(1.5, 0.5);
-	linePinSites[1].SetPos(5.5, 0.5);
-	linePinSites[2].SetPos(9.5, 0.5);
-	linePinSites[3].SetPos(13.5, 0.5);
-	linePinSites[4].SetPos(1.5, 1.5);
-	linePinSites[5].SetPos(5.5, 1.5);
-	linePinSites[6].SetPos(9.5, 1.5);
-	linePinSites[7].SetPos(13.5, 1.5);
-	linePinSites[8].SetPos(1.5, 2.5);
-	linePinSites[9].SetPos(5.5, 2.5);
-	linePinSites[10].SetPos(9.5, 2.5);
-	linePinSites[11].SetPos(13.5, 2.5);
-	linePinSites[12].SetPos(1.5, 3.5);
-	linePinSites[13].SetPos(5.5, 3.5);
-	linePinSites[14].SetPos(9.5, 3.5);
-	linePinSites[15].SetPos(13.5, 3.5);
+	linePinSites[0].SetPos(0.6, 0.5);
+	linePinSites[1].SetPos(4.6, 0.5);
+	linePinSites[2].SetPos(8.6, 0.5);
+	linePinSites[3].SetPos(12.6, 0.5);
+	linePinSites[4].SetPos(0.6, 1.5);
+	linePinSites[5].SetPos(4.6, 1.5);
+	linePinSites[6].SetPos(8.6, 1.5);
+	linePinSites[7].SetPos(12.6, 1.5);
+	linePinSites[8].SetPos(0.6, 2.5);
+	linePinSites[9].SetPos(4.6, 2.5);
+	linePinSites[10].SetPos(8.6, 2.5);
+	linePinSites[11].SetPos(12.6, 2.5);
+	linePinSites[12].SetPos(0.6, 3.5);
+	linePinSites[13].SetPos(4.6, 3.5);
+	linePinSites[14].SetPos(8.6, 3.5);
+	linePinSites[15].SetPos(12.6, 3.5);
 
 	const double L = 1.0, S = 0.1;
 

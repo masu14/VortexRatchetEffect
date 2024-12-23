@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # CSVファイルを読み込む
-dir = "output/Line-S2L2-S_is_Variable/MD011"
+dir = "output/Line-S2L2-S_is_Variable/MD030"
 data = pd.read_csv(dir + "/PinningPotential.csv")
 
 # y を固定
