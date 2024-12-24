@@ -106,6 +106,8 @@ bool MD::InitPiningSite() {
 	
 	if (outPinPotential) SetPotential();
 
+	CalcPinForce = CreatePinForce(linePinSites);
+
 	return true;
 }
 
@@ -159,7 +161,7 @@ void MD::SetPotential()
 {
 	//ピニングポテンシャルの計算式を作成する
 	auto CalcPinPotential = CreatePinPotential(linePinSites);
-	CalcPinForce = CreatePinForce(linePinSites);
+	
 
 	std::string dirName = "../output/" + condition;
 	std::string dirMD = dirName + "/MD" + FileHandler::GetIndex();
