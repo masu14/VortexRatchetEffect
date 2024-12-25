@@ -19,3 +19,5 @@ lp = 0.424
 [Variable]
 lorentzForce first: 1.6, end: 2.04, step: 0.02
 siteDistance first:  -2, end: 2.01, step: 0.1
+
+備考：MD035はMD034とM031の結果を足したもの

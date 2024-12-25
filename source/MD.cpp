@@ -449,8 +449,8 @@ void MD::CalcLinePiningForce()
 void MD::CalcLorentzForce(double time) {
 	const double PI = 3.141592653589;
 	double force;
-	if (sin( PI / lorentzFrequency * (time-annealTime)) > 0) force = lorentzForce;
-	else force = -lorentzForce;
+	if (sin( PI / lorentzFrequency * (time-annealTime)) > 0) force = -lorentzForce;
+	else force = lorentzForce;
 	
 	for (int i = 0; i < vortexNum; i++) {
 		vortexs[i].AddForce(force, 0.0);
