@@ -269,7 +269,7 @@ std::function<Vector2d(Vector2d vpos)> MD::CreatePinForce(const unique_ptr<Pinin
 			if (difPos.y() > height / 2) difPos(1) -= height;
 
 			if (difPos.norm() > cutoff) continue;
-
+			
 			force += linePinSites[i].CalcPiningForce(difPos);
 
 		}
@@ -449,8 +449,8 @@ void MD::CalcLinePiningForce()
 void MD::CalcLorentzForce(double time) {
 	const double PI = 3.141592653589;
 	double force;
-	if (sin( PI / lorentzFrequency * (time-annealTime)) > 0) force = -lorentzForce;
-	else force = lorentzForce;
+	if (sin( PI / lorentzFrequency * (time-annealTime)) > 0) force = lorentzForce;
+	else force = -lorentzForce;
 	
 	for (int i = 0; i < vortexNum; i++) {
 		vortexs[i].AddForce(force, 0.0);
@@ -643,7 +643,7 @@ void MD::PlaceVorManual()
 		}
 		
 		if (piningType == PiningType::doubleLine) {
-			vortexs[i].SetPos(linePinSites[i].GetPos().x()-(linePinSites[i].GetLength()/2.0), linePinSites[i].GetPos().y());
+			vortexs[i].SetPos(linePinSites[i].GetPos().x(), linePinSites[i].GetPos().y());
 			
 		}
 	}
@@ -759,18 +759,18 @@ void MD::PlaceLinePinDouble()
 	linePinSites[1].SetPos(4.6, 0.5);
 	linePinSites[2].SetPos(8.6, 0.5);
 	linePinSites[3].SetPos(12.6, 0.5);
-	linePinSites[4].SetPos(0.6, 1.5);
-	linePinSites[5].SetPos(4.6, 1.5);
-	linePinSites[6].SetPos(8.6, 1.5);
-	linePinSites[7].SetPos(12.6, 1.5);
-	linePinSites[8].SetPos(0.6, 2.5);
-	linePinSites[9].SetPos(4.6, 2.5);
-	linePinSites[10].SetPos(8.6, 2.5);
-	linePinSites[11].SetPos(12.6, 2.5);
-	linePinSites[12].SetPos(0.6, 3.5);
-	linePinSites[13].SetPos(4.6, 3.5);
-	linePinSites[14].SetPos(8.6, 3.5);
-	linePinSites[15].SetPos(12.6, 3.5);
+	linePinSites[4].SetPos(1.6, 2.5);
+	linePinSites[5].SetPos(5.6, 2.5);
+	linePinSites[6].SetPos(9.6, 2.5);
+	linePinSites[7].SetPos(13.6, 2.5);
+	linePinSites[8].SetPos(0.6, 4.5);
+	linePinSites[9].SetPos(4.6, 4.5);
+	linePinSites[10].SetPos(8.6, 4.5);
+	linePinSites[11].SetPos(12.6, 4.5);
+	linePinSites[12].SetPos(1.6, 6.5);
+	linePinSites[13].SetPos(5.6, 6.5);
+	linePinSites[14].SetPos(9.6, 6.5);
+	linePinSites[15].SetPos(13.6, 6.5);
 
 	const double L = 1.0, S = 0.1;
 

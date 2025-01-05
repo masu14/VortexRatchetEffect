@@ -120,7 +120,8 @@ Vector2d PiningSiteLine::CalcPiningForce(Vector2d difPos) const
 	const double eps = 1e-10;
 	Vector2d force;
 	if (abs(difPos.x()) <= (length / 2.0)) {
-		force = -kp / pow(cosh((abs(difPos.y())) / lp), 2.0) * difPos / (difPos.norm() + eps);
+		Vector2d dify = { 0, difPos.y() };
+		force = -kp / pow(cosh((abs(difPos.y())) / lp), 2.0) * dify / (dify.norm() + eps);
 	}
 	else if (difPos.x() < -(length / 2.0)) {
 		Vector2d l = { length/2.0, 0.0 };

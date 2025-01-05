@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 # CSVファイルを読み込む
-dir = "output\Line-S2L2-S_is_Variable\MD028"
+dir = "output\Line-S2L2-S_is_Variable\MD041"
 data = pd.read_csv(dir + "\PinningPotential.csv")
 
 # データをピボットテーブル形式に変換
