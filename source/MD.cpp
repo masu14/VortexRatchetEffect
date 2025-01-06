@@ -759,18 +759,18 @@ void MD::PlaceLinePinDouble()
 	linePinSites[1].SetPos(4.6, 0.5);
 	linePinSites[2].SetPos(8.6, 0.5);
 	linePinSites[3].SetPos(12.6, 0.5);
-	linePinSites[4].SetPos(1.6, 2.5);
-	linePinSites[5].SetPos(5.6, 2.5);
-	linePinSites[6].SetPos(9.6, 2.5);
-	linePinSites[7].SetPos(13.6, 2.5);
-	linePinSites[8].SetPos(0.6, 4.5);
-	linePinSites[9].SetPos(4.6, 4.5);
-	linePinSites[10].SetPos(8.6, 4.5);
-	linePinSites[11].SetPos(12.6, 4.5);
-	linePinSites[12].SetPos(1.6, 6.5);
-	linePinSites[13].SetPos(5.6, 6.5);
-	linePinSites[14].SetPos(9.6, 6.5);
-	linePinSites[15].SetPos(13.6, 6.5);
+	linePinSites[4].SetPos(1.6, 1.5);
+	linePinSites[5].SetPos(5.6, 1.5);
+	linePinSites[6].SetPos(9.6, 1.5);
+	linePinSites[7].SetPos(13.6, 1.5);
+	linePinSites[8].SetPos(0.6, 2.5);
+	linePinSites[9].SetPos(4.6, 2.5);
+	linePinSites[10].SetPos(8.6, 2.5);
+	linePinSites[11].SetPos(12.6, 2.5);
+	linePinSites[12].SetPos(1.6, 3.5);
+	linePinSites[13].SetPos(5.6, .5);
+	linePinSites[14].SetPos(9.6, 3.5);
+	linePinSites[15].SetPos(13.6, 3.5);
 
 	const double L = 1.0, S = 0.1;
 
