@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 # CSVファイルを読み込む
-dir = "output\Line-S2L2-S_is_Variable\MD060"
+dir = "output\Line-S2L2-S_is_Variable\MD066"
 data = pd.read_csv(dir + "\\velocity_averages.csv")
 
 # データをピボットテーブル形式に変換
@@ -41,12 +41,14 @@ c = plt.pcolormesh(
     vmin=-1,
     vmax=1,
 )
-plt.colorbar(c, label="Average Velocity")
+plt.colorbar(c, label="Mean Velocity")
+
+# 軸の設定
+plt.tick_params(axis="both", direction="in")
 
 # 軸ラベルとタイトル
-plt.xlabel("lorentzForce")
+plt.xlabel("Lorentz Force / Pinning Force")
 plt.ylabel("siteDistance")
-plt.title("Average Velocity (lorentzForce vs siteDistance)")
 
 # グラフを保存または表示
 plt.savefig(dir + "\\velocity_heatmap.png", dpi=300)

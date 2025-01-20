@@ -4,21 +4,21 @@ double PiningSite::potentialE = 0.0;
 double PiningSite::kp = 0.0;
 double PiningSite::lp = 0.0;
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 MD::MD()
 {
 	/* DO NOTHING */
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ï¿½fï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 MD::~MD() {
 	/* DO NOTHING */
 }
 
-//main.cpp‚Åparamater‚ğİ’è‚µARunƒƒ\ƒbƒh‚ÅmdŒvZ‚ğÀs‚·‚é
+//main.cppï¿½ï¿½paramaterï¿½ï¿½İ’è‚µï¿½ARunï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½ï¿½mdï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
 void MD::Run(Paramater<double> param) {
 
-	//ƒpƒ‰ƒ[ƒ^[‚ğ‚à‚Æ‚É•Ï”‚ğİ’è‚·‚é
+	//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚É•Ïï¿½ï¿½ï¿½İ’è‚·ï¿½ï¿½
 	EOM					= param.EOM;
 	condition			= param.condition;
 	vortexNum			= param.vortexNum;
@@ -49,7 +49,7 @@ void MD::Run(Paramater<double> param) {
 	
 
 
-	//‰Šú‰»‚ª¬Œ÷‚µ‚½‚Æ‚«MD–@‚ğÀs‚·‚é
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½MDï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
 	if (InitApp())
 	{
 		MainLoop();
@@ -59,36 +59,36 @@ void MD::Run(Paramater<double> param) {
 
 bool MD::InitApp() {
 
-	// ƒsƒjƒ“ƒOƒTƒCƒg‚Ì‰Šú‰»
+	// ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
 	if(!InitPiningSite())
 	{
 		std::cout << "!initpinpos" << std::endl;
 		return false;
 	}
 
-	// ƒ{ƒ‹ƒeƒbƒNƒX‚Ì‰Šú‰»
+	// ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
 	if (!InitVortex())
 	{
 		std::cout << "!initvortexpos" << std::endl;
 		return false;
 	}
 
-	//ƒ{ƒ‹ƒeƒbƒNƒX‚Ö‚ÌŠO—Í‚ğ‰Šú‰»
+	//ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ö‚ÌŠOï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	InitForce();
-	//std::cout << "mainroop‚É“ü‚è‚Ü‚·" << std::endl;
+	//std::cout << "mainroopï¿½É“ï¿½ï¿½ï¿½Ü‚ï¿½" << std::endl;
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ƒsƒjƒ“ƒOƒTƒCƒg‚ğ‰ŠúˆÊ’u‚É”z’u‚·‚é
+//		ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½É”zï¿½uï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------
 bool MD::InitPiningSite() {
 	if (piningSiteNum < 0) {
-		std::cout << "piningSiteNum‚É•s³‚È’l‚ª“ü—Í‚³‚ê‚Ü‚µ‚½" << std::endl;
+		std::cout << "piningSiteNumï¿½É•sï¿½ï¿½ï¿½È’lï¿½ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½" << std::endl;
 		return false;
 	}
 	else if (piningSiteNum == 0) {
-		std::cout << "ƒsƒjƒ“ƒOƒTƒCƒg‚ğ”z’u‚µ‚Ä‚¢‚Ü‚¹‚ñ" << std::endl;
+		std::cout << "ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½ï¿½zï¿½uï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½" << std::endl;
 		noPiningSite = true;
 		return true;
 	}
@@ -96,13 +96,13 @@ bool MD::InitPiningSite() {
 	PiningSite::Setkp(kp);
 	PiningSite::Setlp(lp);
 
-	//ƒsƒjƒ“ƒOƒTƒCƒg‚Ìí—Ş‚ğİ’è‚·‚é
+	//ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½Ş‚ï¿½İ’è‚·ï¿½ï¿½
 	piningType = SetPinType();
 
-	//ƒsƒjƒ“ƒOƒTƒCƒg‚Ìí—Ş‚É‰‚¶‚Ä”z’u‚ğs‚¤
+	//ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½Ş‚É‰ï¿½ï¿½ï¿½ï¿½Ä”zï¿½uï¿½ï¿½ï¿½sï¿½ï¿½
 	SetPin();
 
-	//”z’u‚µ‚½ƒsƒjƒ“ƒOƒTƒCƒg‚É‚æ‚éƒsƒjƒ“ƒOƒ|ƒeƒ“ƒVƒƒƒ‹‚ğì¬‚·‚é
+	//ï¿½zï¿½uï¿½ï¿½ï¿½ï¿½ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½É‚ï¿½ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½|ï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½
 	
 	if (outPinPotential) SetPotential();
 
@@ -112,25 +112,25 @@ bool MD::InitPiningSite() {
 }
 
 //-----------------------------------------------------------------------------------------------
-//    ƒsƒjƒ“ƒOƒTƒCƒg‚ÌŒ`óA‘g‚İ‡‚í‚¹‚É‰‚¶‚½”z’u‚ğs‚¤
+//    ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½ÌŒ`ï¿½ï¿½Aï¿½gï¿½İï¿½ï¿½í‚¹ï¿½É‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½uï¿½ï¿½ï¿½sï¿½ï¿½
 //-----------------------------------------------------------------------------------------------
 void MD::SetPin()
 {
-	//‘å’†¬3‚Â‚Ì‰~Œ`ƒsƒjƒ“ƒOƒTƒCƒg
+	//ï¿½å’†ï¿½ï¿½3ï¿½Â‚Ì‰~ï¿½`ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½g
 	if (piningType == PiningType::tripleCircle) {
 		circlePinSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
 		PlaceCirclePinTriple();
 		ShiftCirclePinTriple();
 	}
 
-	//‘å¬2‚Â‚Ì‰~Œ`ƒsƒjƒ“ƒOƒTƒCƒg
+	//ï¿½å¬2ï¿½Â‚Ì‰~ï¿½`ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½g
 	if (piningType == PiningType::doubleCircle) {
 		circlePinSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
 		PlaceCirclePinDouble();
 		ShiftCirclePinDouble();
 	}
 
-	//‘å¬2‚Â‚Ìüƒsƒjƒ“ƒOƒTƒCƒg
+	//ï¿½å¬2ï¿½Â‚Ìï¿½ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½g
 	if (piningType == PiningType::doubleLine) {
 		linePinSites = std::make_unique<PiningSiteLine[]>(piningSiteNum);
 		PlaceLinePinDouble();
@@ -140,16 +140,16 @@ void MD::SetPin()
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ƒ{ƒ‹ƒeƒbƒNƒX‚ğ‰ŠúˆÊ’u‚É”z’u‚·‚é
+//		ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½É”zï¿½uï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------
 bool MD::InitVortex() {
 	if (vortexNum <= 0) {
-		std::cout << "vortexNum‚É•s³‚È’l‚ª“ü—Í‚³‚ê‚Ü‚µ‚½" << std::endl;
+		std::cout << "vortexNumï¿½É•sï¿½ï¿½ï¿½È’lï¿½ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½" << std::endl;
 		return false;
 	}
 	vortexs = std::make_unique<Vortex[]>(vortexNum);
 	
-	PlaceVorManual();		//ƒ{ƒ‹ƒeƒbƒNƒX‚ğ”z’u
+	PlaceVorManual();		//ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ï¿½zï¿½u
 	
 	return true;
 }
@@ -159,7 +159,7 @@ bool MD::InitVortex() {
 //-------------------------------------------------------------------------------------------------
 void MD::SetPotential()
 {
-	//ƒsƒjƒ“ƒOƒ|ƒeƒ“ƒVƒƒƒ‹‚ÌŒvZ®‚ğì¬‚·‚é
+	//ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½|ï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ÌŒvï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½
 	auto CalcPinPotential = CreatePinPotential(linePinSites);
 	
 
@@ -169,10 +169,10 @@ void MD::SetPotential()
 	FileHandler filePotential;
 	filePotential.CreateFile(dirMD, "PinningPotential.csv");
 
-	//ƒ‰ƒxƒ‹‚Ì‘‚«‚İ
+	//ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	filePotential.WritePotentialLabel();
 
-	//ŠeˆÊ’u‚Å‚Ìƒ|ƒeƒ“ƒVƒƒƒ‹‚ğŒvZ‚·‚é
+	//ï¿½eï¿½Ê’uï¿½Å‚Ìƒ|ï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 	Vector2d pos = { 0.0,0.0 };
 	while (pos.x() < weight) {
 		pos(1) = 0.0;
@@ -218,17 +218,17 @@ std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<Pin
 
 			if (difPos.norm() > cutoff) continue;
 			
-			//xÀ•W‚ªü“à•”
+			//xï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			if (abs(difPos.x()) <= (linePinSites[i].GetLength() / 2.0)) {
 				potentialE += kp * tanh(abs(difPos.y()) / lp);
 			}
-			//xÀ•W‚ªü‚æ‚è‰E‘¤‚É‚ ‚é
+			//xï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
 			else if (difPos.x() < -(linePinSites[i].GetLength() / 2.0)) {
 				Vector2d l = { linePinSites[i].GetLength()/2.0,0.0 };
 				double d = (difPos + l).norm();
 				potentialE += kp * tanh(d / lp);
 			}
-			//xÀ•W‚ªü‚æ‚è¶‘¤‚É‚ ‚é
+			//xï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è¶ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
 			else if (difPos.x() > (linePinSites[i].GetLength() / 2.0)) {
 				Vector2d l = { linePinSites[i].GetLength()/2.0,0.0 };
 				double d = (difPos - l).norm();
@@ -248,7 +248,7 @@ std::function<Vector2d(Vector2d vpos)> MD::CreatePinForce(const unique_ptr<Pinin
 		const double eps = 1e-10;
 		Vector2d force = { 0.0,0.0 };
 
-		//ƒ{ƒ‹ƒeƒbƒNƒX‚ªƒsƒjƒ“ƒOƒTƒCƒg“à•”‚É‚ ‚éê‡Aƒsƒjƒ“ƒO—Í‚Íì—p‚µ‚È‚¢
+		//ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ê‡ï¿½Aï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Í‚Íï¿½pï¿½ï¿½ï¿½È‚ï¿½
 		bool inLine = false;
 		for (int i = 0; i < piningSiteNum; i++) {
 			Vector2d difPos = vpos - linePinSites[i].GetPos();
@@ -282,7 +282,7 @@ std::string MD::SetVariableName(std::string varname)
 	try {
 		if (varname == "lorentzForce") return FileHandler::FixedValueStr(2, lorentzForce);
 		if (varname == "siteDistance") return FileHandler::FixedValueStr(2, siteDistance);
-		else throw "•Ï”–¼‚ÉŠY“–‚·‚é•¶š—ñ‚ª³‚µ‚­‚ ‚è‚Ü‚¹‚ñ";
+		else throw "ï¿½Ïï¿½ï¿½ï¿½ï¿½ÉŠYï¿½ï¿½ï¿½ï¿½ï¿½é•¶ï¿½ï¿½ï¿½ñ‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½";
 	}
 	catch (const char* e) {
 		std::cout << "Error: " << e << std::endl;
@@ -293,17 +293,17 @@ std::string MD::SetVariableName(std::string varname)
 
 
 //-------------------------------------------------------------------------------------------------
-//     ŠÔ”­“W‚³‚¹‚éƒƒCƒ“ƒ‹[ƒv
+//     ï¿½ï¿½ï¿½Ô”ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½éƒï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½v
 //-------------------------------------------------------------------------------------------------
 void MD::MainLoop() {
 
-	//dirMD‚É‹LÚ‚·‚é•Ï”ƒpƒ‰ƒ[ƒ^–¼‚ğæ“¾‚·‚é
-	//var1name‚Í•Ï”–¼Avar1str‚Í•Ï”‚Ì’l‚Ì•¶š—ñ
+	//dirMDï¿½É‹Lï¿½Ú‚ï¿½ï¿½ï¿½Ïï¿½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
+	//var1nameï¿½Í•Ïï¿½ï¿½ï¿½ï¿½Avar1strï¿½Í•Ïï¿½ï¿½Ì’lï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½
 	std::string var1str, var2str;
 	var1str = SetVariableName(var1name);
 	var2str = SetVariableName(var2name);
 
-	//o—Íƒtƒ@ƒCƒ‹‚ğ“ü‚ê‚éƒfƒBƒŒƒNƒgƒŠdirMD‚ğì¬‚·‚é
+	//ï¿½oï¿½Íƒtï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½dirMDï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½
 	std::string dirName = "../output/" + condition;
 	std::string dirMD;
 
@@ -311,7 +311,7 @@ void MD::MainLoop() {
 	dirMD += "/MD_" + var1name + "=" + var1str + "_" + var2name + "=" + var2str;
 	FileHandler::CreateDir(dirMD);
 
-	//o—Íƒtƒ@ƒCƒ‹‚Ìì¬
+	//ï¿½oï¿½Íƒtï¿½@ï¿½Cï¿½ï¿½ï¿½Ìì¬
 	FileHandler filePos;
 	FileHandler fileVelocity;
 	FileHandler fileForce;
@@ -320,7 +320,7 @@ void MD::MainLoop() {
 	if (outVelocity) fileVelocity.CreateFile(dirMD, "velocity.csv");
 	if (outForce) fileForce.CreateFile(dirMD, "force.csv");
 	
-	//ƒ‰ƒxƒ‹‚Ì‘‚«‚İ
+	//ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (piningType == PiningType::tripleCircle || piningType == PiningType::doubleCircle) {
 		if (outPosition) filePos.WritePinPos(circlePinSites, piningSiteNum);
 	}
@@ -331,16 +331,16 @@ void MD::MainLoop() {
 	if (outVelocity) fileVelocity.WriteLabel(vortexNum);
 	if (outForce) fileForce.WriteLabel(vortexNum);
 	
-	//ƒƒCƒ“ƒ‹[ƒv
+	//ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½v
 	double time = 0;
 	
 	while (time <= maxTime) {
-		//‰^“®•û’ö®‚ğ‰ğ‚­
+		//ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (EOM == "ordinary") CalcEOM(time);
 		if (EOM == "overdamp") CalcEOMOverDamp(time);
 		
 
-		//ŒvZŒ‹‰Ê‚ğƒtƒ@ƒCƒ‹‚É‘‚«‚Ş
+		//ï¿½vï¿½Zï¿½ï¿½ï¿½Ê‚ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Éï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (outPosition) filePos.     WritePos(time, vortexs, vortexNum);
 		if (outVelocity) fileVelocity.WriteVelocity(time, vortexs, vortexNum);
 		if (outForce)fileForce.WriteForce(time, vortexs, vortexNum);
@@ -350,7 +350,7 @@ void MD::MainLoop() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ŠO—Í‚ğ0‚É‰Šú‰»‚·‚é
+//		ï¿½Oï¿½Í‚ï¿½0ï¿½Éï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------
 void MD::InitForce() {
 	for (int i = 0; i < vortexNum; i++) {
@@ -359,46 +359,45 @@ void MD::InitForce() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ƒ{ƒ‹ƒeƒbƒNƒXEƒ{ƒ‹ƒeƒbƒNƒX‘ŠŒİì—p(VVI)‚ğŒvZ‚·‚é
+//		ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Eï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½İï¿½p(VVI)ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------
 void MD::CalcVVI() {
 	const double eps = 1e-10;
 	for (int i = 0; i < vortexNum -1 ; i++) {
 		for (int j = i+1; j < vortexNum; j++) {
 			
-			Vector2d difPos = vortexs[i].GetPos() - vortexs[j].GetPos();		//ƒxƒNƒgƒ‹‚Ì·
+			Vector2d difPos = vortexs[i].GetPos() - vortexs[j].GetPos();		//ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ìï¿½
 			
-			//üŠú“I‚ÉŒJ‚è•Ô‚·ƒ{ƒ‹ƒeƒbƒNƒX‚Ì‚¤‚¿A‹ß‚¢ƒ{ƒ‹ƒeƒbƒNƒX‚ğŒvZ‚·‚é
-			//üŠú“I‹«ŠEğŒ‚É‘Î‚µ‚ÄƒJƒbƒgƒIƒt’·‚³‚ª’Z‚¯‚ê‚Î‚±‚ÌŒvZ‚Å‚à‚¤‚Ü‚­‚¢‚­‚ª—vŒŸ“¢
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ÉŒJï¿½ï¿½Ô‚ï¿½ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ì‚ï¿½ï¿½ï¿½ï¿½Aï¿½ß‚ï¿½ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 			if (difPos.x() < -weight / 2) difPos(0) += weight;
 			if (difPos.x() >  weight / 2) difPos(0) -= weight;
 			if (difPos.y() < -height / 2) difPos(1) += height;
 			if (difPos.y() >  height / 2) difPos(1) -= height;
 			
-			//ˆÈ‰ºAƒ{ƒ‹ƒeƒbƒNƒX“¯m‚Ì‹——£‚ªƒJƒbƒgƒIƒt’·‚³‚æ‚è’·‚¯‚ê‚ÎŒvZ‚µ‚È‚¢
-			//if (difPos.norm() > cutoff) continue;						
+			//ï¿½È‰ï¿½ï¿½Aï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½mï¿½Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½bï¿½gï¿½Iï¿½tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è’·ï¿½ï¿½ï¿½ï¿½ÎŒvï¿½Zï¿½ï¿½ï¿½È‚ï¿½
+			if (difPos.norm() > cutoff) continue;						
 			
-			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/(difPos.norm() + eps);	//VVI‚Ì®‚ğ—p‚¢‚½
+			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/(difPos.norm() + eps);	//VVIï¿½Ìï¿½ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½
 			
-			double xForce = force.x();				//VVI‚Ìx¬•ª
-			double yForce = force.y();				//VVI‚Ìy¬•ª
+			double xForce = force.x();				//VVIï¿½ï¿½xï¿½ï¿½ï¿½ï¿½
+			double yForce = force.y();				//VVIï¿½ï¿½yï¿½ï¿½ï¿½ï¿½
 			
-			vortexs[i].AddForce(xForce, yForce);	//ì—p
-			vortexs[j].AddForce(-xForce, -yForce);	//”½ì—p
+			vortexs[i].AddForce(xForce, yForce);	//ï¿½ï¿½p
+			vortexs[j].AddForce(-xForce, -yForce);	//ï¿½ï¿½ï¿½ï¿½p
 		}
 	}
 	
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ƒsƒjƒ“ƒO—Í‚ğŒvZ‚·‚é(‰~Œ`)
+//		ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Í‚ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½(ï¿½~ï¿½`)
 //-------------------------------------------------------------------------------------------------
 void MD::CalcCirclePiningForce() {
 	
 	for (int i = 0; i < vortexNum; i++) {
 
 		bool inCircle = false;
-		//ƒ{ƒ‹ƒeƒbƒNƒX‚ªƒsƒjƒ“ƒOƒTƒCƒg‚Ì“à•”‚É‚¢‚éê‡‚Í‚Ç‚Ìƒsƒjƒ“ƒOƒTƒCƒg‚©‚ç‚àŠO—Í‚ğó‚¯‚È‚¢
+		//ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ì“ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ê‡ï¿½Í‚Ç‚Ìƒsï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Í‚ï¿½ï¿½ó‚¯‚È‚ï¿½
 		for (int j = 0; j < piningSiteNum; j++) {
 			Vector2d difPos = vortexs[i].GetPos() - circlePinSites[j].GetPos();
 			if (difPos.norm() <= circlePinSites[j].GetR()) {
@@ -430,7 +429,7 @@ void MD::CalcCirclePiningForce() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ƒsƒjƒ“ƒO—Í‚ğŒvZ‚·‚é(ü)
+//		ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Í‚ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½)
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLinePiningForce()
 {
@@ -444,13 +443,13 @@ void MD::CalcLinePiningForce()
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ƒ[ƒŒƒ“ƒc—Í‚ğŒvZ‚·‚é	
+//		ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½cï¿½Í‚ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½	
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce(double time) {
 	const double PI = 3.141592653589;
 	double force;
-	if (sin( PI / lorentzFrequency * (time-annealTime)) > 0) force = lorentzForce;
-	else force = -lorentzForce;
+	if (sin( PI / lorentzFrequency * (time-annealTime)) > 0) force = -lorentzForce;
+	else force = lorentzForce;
 	
 	for (int i = 0; i < vortexNum; i++) {
 		vortexs[i].AddForce(force, 0.0);
@@ -458,29 +457,29 @@ void MD::CalcLorentzForce(double time) {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		”S«’ïR‚É‚æ‚é—Í‚ğŒvZ‚·‚é
+//		ï¿½Sï¿½ï¿½ï¿½ï¿½Rï¿½É‚ï¿½ï¿½Í‚ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------
 void MD::CalcResistForce() {
 	for (int i = 0; i < vortexNum; i++) {
-		Vector2d velocity = vortexs[i].GetVelocity();	//ƒ{ƒ‹ƒeƒbƒNƒX‚Ì‘¬“x‚ğæ“¾‚·‚é
-		Vector2d force = -eta * velocity;				//”S«’ïR‚É‚æ‚é—Í‚ğŒvZ‚·‚é
-		vortexs[i].AddForce(force.x(), force.y());		//ƒ{ƒ‹ƒeƒbƒNƒX‚Ö‚ÌŠO—Í‚É‰Á‚¦‚é
+		Vector2d velocity = vortexs[i].GetVelocity();	//ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ì‘ï¿½ï¿½xï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
+		Vector2d force = -eta * velocity;				//ï¿½Sï¿½ï¿½ï¿½ï¿½Rï¿½É‚ï¿½ï¿½Í‚ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
+		vortexs[i].AddForce(force.x(), force.y());		//ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ö‚ÌŠOï¿½Í‚É‰ï¿½ï¿½ï¿½ï¿½ï¿½
 	}
 }
 
 //-------------------------------------------------------------------------------------------------
-//		ƒT[ƒ}ƒ‹—Í‚ğŒvZ‚·‚é
+//		ï¿½Tï¿½[ï¿½}ï¿½ï¿½ï¿½Í‚ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------
 void MD::CalcThermalForce() {
 	
 }
 
 //-------------------------------------------------------------------------------------------------
-//		‰^“®•û’ö®‚ğ‰ğ‚¢‚Äƒ{ƒ‹ƒeƒbƒNƒX‚ÌˆÊ’uA‘¬“xAŠO—Í‚ğXV‚·‚é
+//		ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äƒ{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ÌˆÊ’uï¿½Aï¿½ï¿½ï¿½xï¿½Aï¿½Oï¿½Í‚ï¿½ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------
 void MD::CalcEOM(double time) 
 {
-	//‘¬“xƒxƒ‹ƒŒ–@‚ğ—p‚¢‚½ŠÔ”­“W‚Åƒ{ƒ‹ƒeƒbƒNƒX‚ÌˆÊ’uA‘¬“x‚ğXV‚·‚é
+	//ï¿½ï¿½ï¿½xï¿½xï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô”ï¿½ï¿½Wï¿½Åƒ{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ÌˆÊ’uï¿½Aï¿½ï¿½ï¿½xï¿½ï¿½ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 	//r(t+dt) = r(t) + v(t)*dt + (1/2)*(F(t)/m)*dt^2
 	//v(t+dt) = v(t) + (1/2)*((F(t)+F(t+dt))/m)*dt
 	{
@@ -488,30 +487,30 @@ void MD::CalcEOM(double time)
 			return;
 		}
 
-		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(vortexNum);	//‘¬“xv(t)‚Ì“®“I”z—ñAv(t+dt)‚ÌŒvZ‚Ég‚¤
-		unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);	//ŠO—ÍF(t)Av(t+dt)‚ÌŒvZ‚Ég‚¤
+		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(vortexNum);	//ï¿½ï¿½ï¿½xv(t)ï¿½Ì“ï¿½ï¿½Iï¿½zï¿½ï¿½Av(t+dt)ï¿½ÌŒvï¿½Zï¿½Égï¿½ï¿½
+		unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);	//ï¿½Oï¿½ï¿½F(t)ï¿½Av(t+dt)ï¿½ÌŒvï¿½Zï¿½Égï¿½ï¿½
 		for (int i = 0; i < vortexNum; i++) {
 
-			Vector2d r1 = vortexs[i].GetPos();		//ˆÊ’ur(t)
-			v1[i] = vortexs[i].GetVelocity();		//‘¬“xv(t)
-			f1[i] = vortexs[i].GetForce();			//ŠO—ÍF(t)
+			Vector2d r1 = vortexs[i].GetPos();		//ï¿½Ê’ur(t)
+			v1[i] = vortexs[i].GetVelocity();		//ï¿½ï¿½ï¿½xv(t)
+			f1[i] = vortexs[i].GetForce();			//ï¿½Oï¿½ï¿½F(t)
 
-			//ˆÊ’ur(t+dt)‚ğŒvZ‚µAXV‚·‚é
-			Vector2d r2 = r1 + v1[i] * dt + (f1[i] / eta) / 2 * dt * dt;	//ˆÊ’ur(t+dt)‚ÌŒvZ
+			//ï¿½Ê’ur(t+dt)ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½Aï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
+			Vector2d r2 = r1 + v1[i] * dt + (f1[i] / eta) / 2 * dt * dt;	//ï¿½Ê’ur(t+dt)ï¿½ÌŒvï¿½Z
 			
-			//üŠú“I‹«ŠEğŒ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½
 			if (r2.x() < 0)      r2(0) += weight;
 			if (r2.x() > weight) r2(0) -= weight;
 			if (r2.y() < 0)      r2(1) += height;
 			if (r2.y() > height) r2(1) -= height;
 			
-			vortexs[i].SetPos(r2.x(), r2.y());								//ˆÊ’ur(t+dt)‚ÌXV
+			vortexs[i].SetPos(r2.x(), r2.y());								//ï¿½Ê’ur(t+dt)ï¿½ÌXï¿½V
 		}
 
-		//ŠO—Í‚ÌÄŒvZ‚ğs‚¢AF(t+dt)‚ğŒvZ‚·‚é
-		InitForce();	//ƒ{ƒ‹ƒeƒbƒNƒX‚Ö‚ÌŠO—Í‚ğ‰Šú‰»
+		//ï¿½Oï¿½Í‚ÌÄŒvï¿½Zï¿½ï¿½ï¿½sï¿½ï¿½ï¿½AF(t+dt)ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
+		InitForce();	//ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ö‚ÌŠOï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-		//F(t+dt)‚ÌŒvZ
+		//F(t+dt)ï¿½ÌŒvï¿½Z
 		CalcVVI();
 		if(piningType == PiningType::tripleCircle) CalcCirclePiningForce();
 		if (piningType == PiningType::doubleCircle) CalcCirclePiningForce();
@@ -519,24 +518,24 @@ void MD::CalcEOM(double time)
 		if (time > annealTime)CalcLorentzForce(time);
 		CalcResistForce();
 
-		//v(t),F(t),F(t+dt)‚ğ—p‚¢‚Ä‘¬“xv(t+dt)‚ğŒvZ‚µAXV‚·‚é
+		//v(t),F(t),F(t+dt)ï¿½ï¿½pï¿½ï¿½ï¿½Ä‘ï¿½ï¿½xv(t+dt)ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½Aï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < vortexNum; i++) {
 			
 			Vector2d f2 = vortexs[i].GetForce();
-			Vector2d v2 = v1[i] + (f1[i] + f2) / (2 * eta) * dt;	//‘¬“xv(t+dt)‚ÌŒvZ
+			Vector2d v2 = v1[i] + (f1[i] + f2) / (2 * eta) * dt;	//ï¿½ï¿½ï¿½xv(t+dt)ï¿½ÌŒvï¿½Z
 			
-			vortexs[i].SetForce(f2.x(), f2.y());					//ŠO—ÍF(t+dt)‚ÌXVAŸ‚ÌŠÔ”­“W‚ÌˆÊ’ur(t)ŒvZ‚Åg‚¤
-			vortexs[i].SetVelocity(v2.x(), v2.y());					//‘¬“xv(t+dt)‚ÌXV
+			vortexs[i].SetForce(f2.x(), f2.y());					//ï¿½Oï¿½ï¿½F(t+dt)ï¿½ÌXï¿½Vï¿½Aï¿½ï¿½ï¿½Ìï¿½ï¿½Ô”ï¿½ï¿½Wï¿½ÌˆÊ’ur(t)ï¿½vï¿½Zï¿½Ågï¿½ï¿½
+			vortexs[i].SetVelocity(v2.x(), v2.y());					//ï¿½ï¿½ï¿½xv(t+dt)ï¿½ÌXï¿½V
 		}
 	}
 }
 
 //-------------------------------------------------------------------------------------------------
-//		I’[‘¬“x‚É’B‚µ‚½Û‚Ì‰ßŒ¸Š‰^“®•û’ö®‚ğ‰ğ‚¢‚Äƒ{ƒ‹ƒeƒbƒNƒX‚ÌˆÊ’uA‘¬“xAŠO—Í‚ğXV‚·‚é
+//		ï¿½Iï¿½[ï¿½ï¿½ï¿½xï¿½É’Bï¿½ï¿½ï¿½ï¿½ï¿½Û‚Ì‰ßŒï¿½ï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äƒ{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ÌˆÊ’uï¿½Aï¿½ï¿½ï¿½xï¿½Aï¿½Oï¿½Í‚ï¿½ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------
 void MD::CalcEOMOverDamp(double time) 
 {
-	//I’[‘¬“x‚É’B‚µ‚½Û‚Ì‘¬“x‚©‚çƒ{ƒ‹ƒeƒbƒNƒX‚ÌˆÊ’uA‘¬“x‚ğXV‚·‚é
+	//ï¿½Iï¿½[ï¿½ï¿½ï¿½xï¿½É’Bï¿½ï¿½ï¿½ï¿½ï¿½Û‚Ì‘ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½ÌˆÊ’uï¿½Aï¿½ï¿½ï¿½xï¿½ï¿½ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 	//v(t+dt) = F(t+dt) / m
 	//r(t+dt) = r(t) + v(t+dt)*dt + (1/2)*((F(t+dt)-F(t))/m)
 	if (time == 0) {
@@ -546,40 +545,40 @@ void MD::CalcEOMOverDamp(double time)
 	unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);
 	for (int i = 0; i < vortexNum; i++) {
 
-		f1[i] = vortexs[i].GetForce();	//f(t)‚Ìæ“¾
+		f1[i] = vortexs[i].GetForce();	//f(t)ï¿½Ìæ“¾
 	}
 
-	InitForce();	//ƒ{ƒ‹ƒeƒbƒNƒX‚Ö‚ÌŠO—Í‚ğ‰Šú‰»
+	InitForce();	//ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ö‚ÌŠOï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	//F(t+dt)‚ÌŒvZ
+	//F(t+dt)ï¿½ÌŒvï¿½Z
 	CalcVVI();
 	if (piningType == PiningType::tripleCircle) CalcCirclePiningForce();
 	if (piningType == PiningType::doubleCircle) CalcCirclePiningForce();
 	if (piningType == PiningType::doubleLine) CalcLinePiningForce();
 	if (time > annealTime)CalcLorentzForce(time);
 	
-	//I’[‘¬“x‚ğ‹‚ßA‚»‚±‚©‚çˆÊ’u‚ğ‹‚ß‚é
+	//ï¿½Iï¿½[ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ßAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 	for (int i = 0; i < vortexNum; i++) {
-		Vector2d r1 = vortexs[i].GetPos();							//r(t)‚Ìæ“¾
-		Vector2d f2 = vortexs[i].GetForce();						//f(t+dt)‚Ìæ“¾
-		Vector2d v2 = f2 / eta;										//v(t+dt)‚ÌŒvZ
-		Vector2d r2 = r1 + v2 * dt + (f2 - f1[i]) / (2 * eta) * dt;	//r(t+dt)‚ÌŒvZ
+		Vector2d r1 = vortexs[i].GetPos();							//r(t)ï¿½Ìæ“¾
+		Vector2d f2 = vortexs[i].GetForce();						//f(t+dt)ï¿½Ìæ“¾
+		Vector2d v2 = f2 / eta;										//v(t+dt)ï¿½ÌŒvï¿½Z
+		Vector2d r2 = r1 + v2 * dt + (f2 - f1[i]) / (2 * eta) * dt;	//r(t+dt)ï¿½ÌŒvï¿½Z
 
-		//üŠú“I‹«ŠEğŒ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½
 		if (r2.x() < 0)      r2(0) += weight;
 		if (r2.x() > weight) r2(0) -= weight;
 		if (r2.y() < 0)      r2(1) += height;
 		if (r2.y() > height) r2(1) -= height;
 
-		vortexs[i].SetForce(f2.x(), f2.y());		//ŠO—Í‚ÌXV
-		vortexs[i].SetVelocity(v2.x(), v2.y());		//‘¬“x‚ÌXV
-		vortexs[i].SetPos(r2.x(), r2.y());			//ˆÊ’u‚ÌXV
+		vortexs[i].SetForce(f2.x(), f2.y());		//ï¿½Oï¿½Í‚ÌXï¿½V
+		vortexs[i].SetVelocity(v2.x(), v2.y());		//ï¿½ï¿½ï¿½xï¿½ÌXï¿½V
+		vortexs[i].SetPos(r2.x(), r2.y());			//ï¿½Ê’uï¿½ÌXï¿½V
 	}
 }
 
 //------------------------------------------------------------------------------------------------
-//    ƒ{ƒ‹ƒeƒbƒNƒX‚Ì‰Šú”z’u‚ğOŠpŠiq‚É‚·‚é
-//	  ƒ{ƒ‹ƒeƒbƒNƒX‚Ì”‚ª6‚Ì”{”‚Ì‚Æ‚«‚Ég‚¤‚æ‚¤‚É‚·‚é
+//    ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½zï¿½uï¿½ï¿½ï¿½Oï¿½pï¿½iï¿½qï¿½É‚ï¿½ï¿½ï¿½
+//	  ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½6ï¿½Ì”{ï¿½ï¿½ï¿½Ì‚Æ‚ï¿½ï¿½Égï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
 //------------------------------------------------------------------------------------------------
 void MD::PlaceVorTriangle() {
 	double y = a * sqrt(3.0) / 4.0;
@@ -594,8 +593,8 @@ void MD::PlaceVorTriangle() {
 }
 
 //------------------------------------------------------------------------------------------------
-//    ƒ{ƒ‹ƒeƒbƒNƒX‚Ì‰Šú”z’u‚ğ’·•ûŒ`”z’u‚É‚·‚é
-//	  ƒ{ƒ‹ƒeƒbƒNƒX‚Ì”‚ª6‚Ì”{”‚Ì‚Æ‚«‚Ég‚¤‚æ‚¤‚É‚·‚é
+//    ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½zï¿½uï¿½ğ’·•ï¿½ï¿½`ï¿½zï¿½uï¿½É‚ï¿½ï¿½ï¿½
+//	  ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½6ï¿½Ì”{ï¿½ï¿½ï¿½Ì‚Æ‚ï¿½ï¿½Égï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
 //------------------------------------------------------------------------------------------------
 void MD::PlaceVorSquare() {
 	double y = a * sqrt(3.0) / 4.0;
@@ -608,7 +607,7 @@ void MD::PlaceVorSquare() {
 }
 
 //-----------------------------------------------------------------------------------------------
-//    ƒ{ƒ‹ƒeƒbƒNƒX‚Ì‰Šú”z’u‚ğƒ‰ƒ“ƒ_ƒ€‚É‚·‚é
+//    ï¿½{ï¿½ï¿½ï¿½eï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½zï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceVorRandom() {
 
@@ -632,8 +631,8 @@ void MD::PlaceVorRandom() {
 }
 
 //-----------------------------------------------------------------------------------------------
-//    ƒfƒoƒbƒN—pA”z—ñ‚Ì’·‚³‚É’ˆÓ
-//@@“Á’è‚Ì”z’u‚ÅŠO—Í€‚ğ•Ï‚¦‚ÄÀŒ±‚µ‚½‚¢‚Æ‚«‚Ég‚¤
+//    ï¿½fï¿½oï¿½bï¿½Nï¿½pï¿½Aï¿½zï¿½ï¿½Ì’ï¿½ï¿½ï¿½ï¿½É’ï¿½ï¿½ï¿½
+//ï¿½@ï¿½@ï¿½ï¿½ï¿½ï¿½Ì”zï¿½uï¿½ÅŠOï¿½Íï¿½ï¿½ï¿½Ï‚ï¿½ï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Égï¿½ï¿½
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceVorManual()
 {
@@ -655,20 +654,20 @@ void MD::PlaceVorManual()
 //-----------------------------------------------------------------------------------------------
 PiningType MD::SetPinType() const
 {
-	//‘å’†¬3í—Ş‚Ì‰~Œ`ƒsƒjƒ“ƒOƒTƒCƒg‚ÌÀŒ±
+	//ï¿½å’†ï¿½ï¿½3ï¿½ï¿½Ş‚Ì‰~ï¿½`ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½ï¿½ï¿½
 	if (condition == "Circle-S2M2L2-M_is_Variable" ||
 		condition == "Circle-S2M2L2-L_is_Variable" ||
 		condition == "Circle-S2M2L2-S_is_Variable") {
 		return PiningType::tripleCircle;
 	}
 
-	//‘å¬2í—Ş‚Ì‰~Œ`ƒsƒjƒ“ƒOƒTƒCƒg‚ÌÀŒ±
+	//ï¿½å¬2ï¿½ï¿½Ş‚Ì‰~ï¿½`ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½ï¿½ï¿½
 	if (condition == "Circle-S2L2-S_is_Variable" ||
 		condition == "Circle-S2L2-L_is_Variable") {
 		return PiningType::doubleCircle;
 	}
 
-	//üƒsƒjƒ“ƒOƒTƒCƒg‚ÌÀŒ±
+	//ï¿½ï¿½ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½ï¿½ï¿½
 	if (condition == "Line-S2L2-S_is_Variable" ||
 		condition == "Line-S2L2-L_is_Variable") {
 		return PiningType::doubleLine;
@@ -678,7 +677,7 @@ PiningType MD::SetPinType() const
 
 
 //-----------------------------------------------------------------------------------------------
-//    ‘å¬2‚Â‚Ì‰~Œ`ƒsƒjƒ“ƒOƒTƒCƒg‚ÌÀ•W‚Æ”¼Œa‚ğƒZƒbƒg‚·‚é
+//    ï¿½å¬2ï¿½Â‚Ì‰~ï¿½`ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½ï¿½Wï¿½Æ”ï¿½ï¿½aï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceCirclePinDouble()
 {
@@ -700,7 +699,7 @@ void MD::PlaceCirclePinDouble()
 		r1 = S, r2 = L;
 	}
 	else {
-		std::cout << "ŠY“–‚·‚écondition‚ª‘¶İ‚µ‚Ü‚¹‚ñ" << std::endl;
+		std::cout << "ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½conditionï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½" << std::endl;
 	}
 
 	circlePinSites[0].SetR(r1);
@@ -714,7 +713,7 @@ void MD::PlaceCirclePinDouble()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    ‘å’†¬3‚Â‚Ì‰~Œ`ƒsƒjƒ“ƒOƒTƒCƒg‚ÌÀ•W‚Æ”¼Œa‚ğƒZƒbƒg‚·‚é
+//    ï¿½å’†ï¿½ï¿½3ï¿½Â‚Ì‰~ï¿½`ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½ï¿½Wï¿½Æ”ï¿½ï¿½aï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½
 //-----------------------------------------------------------------------------------------------
 
 void MD::PlaceCirclePinTriple()
@@ -739,7 +738,7 @@ void MD::PlaceCirclePinTriple()
 		r1 = S, r2 = L, r3 = M;
 	}
 	else {
-		std::cout << "ŠY“–‚·‚écondition‚ª‘¶İ‚µ‚Ü‚¹‚ñ" << std::endl;
+		std::cout << "ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½conditionï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½" << std::endl;
 	}
 
 	circlePinSites[0].SetR(r1);
@@ -751,35 +750,35 @@ void MD::PlaceCirclePinTriple()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    ‘å¬2‚Â‚Ìüƒsƒjƒ“ƒOƒTƒCƒg‚ÌÀ•W‚Æ’·‚³‚ğƒZƒbƒg‚·‚é
+//    ï¿½å¬2ï¿½Â‚Ìï¿½ï¿½sï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½Ìï¿½ï¿½Wï¿½Æ’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceLinePinDouble()
 {
-	linePinSites[0].SetPos(0.6, 0.5);
-	linePinSites[1].SetPos(4.6, 0.5);
-	linePinSites[2].SetPos(8.6, 0.5);
-	linePinSites[3].SetPos(12.6, 0.5);
-	linePinSites[4].SetPos(1.6, 1.5);
-	linePinSites[5].SetPos(5.6, 1.5);
-	linePinSites[6].SetPos(9.6, 1.5);
-	linePinSites[7].SetPos(13.6, 1.5);
-	linePinSites[8].SetPos(0.6, 2.5);
-	linePinSites[9].SetPos(4.6, 2.5);
-	linePinSites[10].SetPos(8.6, 2.5);
-	linePinSites[11].SetPos(12.6, 2.5);
-	linePinSites[12].SetPos(1.6, 3.5);
-	linePinSites[13].SetPos(5.6, .5);
-	linePinSites[14].SetPos(9.6, 3.5);
-	linePinSites[15].SetPos(13.6, 3.5);
+	linePinSites[0].SetPos(1.6, 0.5);
+	linePinSites[1].SetPos(5.6, 0.5);
+	linePinSites[2].SetPos(9.6, 0.5);
+	linePinSites[3].SetPos(13.6, 0.5);
+	linePinSites[4].SetPos(1.6, 2.5);
+	linePinSites[5].SetPos(5.6, 2.5);
+	linePinSites[6].SetPos(9.6, 2.5);
+	linePinSites[7].SetPos(13.6, 2.5);
+	linePinSites[8].SetPos(1.6, 4.5);
+	linePinSites[9].SetPos(5.6, 4.5);
+	linePinSites[10].SetPos(9.6, 4.5);
+	linePinSites[11].SetPos(13.6, 4.5);
+	linePinSites[12].SetPos(1.6, 6.5);
+	linePinSites[13].SetPos(5.6, 6.5);
+	linePinSites[14].SetPos(9.6, 6.5);
+	linePinSites[15].SetPos(13.6, 6.5);
 
-	const double L = 1.0, S = 0.1;
+	const double L = 3.0, S = 0.1;
 
 	double l1 = 0.0, l2 = 0.0;
 	if (condition == "Line-S2L2-S_is_Variable") {
 		l1 = L, l2 = S;
 	}
 	else {
-		std::cout << "ŠY“–‚·‚écondition‚ª‘¶İ‚µ‚Ü‚¹‚ñ" << std::endl;
+		std::cout << "ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½conditionï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½" << std::endl;
 	}
 
 	linePinSites[0].SetLength(l1);
@@ -801,7 +800,7 @@ void MD::PlaceLinePinDouble()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    ‘å¬2‚Â‚Ìƒsƒjƒ“ƒOƒTƒCƒg‚ğ‚¸‚ç‚·
+//    ï¿½å¬2ï¿½Â‚Ìƒsï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ç‚·
 //-----------------------------------------------------------------------------------------------
 
 void MD::ShiftCirclePinDouble()
@@ -813,7 +812,7 @@ void MD::ShiftCirclePinDouble()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    ‘å’†¬3‚Â‚Ìƒsƒjƒ“ƒOƒTƒCƒg‚ğ‚¸‚ç‚·
+//    ï¿½å’†ï¿½ï¿½3ï¿½Â‚Ìƒsï¿½jï¿½ï¿½ï¿½Oï¿½Tï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ç‚·
 //-----------------------------------------------------------------------------------------------
 
 void MD::ShiftCirclePinTriple()

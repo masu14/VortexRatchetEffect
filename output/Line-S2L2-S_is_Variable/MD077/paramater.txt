@@ -1,0 +1,21 @@
+[Constant]
+EOM: overdamp
+condition: Line-S2L2-S_is_Variable
+vortexNum = 16
+piningsiteNum = 16
+dt = 0.001
+maxTime = 0
+a = 6
+weight = 16
+height = 8
+cutoff = 8
+eta = 1
+annealTime = 0
+lorentzFrequency = 10
+f0 = 1
+kp = 2
+lp = 0.424
+
+[Variable]
+lorentzForce first: 2, end: 2.1, step: 2
+siteDistance first:  0, end: 1.5, step: 5

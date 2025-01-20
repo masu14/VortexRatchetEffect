@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # csvファイルの読み込み
-dir_name = "output\Line-S2L2-S_is_Variable\MD062\MD_lorentzForce=1.85_siteDistance=0.50"
+dir_name = (
+    "output\Line-S2L2-S_is_Variable\MD075\MD_lorentzForce=2.00_siteDistance=-2.00"
+)
 file_name = dir_name + "\\position.csv"
 line_data = pd.read_csv(file_name, nrows=1)
 vortex_data = pd.read_csv(file_name, skiprows=2)
