@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # CSVファイルを読み込む
-dir = "output/Line-S2L2-S_is_Variable/MD077"
+dir = "output/Line-S2L2-S_is_Variable/MD050"
 data = pd.read_csv(dir + "/PinningPotential.csv")
 
 # y を固定
@@ -16,12 +16,12 @@ E = filtered_data["E"]
 
 # グラフを描画
 plt.figure(figsize=(8, 6))
-plt.plot(x, E, linestyle="-", color="black", label=f"y = {fixed_y}")
+plt.plot(x, E, linestyle="-", color="black")
 
 # 軸ラベルとタイトル
 plt.xlabel("x")
 plt.ylabel("Pinning Potential (E)")
-plt.title(f"Pinning Potential vs x (y = {fixed_y})")
+
 plt.legend()
 
 # グラフを保存または表示

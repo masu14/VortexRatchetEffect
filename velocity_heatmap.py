@@ -10,6 +10,8 @@ data = pd.read_csv(dir + "\\velocity_averages.csv")
 # データをピボットテーブル形式に変換
 pivot_table = data.pivot(index="siteDistance", columns="lorentzForce", values="vAve")
 
+pinforce = 2.0
+lorentzforce = pivot_table.columns / pinforce
 # 正規化処理
 v_min = pivot_table.values.min()
 v_max = pivot_table.values.max()
@@ -33,7 +35,7 @@ custom_cmap = LinearSegmentedColormap.from_list("custom_jet", colors)
 # グラフを描画
 plt.figure(figsize=(10, 8))
 c = plt.pcolormesh(
-    pivot_table.columns,
+    lorentzforce,
     pivot_table.index,
     normalized_values,
     shading="auto",
@@ -41,14 +43,19 @@ c = plt.pcolormesh(
     vmin=-1,
     vmax=1,
 )
-plt.colorbar(c, label="Mean Velocity")
+cbar = plt.colorbar(c, ticks=[-1, -0.5, 0, 0.5, 1])
+cbar.set_label("Mean Velocity", fontsize=24)
+cbar.ax.tick_params(labelsize=22)
 
 # 軸の設定
 plt.tick_params(axis="both", direction="in")
 
+plt.xticks(fontsize=22, ticks=[0.8, 0.9, 1.0, 1.05])
+plt.yticks(fontsize=22, ticks=[-2, -1, 0, 1, 2])
+
 # 軸ラベルとタイトル
-plt.xlabel("Lorentz Force / Pinning Force")
-plt.ylabel("siteDistance")
+plt.xlabel("Lorentz Force / Pinning Force", fontsize=24)
+plt.ylabel("Dx", fontsize=24)
 
 # グラフを保存または表示
 plt.savefig(dir + "\\velocity_heatmap.png", dpi=300)

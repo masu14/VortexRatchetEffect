@@ -4,21 +4,21 @@ double PiningSite::potentialE = 0.0;
 double PiningSite::kp = 0.0;
 double PiningSite::lp = 0.0;
 
-//�R���X�g���N�^
+
 MD::MD()
 {
 	/* DO NOTHING */
 }
 
-//�f�X�g���N�^
+
 MD::~MD() {
 	/* DO NOTHING */
 }
 
-//main.cpp��paramater��ݒ肵�ARun���\�b�h��md�v�Z�����s����
+
 void MD::Run(Paramater<double> param) {
 
-	//�p�����[�^�[�����Ƃɕϐ���ݒ肷��
+	
 	EOM					= param.EOM;
 	condition			= param.condition;
 	vortexNum			= param.vortexNum;
@@ -49,7 +49,7 @@ void MD::Run(Paramater<double> param) {
 	
 
 
-	//�����������������Ƃ�MD�@�����s����
+	
 	if (InitApp())
 	{
 		MainLoop();
@@ -59,23 +59,23 @@ void MD::Run(Paramater<double> param) {
 
 bool MD::InitApp() {
 
-	// �s�j���O�T�C�g�̏�����
+	
 	if(!InitPiningSite())
 	{
 		std::cout << "!initpinpos" << std::endl;
 		return false;
 	}
 
-	// �{���e�b�N�X�̏�����
+	
 	if (!InitVortex())
 	{
 		std::cout << "!initvortexpos" << std::endl;
 		return false;
 	}
 
-	//�{���e�b�N�X�ւ̊O�͂�������
+	
 	InitForce();
-	//std::cout << "mainroop�ɓ���܂�" << std::endl;
+	
 	return true;
 }
 
@@ -84,11 +84,10 @@ bool MD::InitApp() {
 //-------------------------------------------------------------------------------------------------
 bool MD::InitPiningSite() {
 	if (piningSiteNum < 0) {
-		std::cout << "piningSiteNum�ɕs���Ȓl�����͂���܂���" << std::endl;
+		
 		return false;
 	}
 	else if (piningSiteNum == 0) {
-		std::cout << "�s�j���O�T�C�g��z�u���Ă��܂���" << std::endl;
 		noPiningSite = true;
 		return true;
 	}
@@ -96,13 +95,13 @@ bool MD::InitPiningSite() {
 	PiningSite::Setkp(kp);
 	PiningSite::Setlp(lp);
 
-	//�s�j���O�T�C�g�̎�ނ�ݒ肷��
+	
 	piningType = SetPinType();
 
-	//�s�j���O�T�C�g�̎�ނɉ����Ĕz�u���s��
+	
 	SetPin();
 
-	//�z�u�����s�j���O�T�C�g�ɂ��s�j���O�|�e���V�������쐬����
+	
 	
 	if (outPinPotential) SetPotential();
 
@@ -112,25 +111,25 @@ bool MD::InitPiningSite() {
 }
 
 //-----------------------------------------------------------------------------------------------
-//    �s�j���O�T�C�g�̌`��A�g�ݍ��킹�ɉ������z�u���s��
+//   
 //-----------------------------------------------------------------------------------------------
 void MD::SetPin()
 {
-	//�咆��3�̉~�`�s�j���O�T�C�g
+	//
 	if (piningType == PiningType::tripleCircle) {
 		circlePinSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
 		PlaceCirclePinTriple();
 		ShiftCirclePinTriple();
 	}
 
-	//�召2�̉~�`�s�j���O�T�C�g
+	//
 	if (piningType == PiningType::doubleCircle) {
 		circlePinSites = std::make_unique<PiningSiteCircle[]>(piningSiteNum);
 		PlaceCirclePinDouble();
 		ShiftCirclePinDouble();
 	}
 
-	//�召2�̐��s�j���O�T�C�g
+	//
 	if (piningType == PiningType::doubleLine) {
 		linePinSites = std::make_unique<PiningSiteLine[]>(piningSiteNum);
 		PlaceLinePinDouble();
@@ -140,16 +139,16 @@ void MD::SetPin()
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�{���e�b�N�X�������ʒu�ɔz�u����
+//		
 //-------------------------------------------------------------------------------------------------
 bool MD::InitVortex() {
 	if (vortexNum <= 0) {
-		std::cout << "vortexNum�ɕs���Ȓl�����͂���܂���" << std::endl;
+		
 		return false;
 	}
 	vortexs = std::make_unique<Vortex[]>(vortexNum);
 	
-	PlaceVorManual();		//�{���e�b�N�X��z�u
+	PlaceVorManual();		
 	
 	return true;
 }
@@ -159,7 +158,7 @@ bool MD::InitVortex() {
 //-------------------------------------------------------------------------------------------------
 void MD::SetPotential()
 {
-	//�s�j���O�|�e���V�����̌v�Z�����쐬����
+	
 	auto CalcPinPotential = CreatePinPotential(linePinSites);
 	
 
@@ -169,10 +168,9 @@ void MD::SetPotential()
 	FileHandler filePotential;
 	filePotential.CreateFile(dirMD, "PinningPotential.csv");
 
-	//���x���̏�������
 	filePotential.WritePotentialLabel();
 
-	//�e�ʒu�ł̃|�e���V�������v�Z����
+	
 	Vector2d pos = { 0.0,0.0 };
 	while (pos.x() < weight) {
 		pos(1) = 0.0;
@@ -218,17 +216,17 @@ std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<Pin
 
 			if (difPos.norm() > cutoff) continue;
 			
-			//x���W��������
+			
 			if (abs(difPos.x()) <= (linePinSites[i].GetLength() / 2.0)) {
 				potentialE += kp * tanh(abs(difPos.y()) / lp);
 			}
-			//x���W�������E���ɂ���
+			
 			else if (difPos.x() < -(linePinSites[i].GetLength() / 2.0)) {
 				Vector2d l = { linePinSites[i].GetLength()/2.0,0.0 };
 				double d = (difPos + l).norm();
 				potentialE += kp * tanh(d / lp);
 			}
-			//x���W������荶���ɂ���
+			
 			else if (difPos.x() > (linePinSites[i].GetLength() / 2.0)) {
 				Vector2d l = { linePinSites[i].GetLength()/2.0,0.0 };
 				double d = (difPos - l).norm();
@@ -248,7 +246,7 @@ std::function<Vector2d(Vector2d vpos)> MD::CreatePinForce(const unique_ptr<Pinin
 		const double eps = 1e-10;
 		Vector2d force = { 0.0,0.0 };
 
-		//�{���e�b�N�X���s�j���O�T�C�g�����ɂ���ꍇ�A�s�j���O�͍͂�p���Ȃ�
+		
 		bool inLine = false;
 		for (int i = 0; i < piningSiteNum; i++) {
 			Vector2d difPos = vpos - linePinSites[i].GetPos();
@@ -282,7 +280,7 @@ std::string MD::SetVariableName(std::string varname)
 	try {
 		if (varname == "lorentzForce") return FileHandler::FixedValueStr(2, lorentzForce);
 		if (varname == "siteDistance") return FileHandler::FixedValueStr(2, siteDistance);
-		else throw "�ϐ����ɊY�����镶���񂪐���������܂���";
+		else throw "variable error";
 	}
 	catch (const char* e) {
 		std::cout << "Error: " << e << std::endl;
@@ -293,17 +291,16 @@ std::string MD::SetVariableName(std::string varname)
 
 
 //-------------------------------------------------------------------------------------------------
-//     ���Ԕ��W�����郁�C�����[�v
+//     
 //-------------------------------------------------------------------------------------------------
 void MD::MainLoop() {
 
-	//dirMD�ɋL�ڂ���ϐ��p�����[�^�����擾����
-	//var1name�͕ϐ����Avar1str�͕ϐ��̒l�̕�����
+	
 	std::string var1str, var2str;
 	var1str = SetVariableName(var1name);
 	var2str = SetVariableName(var2name);
 
-	//�o�̓t�@�C��������f�B���N�g��dirMD���쐬����
+	
 	std::string dirName = "../output/" + condition;
 	std::string dirMD;
 
@@ -311,7 +308,7 @@ void MD::MainLoop() {
 	dirMD += "/MD_" + var1name + "=" + var1str + "_" + var2name + "=" + var2str;
 	FileHandler::CreateDir(dirMD);
 
-	//�o�̓t�@�C���̍쐬
+	
 	FileHandler filePos;
 	FileHandler fileVelocity;
 	FileHandler fileForce;
@@ -320,7 +317,7 @@ void MD::MainLoop() {
 	if (outVelocity) fileVelocity.CreateFile(dirMD, "velocity.csv");
 	if (outForce) fileForce.CreateFile(dirMD, "force.csv");
 	
-	//���x���̏�������
+	
 	if (piningType == PiningType::tripleCircle || piningType == PiningType::doubleCircle) {
 		if (outPosition) filePos.WritePinPos(circlePinSites, piningSiteNum);
 	}
@@ -331,16 +328,16 @@ void MD::MainLoop() {
 	if (outVelocity) fileVelocity.WriteLabel(vortexNum);
 	if (outForce) fileForce.WriteLabel(vortexNum);
 	
-	//���C�����[�v
+	
 	double time = 0;
 	
 	while (time <= maxTime) {
-		//�^��������������
+		
 		if (EOM == "ordinary") CalcEOM(time);
 		if (EOM == "overdamp") CalcEOMOverDamp(time);
 		
 
-		//�v�Z���ʂ��t�@�C���ɏ�������
+		
 		if (outPosition) filePos.     WritePos(time, vortexs, vortexNum);
 		if (outVelocity) fileVelocity.WriteVelocity(time, vortexs, vortexNum);
 		if (outForce)fileForce.WriteForce(time, vortexs, vortexNum);
@@ -350,7 +347,7 @@ void MD::MainLoop() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�O�͂�0�ɏ���������
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::InitForce() {
 	for (int i = 0; i < vortexNum; i++) {
@@ -359,45 +356,45 @@ void MD::InitForce() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�{���e�b�N�X�E�{���e�b�N�X���ݍ�p(VVI)���v�Z����
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::CalcVVI() {
 	const double eps = 1e-10;
 	for (int i = 0; i < vortexNum -1 ; i++) {
 		for (int j = i+1; j < vortexNum; j++) {
 			
-			Vector2d difPos = vortexs[i].GetPos() - vortexs[j].GetPos();		//�x�N�g���̍�
+			Vector2d difPos = vortexs[i].GetPos() - vortexs[j].GetPos();		
 			
-			//�����I�ɌJ��Ԃ��{���e�b�N�X�̂����A�߂��{���e�b�N�X���v�Z����
+			
 			if (difPos.x() < -weight / 2) difPos(0) += weight;
 			if (difPos.x() >  weight / 2) difPos(0) -= weight;
 			if (difPos.y() < -height / 2) difPos(1) += height;
 			if (difPos.y() >  height / 2) difPos(1) -= height;
 			
-			//�ȉ��A�{���e�b�N�X���m�̋������J�b�g�I�t������蒷����Όv�Z���Ȃ�
+			
 			if (difPos.norm() > cutoff) continue;						
 			
-			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/(difPos.norm() + eps);	//VVI�̎���p����
+			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/(difPos.norm() + eps);	
 			
-			double xForce = force.x();				//VVI��x����
-			double yForce = force.y();				//VVI��y����
+			double xForce = force.x();				
+			double yForce = force.y();				
 			
-			vortexs[i].AddForce(xForce, yForce);	//��p
-			vortexs[j].AddForce(-xForce, -yForce);	//����p
+			vortexs[i].AddForce(xForce, yForce);	
+			vortexs[j].AddForce(-xForce, -yForce);	
 		}
 	}
 	
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�s�j���O�͂��v�Z����(�~�`)
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::CalcCirclePiningForce() {
 	
 	for (int i = 0; i < vortexNum; i++) {
 
 		bool inCircle = false;
-		//�{���e�b�N�X���s�j���O�T�C�g�̓����ɂ���ꍇ�͂ǂ̃s�j���O�T�C�g������O�͂��󂯂Ȃ�
+		
 		for (int j = 0; j < piningSiteNum; j++) {
 			Vector2d difPos = vortexs[i].GetPos() - circlePinSites[j].GetPos();
 			if (difPos.norm() <= circlePinSites[j].GetR()) {
@@ -429,7 +426,7 @@ void MD::CalcCirclePiningForce() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�s�j���O�͂��v�Z����(��)
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLinePiningForce()
 {
@@ -443,7 +440,7 @@ void MD::CalcLinePiningForce()
 }
 
 //-------------------------------------------------------------------------------------------------
-//		���[�����c�͂��v�Z����	
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::CalcLorentzForce(double time) {
 	const double PI = 3.141592653589;
@@ -457,29 +454,29 @@ void MD::CalcLorentzForce(double time) {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�S����R�ɂ��͂��v�Z����
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::CalcResistForce() {
 	for (int i = 0; i < vortexNum; i++) {
-		Vector2d velocity = vortexs[i].GetVelocity();	//�{���e�b�N�X�̑��x���擾����
-		Vector2d force = -eta * velocity;				//�S����R�ɂ��͂��v�Z����
-		vortexs[i].AddForce(force.x(), force.y());		//�{���e�b�N�X�ւ̊O�͂ɉ�����
+		Vector2d velocity = vortexs[i].GetVelocity();	
+		Vector2d force = -eta * velocity;				
+		vortexs[i].AddForce(force.x(), force.y());		
 	}
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�T�[�}���͂��v�Z����
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::CalcThermalForce() {
 	
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�^���������������ă{���e�b�N�X�̈ʒu�A���x�A�O�͂��X�V����
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::CalcEOM(double time) 
 {
-	//���x�x�����@��p�������Ԕ��W�Ń{���e�b�N�X�̈ʒu�A���x���X�V����
+	//
 	//r(t+dt) = r(t) + v(t)*dt + (1/2)*(F(t)/m)*dt^2
 	//v(t+dt) = v(t) + (1/2)*((F(t)+F(t+dt))/m)*dt
 	{
@@ -487,30 +484,30 @@ void MD::CalcEOM(double time)
 			return;
 		}
 
-		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(vortexNum);	//���xv(t)�̓��I�z��Av(t+dt)�̌v�Z�Ɏg��
-		unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);	//�O��F(t)�Av(t+dt)�̌v�Z�Ɏg��
+		unique_ptr<Vector2d[]> v1 = std::make_unique<Vector2d[]>(vortexNum);	
+		unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);	
 		for (int i = 0; i < vortexNum; i++) {
 
-			Vector2d r1 = vortexs[i].GetPos();		//�ʒur(t)
-			v1[i] = vortexs[i].GetVelocity();		//���xv(t)
-			f1[i] = vortexs[i].GetForce();			//�O��F(t)
+			Vector2d r1 = vortexs[i].GetPos();		
+			v1[i] = vortexs[i].GetVelocity();		
+			f1[i] = vortexs[i].GetForce();			
 
-			//�ʒur(t+dt)���v�Z���A�X�V����
-			Vector2d r2 = r1 + v1[i] * dt + (f1[i] / eta) / 2 * dt * dt;	//�ʒur(t+dt)�̌v�Z
 			
-			//�����I���E����
+			Vector2d r2 = r1 + v1[i] * dt + (f1[i] / eta) / 2 * dt * dt;	
+			
+			
 			if (r2.x() < 0)      r2(0) += weight;
 			if (r2.x() > weight) r2(0) -= weight;
 			if (r2.y() < 0)      r2(1) += height;
 			if (r2.y() > height) r2(1) -= height;
 			
-			vortexs[i].SetPos(r2.x(), r2.y());								//�ʒur(t+dt)�̍X�V
+			vortexs[i].SetPos(r2.x(), r2.y());							
 		}
 
-		//�O�͂̍Čv�Z���s���AF(t+dt)���v�Z����
-		InitForce();	//�{���e�b�N�X�ւ̊O�͂�������
+		
+		InitForce();	
 
-		//F(t+dt)�̌v�Z
+		
 		CalcVVI();
 		if(piningType == PiningType::tripleCircle) CalcCirclePiningForce();
 		if (piningType == PiningType::doubleCircle) CalcCirclePiningForce();
@@ -518,24 +515,24 @@ void MD::CalcEOM(double time)
 		if (time > annealTime)CalcLorentzForce(time);
 		CalcResistForce();
 
-		//v(t),F(t),F(t+dt)��p���đ��xv(t+dt)���v�Z���A�X�V����
+		
 		for (int i = 0; i < vortexNum; i++) {
 			
 			Vector2d f2 = vortexs[i].GetForce();
-			Vector2d v2 = v1[i] + (f1[i] + f2) / (2 * eta) * dt;	//���xv(t+dt)�̌v�Z
+			Vector2d v2 = v1[i] + (f1[i] + f2) / (2 * eta) * dt;	
 			
-			vortexs[i].SetForce(f2.x(), f2.y());					//�O��F(t+dt)�̍X�V�A���̎��Ԕ��W�̈ʒur(t)�v�Z�Ŏg��
-			vortexs[i].SetVelocity(v2.x(), v2.y());					//���xv(t+dt)�̍X�V
+			vortexs[i].SetForce(f2.x(), f2.y());					
+			vortexs[i].SetVelocity(v2.x(), v2.y());					
 		}
 	}
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�I�[���x�ɒB�����ۂ̉ߌ����^���������������ă{���e�b�N�X�̈ʒu�A���x�A�O�͂��X�V����
+//		
 //-------------------------------------------------------------------------------------------------
 void MD::CalcEOMOverDamp(double time) 
 {
-	//�I�[���x�ɒB�����ۂ̑��x����{���e�b�N�X�̈ʒu�A���x���X�V����
+	
 	//v(t+dt) = F(t+dt) / m
 	//r(t+dt) = r(t) + v(t+dt)*dt + (1/2)*((F(t+dt)-F(t))/m)
 	if (time == 0) {
@@ -545,40 +542,39 @@ void MD::CalcEOMOverDamp(double time)
 	unique_ptr<Vector2d[]> f1 = std::make_unique<Vector2d[]>(vortexNum);
 	for (int i = 0; i < vortexNum; i++) {
 
-		f1[i] = vortexs[i].GetForce();	//f(t)�̎擾
+		f1[i] = vortexs[i].GetForce();	
 	}
 
-	InitForce();	//�{���e�b�N�X�ւ̊O�͂�������
+	InitForce();	
 
-	//F(t+dt)�̌v�Z
+	//F(t+dt)
 	CalcVVI();
 	if (piningType == PiningType::tripleCircle) CalcCirclePiningForce();
 	if (piningType == PiningType::doubleCircle) CalcCirclePiningForce();
 	if (piningType == PiningType::doubleLine) CalcLinePiningForce();
 	if (time > annealTime)CalcLorentzForce(time);
 	
-	//�I�[���x�����߁A��������ʒu�����߂�
+	
 	for (int i = 0; i < vortexNum; i++) {
-		Vector2d r1 = vortexs[i].GetPos();							//r(t)�̎擾
-		Vector2d f2 = vortexs[i].GetForce();						//f(t+dt)�̎擾
-		Vector2d v2 = f2 / eta;										//v(t+dt)�̌v�Z
-		Vector2d r2 = r1 + v2 * dt + (f2 - f1[i]) / (2 * eta) * dt;	//r(t+dt)�̌v�Z
+		Vector2d r1 = vortexs[i].GetPos();							//r(t)
+		Vector2d f2 = vortexs[i].GetForce();						//f(t+dt)
+		Vector2d v2 = f2 / eta;										//v(t+dt)
+		Vector2d r2 = r1 + v2 * dt + (f2 - f1[i]) / (2 * eta) * dt;	//r(t+dt)
 
-		//�����I���E����
+		
 		if (r2.x() < 0)      r2(0) += weight;
 		if (r2.x() > weight) r2(0) -= weight;
 		if (r2.y() < 0)      r2(1) += height;
 		if (r2.y() > height) r2(1) -= height;
 
-		vortexs[i].SetForce(f2.x(), f2.y());		//�O�͂̍X�V
-		vortexs[i].SetVelocity(v2.x(), v2.y());		//���x�̍X�V
-		vortexs[i].SetPos(r2.x(), r2.y());			//�ʒu�̍X�V
+		vortexs[i].SetForce(f2.x(), f2.y());		
+		vortexs[i].SetVelocity(v2.x(), v2.y());		
+		vortexs[i].SetPos(r2.x(), r2.y());			
 	}
 }
 
 //------------------------------------------------------------------------------------------------
-//    �{���e�b�N�X�̏����z�u���O�p�i�q�ɂ���
-//	  �{���e�b�N�X�̐���6�̔{���̂Ƃ��Ɏg���悤�ɂ���
+//    
 //------------------------------------------------------------------------------------------------
 void MD::PlaceVorTriangle() {
 	double y = a * sqrt(3.0) / 4.0;
@@ -593,8 +589,7 @@ void MD::PlaceVorTriangle() {
 }
 
 //------------------------------------------------------------------------------------------------
-//    �{���e�b�N�X�̏����z�u�𒷕��`�z�u�ɂ���
-//	  �{���e�b�N�X�̐���6�̔{���̂Ƃ��Ɏg���悤�ɂ���
+//    
 //------------------------------------------------------------------------------------------------
 void MD::PlaceVorSquare() {
 	double y = a * sqrt(3.0) / 4.0;
@@ -607,7 +602,7 @@ void MD::PlaceVorSquare() {
 }
 
 //-----------------------------------------------------------------------------------------------
-//    �{���e�b�N�X�̏����z�u�������_���ɂ���
+//   
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceVorRandom() {
 
@@ -631,8 +626,7 @@ void MD::PlaceVorRandom() {
 }
 
 //-----------------------------------------------------------------------------------------------
-//    �f�o�b�N�p�A�z��̒����ɒ���
-//�@�@����̔z�u�ŊO�͍���ς��Ď����������Ƃ��Ɏg��
+//    �
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceVorManual()
 {
@@ -654,20 +648,20 @@ void MD::PlaceVorManual()
 //-----------------------------------------------------------------------------------------------
 PiningType MD::SetPinType() const
 {
-	//�咆��3��ނ̉~�`�s�j���O�T�C�g�̎���
+	
 	if (condition == "Circle-S2M2L2-M_is_Variable" ||
 		condition == "Circle-S2M2L2-L_is_Variable" ||
 		condition == "Circle-S2M2L2-S_is_Variable") {
 		return PiningType::tripleCircle;
 	}
 
-	//�召2��ނ̉~�`�s�j���O�T�C�g�̎���
+	
 	if (condition == "Circle-S2L2-S_is_Variable" ||
 		condition == "Circle-S2L2-L_is_Variable") {
 		return PiningType::doubleCircle;
 	}
 
-	//���s�j���O�T�C�g�̎���
+	
 	if (condition == "Line-S2L2-S_is_Variable" ||
 		condition == "Line-S2L2-L_is_Variable") {
 		return PiningType::doubleLine;
@@ -677,7 +671,7 @@ PiningType MD::SetPinType() const
 
 
 //-----------------------------------------------------------------------------------------------
-//    �召2�̉~�`�s�j���O�T�C�g�̍��W�Ɣ��a���Z�b�g����
+//    
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceCirclePinDouble()
 {
@@ -699,7 +693,7 @@ void MD::PlaceCirclePinDouble()
 		r1 = S, r2 = L;
 	}
 	else {
-		std::cout << "�Y������condition�����݂��܂���" << std::endl;
+		std::cout << "there is no condition" << std::endl;
 	}
 
 	circlePinSites[0].SetR(r1);
@@ -713,7 +707,7 @@ void MD::PlaceCirclePinDouble()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    �咆��3�̉~�`�s�j���O�T�C�g�̍��W�Ɣ��a���Z�b�g����
+//    
 //-----------------------------------------------------------------------------------------------
 
 void MD::PlaceCirclePinTriple()
@@ -738,7 +732,7 @@ void MD::PlaceCirclePinTriple()
 		r1 = S, r2 = L, r3 = M;
 	}
 	else {
-		std::cout << "�Y������condition�����݂��܂���" << std::endl;
+		std::cout << "there is no condition" << std::endl;
 	}
 
 	circlePinSites[0].SetR(r1);
@@ -750,7 +744,7 @@ void MD::PlaceCirclePinTriple()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    �召2�̐��s�j���O�T�C�g�̍��W�ƒ������Z�b�g����
+//    
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceLinePinDouble()
 {
@@ -778,7 +772,7 @@ void MD::PlaceLinePinDouble()
 		l1 = L, l2 = S;
 	}
 	else {
-		std::cout << "�Y������condition�����݂��܂���" << std::endl;
+		std::cout << "there is no condition" << std::endl;
 	}
 
 	linePinSites[0].SetLength(l1);
@@ -800,7 +794,7 @@ void MD::PlaceLinePinDouble()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    �召2�̃s�j���O�T�C�g�����炷
+//    
 //-----------------------------------------------------------------------------------------------
 
 void MD::ShiftCirclePinDouble()
@@ -812,7 +806,7 @@ void MD::ShiftCirclePinDouble()
 }
 
 //-----------------------------------------------------------------------------------------------
-//    �咆��3�̃s�j���O�T�C�g�����炷
+//    
 //-----------------------------------------------------------------------------------------------
 
 void MD::ShiftCirclePinTriple()
