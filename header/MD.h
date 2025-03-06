@@ -47,6 +47,7 @@ private:
 	// private variables.
 	//=======================================================================================
 	std::string EOM;			//運動方程式の種類、ordinary or overdamp
+	std::string VVICalc;		//VVIの種類, bessel_K1 or exp
 	std::string condition;		//実験条件
 	int vortexNum;				//ボルテックスの数
 	int piningSiteNum;			//ピニングサイトの数
@@ -89,7 +90,8 @@ private:
 	bool InitVortex();			//ボルテックスの初期配置を行う
 	bool InitPiningSite();			//ピニングサイトの初期配置を行う
 	
-	std::function<double(Vector2d vpos)> CreatePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite);
+	std::function<double(Vector2d vpos)> CreateLinePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite);
+	std::function<double(Vector2d vpos)> CreateCirclePinPotential(const unique_ptr<PiningSiteCircle[]>& pinSite);
 	std::function<Vector2d(Vector2d vpos)>CreatePinForce(const unique_ptr<PiningSiteLine[]>& pinSite);
 
 	std::function<Vector2d(Vector2d vpos)>CalcPinForce;

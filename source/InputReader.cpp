@@ -22,6 +22,7 @@ void InputReader::ReadParam(const string& filename)
 	try {
 		//’è”ƒpƒ‰ƒ[ƒ^
 		param.EOM = sections["Constant"]["EOM"];
+		param.VVICalc = sections["Constant"]["VVICalc"];
 		param.condition = sections["Constant"]["condition"];
 		param.vortexNum = StringToNumber<int>(sections["Constant"]["vortexNum"]);
 		param.piningSiteNum = StringToNumber<int>(sections["Constant"]["piningsiteNum"]);

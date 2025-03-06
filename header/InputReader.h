@@ -36,6 +36,7 @@ struct Paramater {
 	double lp;					//ピニングサイトにおける常伝導から超伝導への回復長
 
 	string EOM;
+	string VVICalc;
 	string condition;
 
 	string var1name;

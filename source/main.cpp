@@ -16,6 +16,7 @@ int main() {
 		
 		std::cout << "\n[Paramater]" << std::endl;
 		std::cout << "EOM: " << param.EOM << std::endl;
+		std::cout << "VVICalc: " << param.VVICalc << std::endl;
 		std::cout << "condition: " << param.condition << std::endl;
 		std::cout << "vortexNum: " << param.vortexNum << std::endl;
 		std::cout << "piningSiteNum: " << param.piningSiteNum << std::endl;
@@ -41,7 +42,7 @@ int main() {
 		std::cout << "outVelocity: " << param.outVelocity << std::endl;
 		std::cout << "outForce: " << param.outForce << std::endl;
 		std::cout << "outPinPotential: " << param.outPinPotential << std::endl;
-
+		std::cout << std::cyl_bessel_k(1, 0.5) << std::endl;
 		//変数パラメータを設定する
 		if (param.var1name == "lorentzForce") param.lorentzForce = param.var1[0];
 		if (param.var2name == "siteDistance") param.siteDistance = param.var2[0];

@@ -86,8 +86,8 @@ Vector2d PiningSiteCircle::CalcPiningForce(Vector2d difPos) const
 
 double PiningSiteCircle::CalcPotentialE(Vector2d difPos) const
 {
-	double force=0;
-	return force;
+	double energy = kp;
+	return energy;
 }
 
 //----------------------------------------------------------------------------------------

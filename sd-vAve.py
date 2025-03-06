@@ -22,10 +22,10 @@ v_abs_max = max(abs(v_min), abs(v_max))
 mean_v = mean_v.values / v_abs_max
 
 # グラフを描画
-plt.figure(figsize=(6, 6))
+plt.figure(figsize=(10, 10))
 plt.plot(
-    siteDistance,
-    mean_v,
+    mean_v,  # X軸を Mean Velocity に変更
+    siteDistance,  # Y軸を siteDistance に変更
     linestyle="-",
     color="black",
     label=f"Lorentz Force = {fixed_lorentz}",
@@ -33,14 +33,14 @@ plt.plot(
 
 # 軸の設定
 plt.tick_params(axis="both", direction="in")
-plt.xticks([-2, -1, 0, 1, 2])
-plt.yticks([-1, 0, 1])
+plt.xticks(fontsize=28, ticks=[-1.0, -0.5, 0, 0.5, 1.0])  # X軸に Mean Velocity
+plt.yticks(fontsize=28, ticks=[-2, -1, 0, 1, 2])  # Y軸に Dx
 
 # 軸ラベルとタイトル
-plt.xlabel("sdx")
-plt.ylabel("Mean Velocity")
+plt.xlabel("Mean Velocity", fontsize=30)  # X軸ラベル変更
+plt.ylabel("Dx", fontsize=30)  # Y軸ラベル変更
 plt.legend()
 
 # グラフを保存または表示
-plt.savefig(dir + f"/sdx-vAve_sd={fixed_lorentz}.png", dpi=300)
+plt.savefig(dir + f"/vAve-sdx_sd={fixed_lorentz}.png", dpi=300)
 plt.show()

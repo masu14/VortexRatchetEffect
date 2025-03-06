@@ -4,7 +4,10 @@ from matplotlib.patches import Circle
 from matplotlib.animation import FuncAnimation
 
 # csvファイルの読み込み
-file_name = "output/Circle-S2L2-S_is_Variable/MD006/MD_lorentzForce=1.80_siteDistance=-1.00/position.csv"
+dir_name = (
+    "output/Circle-S2L2-S_is_Variable/MD010/MD_lorentzForce=1.90_siteDistance=-1.50"
+)
+file_name = dir_name + "\\position.csv"
 circle_data = pd.read_csv(file_name, nrows=1)
 vortex_data = pd.read_csv(file_name, skiprows=2)
 
@@ -23,7 +26,7 @@ num_vortexs = (len(vortex_data.columns) - 1) // 2
 # 図と軸を作成
 fig, ax = plt.subplots()
 ax.set_xlim(0, 16)
-ax.set_ylim(0, 10.4)
+ax.set_ylim(0, 12)
 
 # 円を描画
 circles = [Circle((x, y), r, fill=False) for x, y, r in circle_positions]
@@ -50,5 +53,5 @@ ani = FuncAnimation(
 )
 
 # アニメーションを保存または表示
-ani.save("vortex_animation2.mp4", writer="ffmpeg")
+ani.save(dir_name + "\\vortex_animation.mp4", writer="ffmpeg")
 plt.show()

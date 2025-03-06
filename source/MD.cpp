@@ -20,6 +20,7 @@ void MD::Run(Paramater<double> param) {
 
 	
 	EOM					= param.EOM;
+	VVICalc				= param.VVICalc;
 	condition			= param.condition;
 	vortexNum			= param.vortexNum;
 	piningSiteNum		= param.piningSiteNum;
@@ -80,7 +81,7 @@ bool MD::InitApp() {
 }
 
 //-------------------------------------------------------------------------------------------------
-//		�s�j���O�T�C�g�������ʒu�ɔz�u����
+//		
 //-------------------------------------------------------------------------------------------------
 bool MD::InitPiningSite() {
 	if (piningSiteNum < 0) {
@@ -158,12 +159,21 @@ bool MD::InitVortex() {
 //-------------------------------------------------------------------------------------------------
 void MD::SetPotential()
 {
+	std::function<double(Vector2d d)> CalcPinPotential;
+	if (piningType == PiningType::doubleCircle || piningType == PiningType::tripleCircle) {
+		CalcPinPotential = CreateCirclePinPotential(circlePinSites);
+	}
+	if (piningType == PiningType::doubleLine) {
+		CalcPinPotential = CreateLinePinPotential(linePinSites);
+	}
 	
-	auto CalcPinPotential = CreatePinPotential(linePinSites);
-	
-
+	std::string var1str, var2str;
+	var1str = SetVariableName(var1name);
+	var2str = SetVariableName(var2name);
 	std::string dirName = "../output/" + condition;
 	std::string dirMD = dirName + "/MD" + FileHandler::GetIndex();
+	dirMD += "/MD_" + var1name + "=" + var1str + "_" + var2name + "=" + var2str;
+	FileHandler::CreateDir(dirMD);
 
 	FileHandler filePotential;
 	filePotential.CreateFile(dirMD, "PinningPotential.csv");
@@ -186,10 +196,42 @@ void MD::SetPotential()
 
 }
 
+std::function<double(Vector2d vpos)> MD::CreateCirclePinPotential(const unique_ptr<PiningSiteCircle[]>& pinSite)
+{
+	return [this](Vector2d vpos) {
+		const double eps = 1e-10;
+		double potentialE = 0.0;
+
+		bool inCircle = false;
+
+		for (int i = 0; i < piningSiteNum; i++) {
+			Vector2d difPos = vpos - circlePinSites[i].GetPos();
+			if (difPos.norm() <= circlePinSites[i].GetR()) {
+				inCircle = true;
+				break;
+			}
+		}
+		if (inCircle) return potentialE;
+		for (int i = 0; i < piningSiteNum; i++) {
+			Vector2d difPos = vpos - circlePinSites[i].GetPos();
+
+			if (difPos.x() < -weight / 2) difPos(0) += weight;
+			if (difPos.x() > weight / 2) difPos(0) -= weight;
+			if (difPos.y() < -height / 2) difPos(1) += height;
+			if (difPos.y() > height / 2) difPos(1) -= height;
+
+			//if (difPos.norm() > cutoff) continue;
+
+			potentialE += kp * tanh((difPos.norm() - circlePinSites[i].GetR()) / lp);
+		}
+		return potentialE;
+		};
+}
+
 //-------------------------------------------------------------------------------------------------
 //		
 //-------------------------------------------------------------------------------------------------
-std::function<double(Vector2d vpos)> MD::CreatePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite)
+std::function<double(Vector2d vpos)> MD::CreateLinePinPotential(const unique_ptr<PiningSiteLine[]>& pinSite)
 {
 	return [this](Vector2d vpos) {
 		const double eps = 1e-10;
@@ -372,12 +414,22 @@ void MD::CalcVVI() {
 			if (difPos.y() >  height / 2) difPos(1) -= height;
 			
 			
-			if (difPos.norm() > cutoff) continue;						
+			if (difPos.norm() > cutoff) continue;		
+
+			double xForce=0.0, yForce=0.0;
+			if (VVICalc == "exp") {
+				Vector2d force = f0 * exp(-difPos.norm() / lambda) * difPos / (difPos.norm() + eps);
+
+				xForce = force.x();
+				yForce = force.y();
+			}
+			if (VVICalc == "bessel_K1") {
+				Vector2d force = f0 * std::cyl_bessel_k(1, difPos.norm() / lambda) * difPos / (difPos.norm() + eps);
+				xForce = force.x();
+				yForce = force.y();
+			}
 			
-			Vector2d force = f0 * exp(- difPos.norm() / lambda) * difPos/(difPos.norm() + eps);	
-			
-			double xForce = force.x();				
-			double yForce = force.y();				
+							
 			
 			vortexs[i].AddForce(xForce, yForce);	
 			vortexs[j].AddForce(-xForce, -yForce);	
@@ -410,11 +462,11 @@ void MD::CalcCirclePiningForce() {
 
 			if (difPos.x() < -weight / 2) difPos(0) += weight;
 			if (difPos.x() > weight / 2) difPos(0) -= weight;
-			//if (difPos.y() < -height / 2) difPos(1) += height;
-			//if (difPos.y() > height / 2) difPos(1) -= height;
+			if (difPos.y() < -height / 2) difPos(1) += height;
+			if (difPos.y() > height / 2) difPos(1) -= height;
 
 			
-			if (difPos.norm() > cutoff) continue;
+			//if (difPos.norm() > cutoff) continue;
 
 			Vector2d force = circlePinSites[j].CalcPiningForce(difPos);
 
@@ -626,7 +678,7 @@ void MD::PlaceVorRandom() {
 }
 
 //-----------------------------------------------------------------------------------------------
-//    �
+//    
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceVorManual()
 {
@@ -675,16 +727,24 @@ PiningType MD::SetPinType() const
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceCirclePinDouble()
 {
-	circlePinSites[0].SetPos(1.5, 2.6);
-	circlePinSites[1].SetPos(5.5, 2.6);
-	circlePinSites[2].SetPos(9.5, 2.6);
-	circlePinSites[3].SetPos(13.5, 2.6);
-	circlePinSites[4].SetPos(1.5, 7.8);
-	circlePinSites[5].SetPos(5.5, 7.8);
-	circlePinSites[6].SetPos(9.5, 7.8);
-	circlePinSites[7].SetPos(13.5, 7.8);
+	circlePinSites[0].SetPos(1.6, 1.6);
+	circlePinSites[1].SetPos(5.6, 1.6);
+	circlePinSites[2].SetPos(9.6, 1.6);
+	circlePinSites[3].SetPos(13.6, 1.6);
+	circlePinSites[4].SetPos(1.6, 4.6);
+	circlePinSites[5].SetPos(5.6, 4.6);
+	circlePinSites[6].SetPos(9.6, 4.6);
+	circlePinSites[7].SetPos(13.6, 4.6);
+	circlePinSites[8].SetPos(1.6,7.6);
+	circlePinSites[9].SetPos(5.6,7.6);
+	circlePinSites[10].SetPos(9.6, 7.6);
+	circlePinSites[11].SetPos(13.6, 7.6);
+	circlePinSites[12].SetPos(1.6, 10.6);
+	circlePinSites[13].SetPos(5.6, 10.6);
+	circlePinSites[14].SetPos(9.6, 10.6);
+	circlePinSites[15].SetPos(13.6, 10.6);
 
-	const double L = 1.5, S = 0.5;
+	const double L = 1.0, S = 0.5;
 	double r1 = 0.0, r2 = 0.0;
 	if (condition == "Circle-S2L2-S_is_Variable") {
 		r1 = L, r2 = S;
@@ -704,6 +764,14 @@ void MD::PlaceCirclePinDouble()
 	circlePinSites[5].SetR(r2);
 	circlePinSites[6].SetR(r1);
 	circlePinSites[7].SetR(r2);
+	circlePinSites[8].SetR(r1);
+	circlePinSites[9].SetR(r2);
+	circlePinSites[10].SetR(r1);
+	circlePinSites[11].SetR(r2);
+	circlePinSites[12].SetR(r1);
+	circlePinSites[13].SetR(r2);
+	circlePinSites[14].SetR(r1);
+	circlePinSites[15].SetR(r2);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -748,24 +816,24 @@ void MD::PlaceCirclePinTriple()
 //-----------------------------------------------------------------------------------------------
 void MD::PlaceLinePinDouble()
 {
-	linePinSites[0].SetPos(1.6, 0.5);
-	linePinSites[1].SetPos(5.6, 0.5);
-	linePinSites[2].SetPos(9.6, 0.5);
-	linePinSites[3].SetPos(13.6, 0.5);
-	linePinSites[4].SetPos(1.6, 2.5);
-	linePinSites[5].SetPos(5.6, 2.5);
-	linePinSites[6].SetPos(9.6, 2.5);
-	linePinSites[7].SetPos(13.6, 2.5);
-	linePinSites[8].SetPos(1.6, 4.5);
-	linePinSites[9].SetPos(5.6, 4.5);
-	linePinSites[10].SetPos(9.6, 4.5);
-	linePinSites[11].SetPos(13.6, 4.5);
-	linePinSites[12].SetPos(1.6, 6.5);
-	linePinSites[13].SetPos(5.6, 6.5);
-	linePinSites[14].SetPos(9.6, 6.5);
-	linePinSites[15].SetPos(13.6, 6.5);
+	linePinSites[0].SetPos(0.6, 0.5);
+	linePinSites[1].SetPos(4.6, 0.5);
+	linePinSites[2].SetPos(8.6, 0.5);
+	linePinSites[3].SetPos(12.6, 0.5);
+	linePinSites[4].SetPos(0.6, 3.5);
+	linePinSites[5].SetPos(4.6, 3.5);
+	linePinSites[6].SetPos(8.6, 3.5);
+	linePinSites[7].SetPos(12.6, 3.5);
+	linePinSites[8].SetPos(0.6, 6.5);
+	linePinSites[9].SetPos(4.6, 6.5);
+	linePinSites[10].SetPos(8.6, 6.5);
+	linePinSites[11].SetPos(12.6, 6.5);
+	linePinSites[12].SetPos(0.6, 9.5);
+	linePinSites[13].SetPos(4.6, 9.5);
+	linePinSites[14].SetPos(8.6, 9.5);
+	linePinSites[15].SetPos(12.6, 9.5);
 
-	const double L = 3.0, S = 0.1;
+	const double L = 1.0, S = 0.1;
 
 	double l1 = 0.0, l2 = 0.0;
 	if (condition == "Line-S2L2-S_is_Variable") {
@@ -803,6 +871,11 @@ void MD::ShiftCirclePinDouble()
 	circlePinSites[3].AddPos(siteDistance, 0);
 	circlePinSites[5].AddPos(siteDistance, 0);
 	circlePinSites[7].AddPos(siteDistance, 0);
+	circlePinSites[9].AddPos(siteDistance, 0);
+	circlePinSites[11].AddPos(siteDistance, 0);
+	circlePinSites[13].AddPos(siteDistance, 0);
+	circlePinSites[15].AddPos(siteDistance, 0);
+
 }
 
 //-----------------------------------------------------------------------------------------------
