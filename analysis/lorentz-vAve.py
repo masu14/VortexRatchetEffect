@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.ticker import MaxNLocator
 
 # CSVファイルを読み込む
-dir = "output/Line-S2L2-S_is_Variable/MD091"
+dir = "analysis/../output/Line-S2L2-S_is_Variable/MD091"
 data = pd.read_csv(dir + "/velocity_averages.csv")
 
 # y を固定

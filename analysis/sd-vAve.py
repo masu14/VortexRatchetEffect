@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # CSVファイルを読み込む
-dir = "output/Line-S2L2-S_is_Variable/MD050"
+dir = "analysis/../output/Line-S2L2-S_is_Variable/MD050"
 data = pd.read_csv(dir + "/velocity_averages.csv")
 
 # y を固定

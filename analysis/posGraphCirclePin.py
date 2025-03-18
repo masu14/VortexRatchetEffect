@@ -4,9 +4,7 @@ from matplotlib.patches import Circle
 from matplotlib.animation import FuncAnimation
 
 # csvファイルの読み込み
-dir_name = (
-    "output/Circle-S2L2-S_is_Variable/MD010/MD_lorentzForce=1.90_siteDistance=-1.50"
-)
+dir_name = "analysis/../output/Circle-S2L2-S_is_Variable/MD010/MD_lorentzForce=1.90_siteDistance=-1.50"
 file_name = dir_name + "\\position.csv"
 circle_data = pd.read_csv(file_name, nrows=1)
 vortex_data = pd.read_csv(file_name, skiprows=2)

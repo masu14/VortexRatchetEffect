@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 # CSVファイルを読み込む
-dir = "output\Circle-S2L2-S_is_Variable\MD006\MD_lorentzForce=1.80_siteDistance=-2.00"
+dir = "analysis\..\output\Circle-S2L2-S_is_Variable\MD006\MD_lorentzForce=1.80_siteDistance=-2.00"
 data = pd.read_csv(dir + "\PinningPotential.csv")
 
 # データをピボットテーブル形式に変換
